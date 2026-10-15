@@ -1,0 +1,68 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/level_03.gd" id="1_lvl3"]
+[ext_resource type="Script" path="res://scripts/levels/room_builder.gd" id="2_room"]
+[ext_resource type="Script" path="res://scripts/entities/loop_manager.gd" id="3_loop"]
+[ext_resource type="PackedScene" path="res://scenes/entities/player.tscn" id="4_player"]
+[ext_resource type="PackedScene" path="res://scenes/entities/echo.tscn" id="5_echo"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/timed_button.tscn" id="6_btn"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/laser_barrier.tscn" id="7_laser"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/pressure_plate.tscn" id="8_plate"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/terminal_log.tscn" id="9_term"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/level_exit.tscn" id="10_exit"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/circuit_wire.tscn" id="11_wire"]
+[ext_resource type="PackedScene" path="res://scenes/ui/game_hud.tscn" id="12_hud"]
+
+[node name="Level03" type="Node2D"]
+script = ExtResource("1_lvl3")
+
+[node name="RoomBuilder" type="Node2D" parent="."]
+script = ExtResource("2_room")
+interior_walls = Array[Rect2]([Rect2(434, 32, 32, 268), Rect2(434, 420, 32, 268), Rect2(784, 32, 32, 268), Rect2(784, 420, 32, 268), Rect2(466, 260, 200, 32)])
+
+[node name="SpawnPoint" type="Marker2D" parent="."]
+position = Vector2(120, 360)
+
+[node name="LoopManager" type="Node2D" parent="."]
+script = ExtResource("3_loop")
+echo_scene = ExtResource("5_echo")
+
+[node name="Player" parent="." instance=ExtResource("4_player")]
+position = Vector2(120, 360)
+
+[node name="TimedButton1" parent="." instance=ExtResource("6_btn")]
+position = Vector2(240, 200)
+button_id = "btn_1"
+active_duration = 7.0
+
+[node name="TimedButton2" parent="." instance=ExtResource("6_btn")]
+position = Vector2(600, 520)
+button_id = "btn_2"
+active_duration = 7.0
+
+[node name="AlcovePlate" parent="." instance=ExtResource("8_plate")]
+position = Vector2(560, 160)
+plate_id = "alcove_plate"
+
+[node name="LaserBarrier1" parent="." instance=ExtResource("7_laser")]
+position = Vector2(450, 360)
+rotation = 1.5708
+barrier_length = 120.0
+
+[node name="LaserBarrier2" parent="." instance=ExtResource("7_laser")]
+position = Vector2(800, 360)
+rotation = 1.5708
+barrier_length = 120.0
+
+[node name="TerminalLog" parent="." instance=ExtResource("9_term")]
+position = Vector2(160, 520)
+log_id = "log_03"
+
+[node name="LevelExit" parent="." instance=ExtResource("10_exit")]
+position = Vector2(1080, 360)
+
+[node name="Wire1" parent="." instance=ExtResource("11_wire")]
+
+[node name="Wire2" parent="." instance=ExtResource("11_wire")]
+
+[node name="GameHUD" parent="." instance=ExtResource("12_hud")]
