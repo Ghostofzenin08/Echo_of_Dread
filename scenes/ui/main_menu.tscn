@@ -1,0 +1,153 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_menu"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05, 0.07, 0.12, 1)
+
+[node name="HeaderBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -350.0
+offset_top = 80.0
+offset_right = 350.0
+offset_bottom = 200.0
+grow_horizontal = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Title" type="Label" parent="HeaderBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 46
+text = "ECHO ROOMS"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="HeaderBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.7, 0.9, 1)
+theme_override_font_sizes/font_size = 18
+text = "CHRONOS RESEARCH FACILITY — 30-SECOND CAUSALITY LOOP"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -140.0
+offset_top = 0.0
+offset_right = 140.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="StartButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "START EXPERIMENT"
+
+[node name="LevelSelectButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "CHAMBER SELECT"
+
+[node name="HowToPlayButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "HOW TO PLAY"
+
+[node name="QuitButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "EXIT"
+
+[node name="GuideModal" type="PanelContainer" parent="."]
+visible = false
+custom_minimum_size = Vector2(560, 420)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -210.0
+offset_right = 280.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="GuideModal"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="GuideModal/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="GuideModal/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "PROTOCOL BRIEFING"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="GuideModal/Margin/VBox"]
+layout_mode = 2
+
+[node name="GuideText" type="RichTextLabel" parent="GuideModal/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 14
+bbcode_enabled = true
+text = "[color=#00e5ff][b]THE 30-SECOND TIME LOOP:[/b][/color]
+You are trapped inside Chronos Sub-Level 4. Every 30 seconds, spacetime collapses and resets to the starting point.
+
+[color=#00e5ff][b]TEMPORAL ECHOES:[/b][/color]
+When a loop resets, an [color=#a0e0ff]Echo[/color] of your past self repeats your exact previous actions.
+• Stand on a pressure plate in Loop 1.
+• When the loop resets, your Echo holds the plate while you move freely!
+• Coordinate past and present actions to unlock heavy blast doors and bypass laser grids.
+
+[color=#00e5ff][b]CONTROLS:[/b][/color]
+• [color=#ffdd55][WASD / Arrow Keys][/color] - Move Researcher
+• [color=#ffdd55][E / Space][/color] - Interact with Terminals & Levers
+• [color=#ffdd55][R][/color] - Rewind Loop immediately & spawn new Echo
+• [color=#ffdd55][C / Backspace][/color] - Clear all Echoes & restart Chamber
+• [color=#ffdd55][ESC][/color] - Pause Menu / Dismiss Log"
+
+[node name="CloseButton" type="Button" parent="GuideModal/Margin/VBox"]
+custom_minimum_size = Vector2(140, 36)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "RETURN"
