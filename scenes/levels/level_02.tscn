@@ -1,0 +1,60 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/level_02.gd" id="1_lvl2"]
+[ext_resource type="Script" path="res://scripts/levels/room_builder.gd" id="2_room"]
+[ext_resource type="Script" path="res://scripts/entities/loop_manager.gd" id="3_loop"]
+[ext_resource type="PackedScene" path="res://scenes/entities/player.tscn" id="4_player"]
+[ext_resource type="PackedScene" path="res://scenes/entities/echo.tscn" id="5_echo"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/pressure_plate.tscn" id="6_plate"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/locked_door.tscn" id="7_door"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/terminal_log.tscn" id="8_term"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/level_exit.tscn" id="9_exit"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/circuit_wire.tscn" id="10_wire"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/lever_switch.tscn" id="11_lever"]
+[ext_resource type="PackedScene" path="res://scenes/ui/game_hud.tscn" id="12_hud"]
+
+[node name="Level02" type="Node2D"]
+script = ExtResource("1_lvl2")
+
+[node name="RoomBuilder" type="Node2D" parent="."]
+script = ExtResource("2_room")
+interior_walls = Array[Rect2]([Rect2(32, 344, 480, 32), Rect2(784, 32, 32, 296), Rect2(784, 392, 32, 296)])
+
+[node name="SpawnPoint" type="Marker2D" parent="."]
+position = Vector2(120, 200)
+
+[node name="LoopManager" type="Node2D" parent="."]
+script = ExtResource("3_loop")
+echo_scene = ExtResource("5_echo")
+
+[node name="Player" parent="." instance=ExtResource("4_player")]
+position = Vector2(120, 200)
+
+[node name="PlateAlpha" parent="." instance=ExtResource("6_plate")]
+position = Vector2(380, 180)
+plate_id = "plate_alpha"
+
+[node name="PlateBeta" parent="." instance=ExtResource("6_plate")]
+position = Vector2(380, 520)
+plate_id = "plate_beta"
+
+[node name="BypassLever" parent="." instance=ExtResource("11_lever")]
+position = Vector2(600, 360)
+switch_id = "bypass_lever"
+
+[node name="LockedDoor" parent="." instance=ExtResource("7_door")]
+position = Vector2(800, 360)
+rotation = 1.5708
+
+[node name="TerminalLog" parent="." instance=ExtResource("8_term")]
+position = Vector2(180, 280)
+log_id = "log_02"
+
+[node name="LevelExit" parent="." instance=ExtResource("9_exit")]
+position = Vector2(1080, 360)
+
+[node name="WireAlpha" parent="." instance=ExtResource("10_wire")]
+
+[node name="WireBeta" parent="." instance=ExtResource("10_wire")]
+
+[node name="GameHUD" parent="." instance=ExtResource("12_hud")]
