@@ -73,6 +73,7 @@ func complete_level(loop_count: int = 1, elapsed_time: float = 0.0) -> void:
 	if current_level_index < TOTAL_LEVELS:
 		load_level(current_level_index + 1)
 	else:
+		SoundManager.stop_ambient_drone()
 		get_tree().change_scene_to_file("res://scenes/ui/victory_screen.tscn")
 
 func open_narrative(log_id: String) -> void:
@@ -92,4 +93,5 @@ func return_to_main_menu() -> void:
 	is_paused = false
 	is_narrative_open = false
 	get_tree().paused = false
+	SoundManager.stop_ambient_drone()
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")

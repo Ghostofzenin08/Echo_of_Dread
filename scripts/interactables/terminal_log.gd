@@ -4,16 +4,40 @@ extends Area2D
 @export var log_id: String = "log_01"
 @export var terminal_color: Color = Color(0.2, 0.9, 0.5, 1.0) # Green CRT phosphors
 
+const InteractionPromptClass = preload("res://scripts/ui/interaction_prompt.gd")
+
 var is_hovered: bool = false
 var _blink_timer: float = 0.0
+var interaction_prompt: Node2D = null
 
 func _ready() -> void:
 	add_to_group("interactable")
 	collision_layer = 8
 	collision_mask = 2 | 4
+	
+	interaction_prompt = InteractionPromptClass.new()
+	interaction_prompt.name = "InteractionPrompt"
+	add_child(interaction_prompt)
+	
 	area_entered.connect(_on_area_entered)
 	area_exited.connect(_on_area_exited)
+	
+	if GameManager:
+		GameManager.narrative_opened.connect(func(_data): hide_prompt())
+		GameManager.narrative_closed.connect(func(): if is_hovered: show_prompt())
+		
 	queue_redraw()
+
+func show_prompt() -> void:
+	if interaction_prompt and not GameManager.is_narrative_open:
+		interaction_prompt.show_prompt()
+
+func hide_prompt() -> void:
+	if interaction_prompt:
+		interaction_prompt.hide_prompt()
+
+func is_prompt_visible() -> bool:
+	return interaction_prompt != null and interaction_prompt.is_prompt_visible()
 
 func interact(actor: Node2D) -> void:
 	if actor is Player:
@@ -47,11 +71,13 @@ func _draw() -> void:
 		draw_arc(Vector2.ZERO, 28.0, 0, TAU, 24, Color(1, 1, 1, 0.5), 1.0)
 
 func _on_area_entered(area: Area2D) -> void:
-	if area.name == "InteractionDetector":
+	if area.name == "InteractionDetector" or (area.get_parent() is Player):
 		is_hovered = true
+		show_prompt()
 		queue_redraw()
 
 func _on_area_exited(area: Area2D) -> void:
-	if area.name == "InteractionDetector":
+	if area.name == "InteractionDetector" or (area.get_parent() is Player):
 		is_hovered = false
+		hide_prompt()
 		queue_redraw()

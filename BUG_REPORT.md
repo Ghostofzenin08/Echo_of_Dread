@@ -210,21 +210,23 @@
 
 ---
 
-### BUG-08: Missing Settings UI Controls for Persisted Audio and Visual Features
-- **File:** `scenes/ui/main_menu.tscn`, `scenes/ui/pause_menu.tscn`
+### BUG-08: Missing Settings UI Controls for Persisted Audio and Visual Features [RESOLVED in Phase P1]
+- **File:** `scenes/ui/settings_menu.tscn`, `scripts/ui/settings_menu.gd`, `scenes/ui/main_menu.tscn`, `scenes/ui/pause_menu.tscn`
 - **Severity:** `Medium (UX / Accessibility)`
-- **Symptom:** `SaveManager` persists `master_volume`, `sfx_volume`, `music_volume`, `screen_shake`, and `crt_shader`, and `SoundManager` and `TactileCamera` accurately honor these settings. However, there is no UI menu or screen in either the Main Menu or the Pause Menu that allows the player to adjust volume sliders or toggle screen shake / CRT shaders.
-- **Recommended Fix:**
-  Implement a reusable `SettingsMenu` modal control with volume sliders (Master, SFX, Music) and checkbuttons (Screen Shake, Rewind Shader), accessible from both `MainMenu` and `PauseMenu`.
+- **Status:** **FIXED** (Phase P1 execution)
+- **Symptom:** `SaveManager` persists `master_volume`, `sfx_volume`, `music_volume`, `screen_shake`, and `crt_shader`, and `SoundManager` and `TactileCamera` accurately honor these settings. However, there was no UI menu or screen in either the Main Menu or the Pause Menu allowing configuration.
+- **Resolution:**
+  Implemented unified `SettingsMenu` modal with Master, SFX, and Music/Ambience volume sliders (0–100%), Screen Shake toggle, CRT shader toggle, Progress Reset with confirmation safety alert, and Back/Close button. Integrated into both `MainMenu` and `PauseMenu`.
 
 ---
 
-### BUG-09: Inconsistent Project Branding (Echo of Dread vs Echo Rooms)
+### BUG-09: Inconsistent Project Branding (Echo of Dread vs Echo Rooms) [RESOLVED in Phase P1]
 - **File:** `project.godot`, `scenes/ui/main_menu.tscn`
 - **Severity:** `Low (Branding / Metadata)`
-- **Symptom:** The GitHub repository is named `Echo_of_Dread`, whereas `project.godot` configures `config/name="Echo Rooms"`, and the main menu title banner reads `"ECHO ROOMS"`.
-- **Recommended Fix:**
-  Harmonize project naming. If the official commercial release title is **Echo of Dread**, update `project.godot` (`config/name="Echo of Dread"`) and `MainMenu` header to reflect "Echo of Dread".
+- **Status:** **FIXED** (Phase P1 execution)
+- **Symptom:** The GitHub repository is named `Echo_of_Dread`, whereas `project.godot` configured `config/name="Echo Rooms"`, and the main menu title banner read `"ECHO ROOMS"`.
+- **Resolution:**
+  Harmonized project title to `Echo of Dread` (`config/name="Echo of Dread"`, `config/description="Echo of Dread — A Sci-Fi Time-Loop Puzzle Game"`), and updated `MainMenu` title banner to `"ECHO OF DREAD"`.
 
 ---
 

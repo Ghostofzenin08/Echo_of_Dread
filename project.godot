@@ -10,8 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Echo Rooms"
-config/description="Echo Rooms — A Time-Loop Puzzle Game"
+config/name="Echo of Dread"
+config/description="Echo of Dread — A Sci-Fi Time-Loop Puzzle Game"
 run/main_scene="res://scenes/ui/main_menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"

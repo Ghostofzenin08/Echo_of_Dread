@@ -7,13 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [0.3.0] - 2026-10-16 (Phase P1: Audio, UI & Polish Execution)
 
-### Planned (Post-Audit Action Items)
-- **Feature:** Implement unified `SettingsMenu` modal with Master, SFX, and Music volume sliders, Screen Shake toggle, and CRT shader toggle (BUG-08).
-- **Feature:** Add procedural continuous sub-bass ambient background drone in `SoundManager`.
-- **Feature:** In-world holographic interaction prompt glyphs (`"[E]"`) on levers and terminals.
-- **Branding:** Harmonize project naming between repository and in-engine config (`Echo of Dread`) (BUG-09).
+### Added
+- **Unified Settings Menu (BUG-08):** Implemented accessible, dark sci-fi modal (`scenes/ui/settings_menu.tscn`, `scripts/ui/settings_menu.gd`) with Master, SFX, and Music/Ambience volume sliders (0–100%), Screen Shake toggle, CRT / Temporal Rewind Shader toggle, Back button, and Progress Reset with confirmation safety alert dialog.
+- **Menu Integrations:** Embedded `SettingsMenu` modal into both `MainMenu` and `PauseMenu`, providing seamless runtime configuration during menu browsing and live pause.
+- **Subterranean Ambient Harmonic Drone:** Implemented continuous procedural 5-harmonic sub-bass drone (`play_ambient_drone()`, `stop_ambient_drone()`) in `SoundManager.gd` routed through the `Ambience` audio bus with seamless mathematically continuous loop boundaries and 0.5 Hz gentle pulsation. Connected to `BaseLevel` lifecycle and `GameManager` transitions.
+- **In-World Holographic Interaction Prompts:** Implemented `InteractionPrompt` component (`scripts/ui/interaction_prompt.gd`) featuring subtle cyan breathing pulse and smooth alpha fade transitions upon player proximity in `LeverSwitch`, `TimedButton`, and `TerminalLog`.
+- **Automated Verification Harness Expansion:** Expanded headless test runner (`scenes/test/test_runner.gd`) to 201 automated tests (50 new tests covering SettingsMenu, persistence roundtrips, ambient drone, prompt visibility, and project title validation), maintaining a 100% pass rate (201/201).
+
+### Changed
+- **Project Title Harmonization (BUG-09):** Harmonized project naming in `project.godot` (`config/name="Echo of Dread"`, `config/description="Echo of Dread — A Sci-Fi Time-Loop Puzzle Game"`) and `MainMenu` header banner (`"ECHO OF DREAD"`).
+- **Audio Routing:** Harmonized `Ambience` bus volume modulation to link with `music_volume` in `SoundManager.apply_settings()`.
 
 ---
 

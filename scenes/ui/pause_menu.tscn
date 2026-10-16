@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="1_pause"]
+[ext_resource type="PackedScene" path="res://scenes/ui/settings_menu.tscn" id="2_settings"]
 
 [node name="PauseMenu" type="Control"]
 process_mode = 3
@@ -63,8 +64,17 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "RESTART CHAMBER"
 
+[node name="SettingsButton" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(180, 36)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "SETTINGS"
+
 [node name="MenuButton" type="Button" parent="Panel/VBox"]
 custom_minimum_size = Vector2(180, 36)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "MAIN MENU"
+
+[node name="SettingsMenu" parent="." instance=ExtResource("2_settings")]
+visible = false

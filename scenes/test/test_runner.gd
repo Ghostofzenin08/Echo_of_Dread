@@ -5,7 +5,7 @@ var passed_tests := 0
 
 func _ready() -> void:
 	print("==================================================")
-	print("       ECHO ROOMS — AUTOMATED TEST SUITE          ")
+	print("       ECHO OF DREAD — AUTOMATED TEST SUITE       ")
 	print("==================================================")
 	
 	test_autoloads()
@@ -33,6 +33,11 @@ func _ready() -> void:
 	test_hud_timeline_widget()
 	test_base_level_post_processing_and_camera_integration()
 	test_scene_instantiations()
+	test_ambient_drone_audio()
+	test_in_world_interaction_prompts()
+	test_settings_menu_component()
+	test_settings_persistence_roundtrip()
+	test_project_branding_and_title()
 	
 	print("==================================================")
 	print("TESTS COMPLETED: %d / %d PASSED" % [passed_tests, total_tests])
@@ -478,6 +483,7 @@ func test_scene_instantiations() -> void:
 		"res://scenes/ui/main_menu.tscn",
 		"res://scenes/ui/level_select.tscn",
 		"res://scenes/ui/pause_menu.tscn",
+		"res://scenes/ui/settings_menu.tscn",
 		"res://scenes/ui/victory_screen.tscn",
 		"res://scenes/levels/level_01.tscn",
 		"res://scenes/levels/level_02.tscn",
@@ -730,3 +736,147 @@ func test_base_level_post_processing_and_camera_integration() -> void:
 	_assert_test(lvl.camera.trauma > 0.5, "BaseLevel: Temporal rewind triggers tactile camera trauma")
 	
 	lvl.queue_free()
+
+func test_ambient_drone_audio() -> void:
+	_assert_test(SoundManager.has_method("play_ambient_drone"), "SoundManager: Has play_ambient_drone method")
+	_assert_test(SoundManager.has_method("stop_ambient_drone"), "SoundManager: Has stop_ambient_drone method")
+	
+	SoundManager.play_ambient_drone(-8.0)
+	_assert_test(SoundManager.is_ambient_drone_playing() == true, "SoundManager: Ambient drone starts playing")
+	
+	var player := SoundManager.get_ambient_drone_player()
+	_assert_test(player != null, "SoundManager: Ambient drone player instantiated")
+	if player:
+		_assert_test(player.bus == &"Ambience", "SoundManager: Ambient drone routed through Ambience bus")
+		_assert_test(player.stream != null, "SoundManager: Ambient drone has active stream")
+		if player.stream is AudioStreamWAV:
+			_assert_test((player.stream as AudioStreamWAV).loop_mode == AudioStreamWAV.LOOP_FORWARD, "SoundManager: Drone stream loops forward seamlessly")
+			
+	SoundManager.stop_ambient_drone()
+	_assert_test(SoundManager.is_ambient_drone_playing() == false, "SoundManager: Ambient drone stops cleanly")
+
+func test_in_world_interaction_prompts() -> void:
+	# 1. LeverSwitch prompt
+	var lever_scene := load("res://scenes/interactables/lever_switch.tscn") as PackedScene
+	var lever: LeverSwitch = lever_scene.instantiate() as LeverSwitch
+	add_child(lever)
+	_assert_test(lever.interaction_prompt != null, "LeverSwitch: InteractionPrompt child initialized")
+	_assert_test(lever.is_prompt_visible() == false, "LeverSwitch: Prompt initially hidden")
+	lever.show_prompt()
+	_assert_test(lever.interaction_prompt.visible == true, "LeverSwitch: show_prompt makes prompt visible")
+	lever.hide_prompt()
+	lever.queue_free()
+	
+	# 2. TimedButton prompt
+	var btn_scene := load("res://scenes/interactables/timed_button.tscn") as PackedScene
+	var btn: TimedButton = btn_scene.instantiate() as TimedButton
+	add_child(btn)
+	_assert_test(btn.interaction_prompt != null, "TimedButton: InteractionPrompt child initialized")
+	_assert_test(btn.is_prompt_visible() == false, "TimedButton: Prompt initially hidden")
+	btn.show_prompt()
+	_assert_test(btn.interaction_prompt.visible == true, "TimedButton: show_prompt makes prompt visible")
+	btn.hide_prompt()
+	btn.queue_free()
+	
+	# 3. TerminalLog prompt
+	var term_scene := load("res://scenes/interactables/terminal_log.tscn") as PackedScene
+	var term: TerminalLog = term_scene.instantiate() as TerminalLog
+	add_child(term)
+	_assert_test(term.interaction_prompt != null, "TerminalLog: InteractionPrompt child initialized")
+	_assert_test(term.is_prompt_visible() == false, "TerminalLog: Prompt initially hidden")
+	term.show_prompt()
+	_assert_test(term.interaction_prompt.visible == true, "TerminalLog: show_prompt makes prompt visible")
+	term.hide_prompt()
+	term.queue_free()
+
+func test_settings_menu_component() -> void:
+	var settings_scene := load("res://scenes/ui/settings_menu.tscn") as PackedScene
+	_assert_test(settings_scene != null, "SettingsMenu: Scene loaded successfully")
+	var menu = settings_scene.instantiate()
+	_assert_test(menu != null, "SettingsMenu: Instantiated successfully")
+	add_child(menu)
+	
+	_assert_test(menu.master_slider != null, "SettingsMenu: Master volume slider present")
+	_assert_test(menu.sfx_slider != null, "SettingsMenu: SFX volume slider present")
+	_assert_test(menu.music_slider != null, "SettingsMenu: Music / Ambience volume slider present")
+	_assert_test(menu.screen_shake_toggle != null, "SettingsMenu: Screen shake checkbox present")
+	_assert_test(menu.crt_shader_toggle != null, "SettingsMenu: CRT shader checkbox present")
+	_assert_test(menu.reset_button != null, "SettingsMenu: Reset All Progress button present")
+	_assert_test(menu.back_button != null, "SettingsMenu: Back / Close button present")
+	_assert_test(menu.confirm_modal != null, "SettingsMenu: Confirmation alert modal present")
+	
+	# Test open_menu
+	menu.open_menu()
+	_assert_test(menu.visible == true, "SettingsMenu: open_menu sets visible true")
+	
+	# Test slider updates mutate SaveManager settings
+	menu._on_master_slider_changed(75.0)
+	_assert_test(absf(float(SaveManager.get_setting("master_volume", 0.0)) - 0.75) < 0.01, "SettingsMenu: Master slider updates SaveManager master_volume")
+	
+	menu._on_sfx_slider_changed(50.0)
+	_assert_test(absf(float(SaveManager.get_setting("sfx_volume", 0.0)) - 0.50) < 0.01, "SettingsMenu: SFX slider updates SaveManager sfx_volume")
+	
+	menu._on_music_slider_changed(65.0)
+	_assert_test(absf(float(SaveManager.get_setting("music_volume", 0.0)) - 0.65) < 0.01, "SettingsMenu: Music slider updates SaveManager music_volume")
+	
+	# Test checkboxes
+	menu._on_screen_shake_toggled(false)
+	_assert_test(SaveManager.get_setting("screen_shake", true) == false, "SettingsMenu: Screen shake toggle updates SaveManager")
+	
+	menu._on_crt_shader_toggled(false)
+	_assert_test(SaveManager.get_setting("crt_shader", true) == false, "SettingsMenu: CRT shader toggle updates SaveManager")
+	
+	# Test close_menu
+	menu.close_menu()
+	_assert_test(menu.visible == false, "SettingsMenu: close_menu hides menu modal")
+	
+	menu.queue_free()
+
+func test_settings_persistence_roundtrip() -> void:
+	# Configure custom test settings
+	SaveManager.set_setting("master_volume", 0.42)
+	SaveManager.set_setting("sfx_volume", 0.84)
+	SaveManager.set_setting("music_volume", 0.68)
+	SaveManager.set_setting("screen_shake", false)
+	SaveManager.set_setting("crt_shader", false)
+	
+	var saved := SaveManager.save_data()
+	_assert_test(saved == true, "SaveManager: Settings saved to disk successfully")
+	
+	# Wipe in-memory settings to prove reload from disk
+	SaveManager.settings = {}
+	var loaded := SaveManager.load_data()
+	_assert_test(loaded == true, "SaveManager: Settings loaded from disk successfully")
+	
+	_assert_test(absf(float(SaveManager.get_setting("master_volume", 0.0)) - 0.42) < 0.01, "Persistence: Master volume roundtrip verified")
+	_assert_test(absf(float(SaveManager.get_setting("sfx_volume", 0.0)) - 0.84) < 0.01, "Persistence: SFX volume roundtrip verified")
+	_assert_test(absf(float(SaveManager.get_setting("music_volume", 0.0)) - 0.68) < 0.01, "Persistence: Music volume roundtrip verified")
+	_assert_test(SaveManager.get_setting("screen_shake", true) == false, "Persistence: Screen shake setting roundtrip verified")
+	_assert_test(SaveManager.get_setting("crt_shader", true) == false, "Persistence: CRT shader setting roundtrip verified")
+	
+	# Reset back to pristine defaults
+	SaveManager.reset_all_progress()
+	_assert_test(float(SaveManager.get_setting("master_volume", 0.0)) == 1.0, "SaveManager: reset_all_progress restores default master_volume")
+	_assert_test(SaveManager.get_setting("screen_shake", false) == true, "SaveManager: reset_all_progress restores default screen_shake")
+
+func test_project_branding_and_title() -> void:
+	# Verify project.godot setting
+	var proj_name: String = str(ProjectSettings.get_setting("application/config/name"))
+	_assert_test(proj_name == "Echo of Dread", "ProjectSettings: application/config/name is 'Echo of Dread'")
+	
+	# Verify file text in project.godot
+	var file := FileAccess.open("res://project.godot", FileAccess.READ)
+	_assert_test(file != null, "Project Config: project.godot opened for reading")
+	if file:
+		var content := file.get_as_text()
+		file.close()
+		_assert_test(content.contains('config/name="Echo of Dread"'), "Project Config: config/name=\"Echo of Dread\" present")
+		_assert_test(content.contains('config/description="Echo of Dread — A Sci-Fi Time-Loop Puzzle Game"'), "Project Config: config/description harmonized")
+		
+	# Verify MainMenu title header
+	var menu_scene := load("res://scenes/ui/main_menu.tscn") as PackedScene
+	var menu: Node = menu_scene.instantiate()
+	var title_lbl: Label = menu.find_child("Title", true, false) as Label
+	_assert_test(title_lbl != null and title_lbl.text == "ECHO OF DREAD", "MainMenu: Title label harmonized to 'ECHO OF DREAD'")
+	menu.free()
+

@@ -1,9 +1,9 @@
 extends Node
 
-# SoundManager: High-fidelity procedural audio engine for Echo Rooms.
+# SoundManager: High-fidelity procedural audio engine for Echo of Dread.
 # Features multi-bus audio routing (Master, Music, SFX, Echoes, Ambience),
 # dynamic urgency LowPassFilter muffling and pitch modulation when loop timer < 5s,
-# pitch jitter (+-5%) to prevent ear fatigue, and 2D spatial stereo panning.
+# pitch jitter (+-5%) to prevent ear fatigue, continuous subterranean harmonic drone, and 2D spatial stereo panning.
 
 var _audio_players: Array[AudioStreamPlayer] = []
 var _spatial_players: Array[AudioStreamPlayer2D] = []
@@ -15,6 +15,9 @@ var _lpf_effect: AudioEffectLowPassFilter = null
 var _lpf_bus_idx: int = -1
 var _lpf_effect_idx: int = -1
 var _urgency_factor: float = 0.0 # 0.0 = normal, 1.0 = maximum urgency (< 5s)
+
+var _ambient_drone_player: AudioStreamPlayer = null
+var _drone_stream: AudioStreamWAV = null
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -34,6 +37,12 @@ func _ready() -> void:
 		add_child(player_2d)
 		_spatial_players.append(player_2d)
 		
+	# Dedicated ambient drone player routed through Ambience bus
+	_ambient_drone_player = AudioStreamPlayer.new()
+	_ambient_drone_player.name = "AmbientDronePlayer"
+	_ambient_drone_player.bus = &"Ambience" if _bus_exists("Ambience") else &"Master"
+	add_child(_ambient_drone_player)
+		
 	_setup_urgency_filter()
 	_build_sound_library()
 	
@@ -52,7 +61,7 @@ func apply_settings() -> void:
 	_set_bus_vol("SFX", sfx_vol)
 	_set_bus_vol("Echoes", sfx_vol)
 	_set_bus_vol("Music", music_vol)
-	_set_bus_vol("Ambience", sfx_vol)
+	_set_bus_vol("Ambience", music_vol)
 
 func _set_bus_vol(bus_name: String, linear_vol: float) -> void:
 	var idx := AudioServer.get_bus_index(bus_name)
@@ -122,7 +131,63 @@ func stop_all() -> void:
 	for p2 in _spatial_players:
 		p2.stop()
 		p2.stream = null
+	stop_ambient_drone()
 	reset_urgency()
+
+func play_ambient_drone(volume_db: float = -6.0) -> void:
+	if _ambient_drone_player == null:
+		_ambient_drone_player = AudioStreamPlayer.new()
+		_ambient_drone_player.name = "AmbientDronePlayer"
+		_ambient_drone_player.bus = &"Ambience" if _bus_exists("Ambience") else &"Master"
+		add_child(_ambient_drone_player)
+		
+	if _drone_stream == null:
+		_drone_stream = _generate_ambient_drone()
+		
+	_ambient_drone_player.stream = _drone_stream
+	_ambient_drone_player.volume_db = volume_db
+	if not _ambient_drone_player.playing:
+		_ambient_drone_player.play()
+
+func stop_ambient_drone() -> void:
+	if _ambient_drone_player and _ambient_drone_player.playing:
+		_ambient_drone_player.stop()
+
+func is_ambient_drone_playing() -> bool:
+	return _ambient_drone_player != null and _ambient_drone_player.playing
+
+func get_ambient_drone_player() -> AudioStreamPlayer:
+	return _ambient_drone_player
+
+func _generate_ambient_drone() -> AudioStreamWAV:
+	var sample_rate := 22050
+	var duration := 4.0
+	var total_samples := int(sample_rate * duration)
+	var byte_array := PackedByteArray()
+	byte_array.resize(total_samples)
+	
+	for i in range(total_samples):
+		var t := float(i) / float(sample_rate)
+		# Subterranean harmonic stack - all frequencies complete integer cycles over 4.0s (no loop pop)
+		var s1 := sin(40.0 * TAU * t) * 0.35
+		var s2 := sin(80.0 * TAU * t) * 0.30
+		var s3 := sin(80.5 * TAU * t) * 0.15 # 0.5 Hz gentle binaural-style beating
+		var s4 := sin(160.0 * TAU * t) * 0.10
+		var s5 := sin(240.0 * TAU * t) * 0.05
+		var combined := s1 + s2 + s3 + s4 + s5
+		combined = clampf(combined, -1.0, 1.0)
+		var sample_byte := clampi(int((combined + 1.0) * 127.5), 0, 255)
+		byte_array[i] = sample_byte
+		
+	var wav := AudioStreamWAV.new()
+	wav.format = AudioStreamWAV.FORMAT_8_BITS
+	wav.mix_rate = sample_rate
+	wav.stereo = false
+	wav.data = byte_array
+	wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
+	wav.loop_begin = 0
+	wav.loop_end = total_samples
+	return wav
 
 func cleanup() -> void:
 	stop_all()

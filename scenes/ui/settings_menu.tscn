@@ -1,0 +1,243 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/settings_menu.gd" id="1_settings"]
+
+[node name="SettingsMenu" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_settings")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.04, 0.08, 0.88)
+
+[node name="Panel" type="PanelContainer" parent="Backdrop"]
+custom_minimum_size = Vector2(480, 480)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -240.0
+offset_right = 240.0
+offset_bottom = 240.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="Backdrop/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="Backdrop/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Backdrop/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "SYSTEM CONFIGURATION"
+horizontal_alignment = 1
+
+[node name="HSeparator1" type="HSeparator" parent="Backdrop/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="AudioHeader" type="Label" parent="Backdrop/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "AUDIO RECEPTORS"
+
+[node name="AudioGroup" type="VBoxContainer" parent="Backdrop/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MasterRow" type="HBoxContainer" parent="Backdrop/Panel/Margin/VBox/AudioGroup"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Backdrop/Panel/Margin/VBox/AudioGroup/MasterRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "Master Volume"
+
+[node name="MasterSlider" type="HSlider" parent="Backdrop/Panel/Margin/VBox/AudioGroup/MasterRow"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+size_flags_vertical = 4
+value = 100.0
+
+[node name="MasterValue" type="Label" parent="Backdrop/Panel/Margin/VBox/AudioGroup/MasterRow"]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "100%"
+horizontal_alignment = 2
+
+[node name="SFXRow" type="HBoxContainer" parent="Backdrop/Panel/Margin/VBox/AudioGroup"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Backdrop/Panel/Margin/VBox/AudioGroup/SFXRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "SFX Volume"
+
+[node name="SFXSlider" type="HSlider" parent="Backdrop/Panel/Margin/VBox/AudioGroup/SFXRow"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+size_flags_vertical = 4
+value = 100.0
+
+[node name="SFXValue" type="Label" parent="Backdrop/Panel/Margin/VBox/AudioGroup/SFXRow"]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "100%"
+horizontal_alignment = 2
+
+[node name="MusicRow" type="HBoxContainer" parent="Backdrop/Panel/Margin/VBox/AudioGroup"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Backdrop/Panel/Margin/VBox/AudioGroup/MusicRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "Music / Ambience"
+
+[node name="MusicSlider" type="HSlider" parent="Backdrop/Panel/Margin/VBox/AudioGroup/MusicRow"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+size_flags_vertical = 4
+value = 100.0
+
+[node name="MusicValue" type="Label" parent="Backdrop/Panel/Margin/VBox/AudioGroup/MusicRow"]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "100%"
+horizontal_alignment = 2
+
+[node name="HSeparator2" type="HSeparator" parent="Backdrop/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="VisualHeader" type="Label" parent="Backdrop/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "OPTICAL MATRIX"
+
+[node name="VisualGroup" type="VBoxContainer" parent="Backdrop/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ScreenShakeToggle" type="CheckBox" parent="Backdrop/Panel/Margin/VBox/VisualGroup"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+button_pressed = true
+text = "Tactile Screen Shake"
+
+[node name="CRTShaderToggle" type="CheckBox" parent="Backdrop/Panel/Margin/VBox/VisualGroup"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+button_pressed = true
+text = "CRT / Temporal Rewind Shaders"
+
+[node name="HSeparator3" type="HSeparator" parent="Backdrop/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="ButtonGroup" type="VBoxContainer" parent="Backdrop/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ResetButton" type="Button" parent="Backdrop/Panel/Margin/VBox/ButtonGroup"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 14
+text = "RESET ALL PROGRESS"
+
+[node name="BackButton" type="Button" parent="Backdrop/Panel/Margin/VBox/ButtonGroup"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "BACK"
+
+[node name="ConfirmModal" type="PanelContainer" parent="."]
+visible = false
+custom_minimum_size = Vector2(400, 200)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -100.0
+offset_right = 200.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="ConfirmModal"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="ConfirmModal/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="ConfirmTitle" type="Label" parent="ConfirmModal/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.35, 0.35, 1)
+theme_override_font_sizes/font_size = 16
+text = "CONFIRM DATA PURGE"
+horizontal_alignment = 1
+
+[node name="ConfirmMessage" type="Label" parent="ConfirmModal/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.85, 0.9, 1)
+theme_override_font_sizes/font_size = 12
+text = "Warning: This will delete all chamber progression, best loop records, and discovered Dr. Thorne lore logs. This action cannot be reversed."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="BtnRow" type="HBoxContainer" parent="ConfirmModal/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="CancelResetButton" type="Button" parent="ConfirmModal/Margin/VBox/BtnRow"]
+custom_minimum_size = Vector2(130, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "CANCEL"
+
+[node name="ConfirmResetButton" type="Button" parent="ConfirmModal/Margin/VBox/BtnRow"]
+custom_minimum_size = Vector2(130, 34)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_font_sizes/font_size = 13
+text = "CONFIRM PURGE"

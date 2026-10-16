@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_menu"]
+[ext_resource type="PackedScene" path="res://scenes/ui/settings_menu.tscn" id="2_settings"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -37,7 +38,7 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
 theme_override_font_sizes/font_size = 46
-text = "ECHO ROOMS"
+text = "ECHO OF DREAD"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="HeaderBox"]
@@ -75,6 +76,12 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "CHAMBER SELECT"
+
+[node name="SettingsButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "SETTINGS"
 
 [node name="HowToPlayButton" type="Button" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 40)
@@ -151,3 +158,6 @@ custom_minimum_size = Vector2(140, 36)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "RETURN"
+
+[node name="SettingsMenu" parent="." instance=ExtResource("2_settings")]
+visible = false

@@ -41,6 +41,11 @@ func _ready() -> void:
 		loop_manager.echo_count_changed.connect(_on_echo_count_changed)
 		loop_manager.timeline_tracks_updated.connect(_on_timeline_tracks_updated)
 		loop_manager.initialize(player, spawn_point.global_position)
+		
+	SoundManager.play_ambient_drone()
+
+func _exit_tree() -> void:
+	SoundManager.stop_ambient_drone()
 
 func _setup_tactile_camera() -> void:
 	camera = get_node_or_null("TactileCamera") as Camera2D
