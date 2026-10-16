@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.0] - 2026-10-16 (Custom Audio Track & Security Drone Enemy Patrols)
+
+### Added
+- **Custom Soundtrack Ingestion:** Replaced procedural drone noise with high-fidelity atmospheric track (`assets/audio/background_music.mp3`) routed seamlessly through `SoundManager`'s `Music` / `Ambience` bus with automated infinite looping and volume persistence.
+- **Autonomous Security Drone Enemy AI (`scripts/entities/security_drone.gd`, `scenes/entities/security_drone.tscn`):**
+  - Multi-state finite state machine (`PATROL`, `PAUSE`, `CHASE`, `INVESTIGATE`).
+  - Waypoint navigation with customizable patrol pause durations.
+  - Dynamic line-of-sight raycasting obstructing vision behind Layer 1 solid walls.
+  - Forward vision cone ($90^\circ$ FOV, 190px range) rendered with animated alert-reactive vector visuals.
+  - Proximity detection and high-speed interception mechanics.
+  - Player capture consequence: triggers camera screen trauma (0.85), distinct `drone_alert` and `player_caught` procedural alarms, screen-space red chromatic interception HUD flash (`GameHUD.trigger_interception_flash()`), and instantaneous timeline collapse / loop reset ("lost for that loop").
+  - Complete integration with the `"resettable"` and `"enemies"` groups for seamless loop reset synchronization.
+- **Chamber Hazard Integration:**
+  - Deployed patrol drone in Chamber 02 guarding the lower corridor route near Plate Beta.
+  - Deployed patrol drone in Chamber 03 patrolling vertically in the central corridor between laser barriers.
+  - Deployed two patrol drones in Chamber 04 (North and South wings) guarding the quantum core terminals.
+- **Automated Verification Harness Expansion:** Expanded test runner (`scenes/test/test_runner.gd`) to 240 automated tests with 100% pass rate (240/240 passed cleanly), validating drone patrol, vision cone detection, alert signals, player capture and loop reset, state restoration, and BGM streaming.
+
+---
+
 ## [0.3.0] - 2026-10-16 (Phase P1: Audio, UI & Polish Execution)
 
 ### Added
