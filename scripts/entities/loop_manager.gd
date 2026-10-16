@@ -24,6 +24,7 @@ var is_active: bool = true
 var echoes_container: Node2D = null
 
 func _ready() -> void:
+	add_to_group("loop_manager")
 	if has_node("EchoesContainer"):
 		echoes_container = get_node("EchoesContainer") as Node2D
 	else:
