@@ -13,6 +13,7 @@ const InteractionPromptClass = preload("res://scripts/ui/interaction_prompt.gd")
 var is_active: bool = false
 var time_remaining: float = 0.0
 var interaction_prompt: Node2D = null
+var _hovering_detectors: Array[Area2D] = []
 
 func _ready() -> void:
 	add_to_group("interactable")
@@ -42,17 +43,34 @@ func is_prompt_visible() -> bool:
 func reset_state() -> void:
 	is_active = false
 	time_remaining = 0.0
+	_hovering_detectors.clear()
 	hide_prompt()
 	state_changed.emit(false)
 	queue_redraw()
 
+func _is_player_detector(area: Area2D) -> bool:
+	if area == null:
+		return false
+	var parent: Node = area.get_parent()
+	if parent is Echo:
+		return false
+	if parent is Player:
+		return true
+	if area.name == "InteractionDetector" and not (parent is Echo):
+		return true
+	return false
+
 func _on_area_entered(area: Area2D) -> void:
-	if area.name == "InteractionDetector" or (area.get_parent() is Player):
+	if _is_player_detector(area):
+		if not _hovering_detectors.has(area):
+			_hovering_detectors.append(area)
 		show_prompt()
 
 func _on_area_exited(area: Area2D) -> void:
-	if area.name == "InteractionDetector" or (area.get_parent() is Player):
-		hide_prompt()
+	if _is_player_detector(area):
+		_hovering_detectors.erase(area)
+		if _hovering_detectors.is_empty():
+			hide_prompt()
 
 func _physics_process(delta: float) -> void:
 	if GameManager.is_paused or GameManager.is_narrative_open:

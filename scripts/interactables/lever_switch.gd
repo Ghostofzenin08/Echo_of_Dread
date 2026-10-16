@@ -13,6 +13,7 @@ const InteractionPromptClass = preload("res://scripts/ui/interaction_prompt.gd")
 
 var is_hovered: bool = false
 var interaction_prompt: Node2D = null
+var _hovering_detectors: Array[Area2D] = []
 
 func _ready() -> void:
 	add_to_group("interactable")
@@ -42,6 +43,7 @@ func is_prompt_visible() -> bool:
 func reset_state() -> void:
 	is_active = initial_active
 	is_hovered = false
+	_hovering_detectors.clear()
 	hide_prompt()
 	state_changed.emit(is_active)
 	queue_redraw()
@@ -75,14 +77,30 @@ func _draw() -> void:
 	if is_hovered and not is_active:
 		draw_arc(Vector2.ZERO, 26.0, 0, TAU, 16, Color(1, 1, 1, 0.4), 1.0)
 
+func _is_player_detector(area: Area2D) -> bool:
+	if area == null:
+		return false
+	var parent: Node = area.get_parent()
+	if parent is Echo:
+		return false
+	if parent is Player:
+		return true
+	if area.name == "InteractionDetector" and not (parent is Echo):
+		return true
+	return false
+
 func _on_area_entered(area: Area2D) -> void:
-	if area.name == "InteractionDetector" or (area.get_parent() is Player):
+	if _is_player_detector(area):
+		if not _hovering_detectors.has(area):
+			_hovering_detectors.append(area)
 		is_hovered = true
 		show_prompt()
 		queue_redraw()
 
 func _on_area_exited(area: Area2D) -> void:
-	if area.name == "InteractionDetector" or (area.get_parent() is Player):
-		is_hovered = false
-		hide_prompt()
-		queue_redraw()
+	if _is_player_detector(area):
+		_hovering_detectors.erase(area)
+		if _hovering_detectors.is_empty():
+			is_hovered = false
+			hide_prompt()
+			queue_redraw()

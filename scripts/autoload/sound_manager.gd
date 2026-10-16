@@ -66,8 +66,10 @@ func apply_settings() -> void:
 func _set_bus_vol(bus_name: String, linear_vol: float) -> void:
 	var idx := AudioServer.get_bus_index(bus_name)
 	if idx != -1:
+		var is_mute := linear_vol <= 0.0001
+		AudioServer.set_bus_mute(idx, is_mute)
 		var db := linear_to_db(clampf(linear_vol, 0.0001, 1.0))
-		if linear_vol <= 0.0001:
+		if is_mute:
 			db = -80.0
 		AudioServer.set_bus_volume_db(idx, db)
 
@@ -144,7 +146,8 @@ func play_ambient_drone(volume_db: float = -6.0) -> void:
 	if _drone_stream == null:
 		_drone_stream = _generate_ambient_drone()
 		
-	_ambient_drone_player.stream = _drone_stream
+	if _ambient_drone_player.stream != _drone_stream:
+		_ambient_drone_player.stream = _drone_stream
 	_ambient_drone_player.volume_db = volume_db
 	if not _ambient_drone_player.playing:
 		_ambient_drone_player.play()

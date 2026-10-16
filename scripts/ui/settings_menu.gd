@@ -22,18 +22,48 @@ signal reset_completed
 @onready var reset_button: Button = find_child("ResetButton", true, false) as Button
 @onready var back_button: Button = find_child("BackButton", true, false) as Button
 
-@onready var confirm_modal: PanelContainer = find_child("ConfirmModal", true, false) as PanelContainer
+@onready var confirm_modal: Control = find_child("ConfirmModal", true, false) as Control
 @onready var confirm_reset_btn: Button = find_child("ConfirmResetButton", true, false) as Button
 @onready var cancel_reset_btn: Button = find_child("CancelResetButton", true, false) as Button
 
+func _ensure_node_refs() -> void:
+	if master_slider == null:
+		master_slider = find_child("MasterSlider", true, false) as HSlider
+	if master_val_label == null:
+		master_val_label = find_child("MasterValue", true, false) as Label
+	if sfx_slider == null:
+		sfx_slider = find_child("SFXSlider", true, false) as HSlider
+	if sfx_val_label == null:
+		sfx_val_label = find_child("SFXValue", true, false) as Label
+	if music_slider == null:
+		music_slider = find_child("MusicSlider", true, false) as HSlider
+	if music_val_label == null:
+		music_val_label = find_child("MusicValue", true, false) as Label
+	if screen_shake_toggle == null:
+		screen_shake_toggle = find_child("ScreenShakeToggle", true, false) as CheckBox
+	if crt_shader_toggle == null:
+		crt_shader_toggle = find_child("CRTShaderToggle", true, false) as CheckBox
+	if reset_button == null:
+		reset_button = find_child("ResetButton", true, false) as Button
+	if back_button == null:
+		back_button = find_child("BackButton", true, false) as Button
+	if confirm_modal == null:
+		confirm_modal = find_child("ConfirmModal", true, false) as Control
+	if confirm_reset_btn == null:
+		confirm_reset_btn = find_child("ConfirmResetButton", true, false) as Button
+	if cancel_reset_btn == null:
+		cancel_reset_btn = find_child("CancelResetButton", true, false) as Button
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_ensure_node_refs()
 	_bind_controls()
 	load_current_settings()
 	if confirm_modal:
 		confirm_modal.visible = false
 
 func _bind_controls() -> void:
+	_ensure_node_refs()
 	if master_slider and not master_slider.value_changed.is_connected(_on_master_slider_changed):
 		master_slider.value_changed.connect(_on_master_slider_changed)
 	if sfx_slider and not sfx_slider.value_changed.is_connected(_on_sfx_slider_changed):
@@ -144,6 +174,8 @@ func open_menu() -> void:
 
 func close_menu() -> void:
 	SoundManager.play_sfx("click")
+	if confirm_modal:
+		confirm_modal.visible = false
 	visible = false
 	closed.emit()
 

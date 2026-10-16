@@ -10,15 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.0] - 2026-10-16 (Phase P1: Audio, UI & Polish Execution)
 
 ### Added
-- **Unified Settings Menu (BUG-08):** Implemented accessible, dark sci-fi modal (`scenes/ui/settings_menu.tscn`, `scripts/ui/settings_menu.gd`) with Master, SFX, and Music/Ambience volume sliders (0–100%), Screen Shake toggle, CRT / Temporal Rewind Shader toggle, Back button, and Progress Reset with confirmation safety alert dialog.
-- **Menu Integrations:** Embedded `SettingsMenu` modal into both `MainMenu` and `PauseMenu`, providing seamless runtime configuration during menu browsing and live pause.
-- **Subterranean Ambient Harmonic Drone:** Implemented continuous procedural 5-harmonic sub-bass drone (`play_ambient_drone()`, `stop_ambient_drone()`) in `SoundManager.gd` routed through the `Ambience` audio bus with seamless mathematically continuous loop boundaries and 0.5 Hz gentle pulsation. Connected to `BaseLevel` lifecycle and `GameManager` transitions.
-- **In-World Holographic Interaction Prompts:** Implemented `InteractionPrompt` component (`scripts/ui/interaction_prompt.gd`) featuring subtle cyan breathing pulse and smooth alpha fade transitions upon player proximity in `LeverSwitch`, `TimedButton`, and `TerminalLog`.
-- **Automated Verification Harness Expansion:** Expanded headless test runner (`scenes/test/test_runner.gd`) to 201 automated tests (50 new tests covering SettingsMenu, persistence roundtrips, ambient drone, prompt visibility, and project title validation), maintaining a 100% pass rate (201/201).
+- **Unified Settings Menu (BUG-08):** Implemented accessible, dark sci-fi modal (`scenes/ui/settings_menu.tscn`, `scripts/ui/settings_menu.gd`) with Master, SFX, and Music/Ambience volume sliders (0–100%), Screen Shake toggle, CRT / Temporal Rewind Shader toggle, Back button, and Progress Reset with full-screen click-blocking confirmation safety alert dialog.
+- **Menu Integrations:** Embedded `SettingsMenu` modal into both `MainMenu` and `PauseMenu`, providing seamless runtime configuration during menu browsing and live pause with robust ESC navigation and modal state resets.
+- **Subterranean Ambient Harmonic Drone:** Implemented continuous procedural 5-harmonic sub-bass drone (`play_ambient_drone()`, `stop_ambient_drone()`) in `SoundManager.gd` routed through the `Ambience` audio bus with seamless mathematically continuous loop boundaries, 0.5 Hz gentle pulsation, and stream reference preservation across re-invocations to avoid audio popping. Connected to `BaseLevel` lifecycle and `GameManager` transitions.
+- **In-World Holographic Interaction Prompts:** Implemented `InteractionPrompt` component (`scripts/ui/interaction_prompt.gd`) featuring subtle cyan breathing pulse, dynamic property setters, and smooth alpha fade transitions upon player proximity in `LeverSwitch`, `TimedButton`, and `TerminalLog`. Includes strict Player-detector filtering to prevent ghost Echoes from erroneously triggering prompts or dismissing active player prompts.
+- **Automated Verification Harness Expansion:** Expanded headless test runner (`scenes/test/test_runner.gd`) to 219 automated tests (covering SettingsMenu, persistence roundtrips, ambient drone, prompt visibility, Echo isolation, and project title validation), maintaining a 100% pass rate (219/219).
 
 ### Changed
 - **Project Title Harmonization (BUG-09):** Harmonized project naming in `project.godot` (`config/name="Echo of Dread"`, `config/description="Echo of Dread — A Sci-Fi Time-Loop Puzzle Game"`) and `MainMenu` header banner (`"ECHO OF DREAD"`).
-- **Audio Routing:** Harmonized `Ambience` bus volume modulation to link with `music_volume` in `SoundManager.apply_settings()`.
+- **Audio Routing & Bus Muting:** Harmonized `Ambience` bus volume modulation to link with `music_volume` in `SoundManager.apply_settings()`, and added explicit `AudioServer.set_bus_mute` when volume is at 0% to prevent residual noise and save CPU.
+- **Reset Persistence:** Ensured `SaveManager.reset_all_progress()` calls `save_data()` to immediately persist pristine defaults to disk.
 
 ---
 

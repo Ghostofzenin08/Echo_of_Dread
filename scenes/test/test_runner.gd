@@ -752,6 +752,19 @@ func test_ambient_drone_audio() -> void:
 		if player.stream is AudioStreamWAV:
 			_assert_test((player.stream as AudioStreamWAV).loop_mode == AudioStreamWAV.LOOP_FORWARD, "SoundManager: Drone stream loops forward seamlessly")
 			
+	# Test redundant play_ambient_drone preserves stream and uninterrupted playback
+	var active_stream := player.stream if player else null
+	SoundManager.play_ambient_drone(-6.0)
+	_assert_test(SoundManager.is_ambient_drone_playing() == true, "SoundManager: Ambient drone remains playing on re-invocation")
+	_assert_test(player.stream == active_stream, "SoundManager: Redundant play_ambient_drone preserves active stream reference")
+	
+	# Test bus mute when volume slider reaches 0.0
+	SaveManager.set_setting("music_volume", 0.0)
+	var amb_idx := AudioServer.get_bus_index("Ambience")
+	_assert_test(AudioServer.is_bus_mute(amb_idx) == true, "SoundManager: Ambience bus muted when music_volume is 0")
+	SaveManager.set_setting("music_volume", 1.0)
+	_assert_test(AudioServer.is_bus_mute(amb_idx) == false, "SoundManager: Ambience bus unmuted when music_volume restored")
+			
 	SoundManager.stop_ambient_drone()
 	_assert_test(SoundManager.is_ambient_drone_playing() == false, "SoundManager: Ambient drone stops cleanly")
 
@@ -788,6 +801,53 @@ func test_in_world_interaction_prompts() -> void:
 	_assert_test(term.interaction_prompt.visible == true, "TerminalLog: show_prompt makes prompt visible")
 	term.hide_prompt()
 	term.queue_free()
+	
+	# 4. Echo vs Player detector isolation
+	var player_scene := load("res://scenes/entities/player.tscn") as PackedScene
+	var test_player: Player = player_scene.instantiate() as Player
+	add_child(test_player)
+	
+	var echo_scene := load("res://scenes/entities/echo.tscn") as PackedScene
+	var test_echo: Echo = echo_scene.instantiate() as Echo
+	add_child(test_echo)
+	
+	var test_lever: LeverSwitch = lever_scene.instantiate() as LeverSwitch
+	add_child(test_lever)
+	
+	# Echo enters -> MUST NOT trigger prompt
+	test_lever._on_area_entered(test_echo.interaction_detector)
+	_assert_test(test_lever.is_hovered == false, "LeverSwitch: Echo entering does NOT set is_hovered")
+	_assert_test(test_lever.is_prompt_visible() == false, "LeverSwitch: Echo entering does NOT show interaction prompt")
+	
+	# Player enters -> MUST trigger prompt
+	test_lever._on_area_entered(test_player.interaction_detector)
+	_assert_test(test_lever.is_hovered == true, "LeverSwitch: Player entering sets is_hovered")
+	_assert_test(test_lever.is_prompt_visible() == true, "LeverSwitch: Player entering shows interaction prompt")
+	
+	# Echo enters while player is present -> prompt remains visible
+	test_lever._on_area_entered(test_echo.interaction_detector)
+	_assert_test(test_lever.is_prompt_visible() == true, "LeverSwitch: Prompt remains visible when Echo passes")
+	
+	# Echo exits while player is present -> prompt MUST REMAIN visible
+	test_lever._on_area_exited(test_echo.interaction_detector)
+	_assert_test(test_lever.is_hovered == true, "LeverSwitch: Echo exiting does NOT clear player is_hovered")
+	_assert_test(test_lever.is_prompt_visible() == true, "LeverSwitch: Echo exiting does NOT hide player prompt")
+	
+	# Player exits -> prompt hides
+	test_lever._on_area_exited(test_player.interaction_detector)
+	_assert_test(test_lever.is_hovered == false, "LeverSwitch: Player exiting clears is_hovered")
+	_assert_test(test_lever.is_prompt_visible() == false, "LeverSwitch: Player exiting hides interaction prompt")
+	
+	# Test InteractionPrompt dynamic setters
+	var prompt_comp = test_lever.interaction_prompt
+	prompt_comp.prompt_text = "[E] OVERRIDE"
+	_assert_test(prompt_comp.label.text == "[E] OVERRIDE", "InteractionPrompt: prompt_text setter updates label immediately")
+	prompt_comp.prompt_color = Color.YELLOW
+	_assert_test(prompt_comp.label.get_theme_color("font_color") == Color.YELLOW, "InteractionPrompt: prompt_color setter updates label color")
+	
+	test_player.queue_free()
+	test_echo.queue_free()
+	test_lever.queue_free()
 
 func test_settings_menu_component() -> void:
 	var settings_scene := load("res://scenes/ui/settings_menu.tscn") as PackedScene
@@ -804,6 +864,8 @@ func test_settings_menu_component() -> void:
 	_assert_test(menu.reset_button != null, "SettingsMenu: Reset All Progress button present")
 	_assert_test(menu.back_button != null, "SettingsMenu: Back / Close button present")
 	_assert_test(menu.confirm_modal != null, "SettingsMenu: Confirmation alert modal present")
+	_assert_test(menu.confirm_modal is ColorRect, "SettingsMenu: ConfirmModal has full-screen ColorRect overlay")
+	_assert_test(menu.confirm_modal.anchor_right == 1.0 and menu.confirm_modal.anchor_bottom == 1.0, "SettingsMenu: ConfirmModal overlay covers full viewport")
 	
 	# Test open_menu
 	menu.open_menu()
@@ -826,9 +888,11 @@ func test_settings_menu_component() -> void:
 	menu._on_crt_shader_toggled(false)
 	_assert_test(SaveManager.get_setting("crt_shader", true) == false, "SettingsMenu: CRT shader toggle updates SaveManager")
 	
-	# Test close_menu
+	# Test close_menu resets confirm_modal
+	menu.confirm_modal.visible = true
 	menu.close_menu()
 	_assert_test(menu.visible == false, "SettingsMenu: close_menu hides menu modal")
+	_assert_test(menu.confirm_modal.visible == false, "SettingsMenu: close_menu resets confirm_modal visibility to false")
 	
 	menu.queue_free()
 

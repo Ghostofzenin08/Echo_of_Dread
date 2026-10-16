@@ -119,6 +119,11 @@ func trigger_temporal_rewind_fx(duration: float = 0.55) -> void:
 			if _shader_material:
 				_shader_material.set_shader_parameter("intensity", 0.0)
 		)
+	else:
+		if _shader_rect:
+			_shader_rect.visible = false
+		if _shader_material:
+			_shader_material.set_shader_parameter("intensity", 0.0)
 		
 	if camera:
 		camera.add_trauma(0.65)

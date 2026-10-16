@@ -181,8 +181,17 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "BACK"
 
-[node name="ConfirmModal" type="PanelContainer" parent="."]
+[node name="ConfirmModal" type="ColorRect" parent="."]
 visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.01, 0.02, 0.05, 0.85)
+
+[node name="DialogPanel" type="PanelContainer" parent="ConfirmModal"]
 custom_minimum_size = Vector2(400, 200)
 layout_mode = 1
 anchors_preset = 8
@@ -197,26 +206,26 @@ offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Margin" type="MarginContainer" parent="ConfirmModal"]
+[node name="Margin" type="MarginContainer" parent="ConfirmModal/DialogPanel"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBox" type="VBoxContainer" parent="ConfirmModal/Margin"]
+[node name="VBox" type="VBoxContainer" parent="ConfirmModal/DialogPanel/Margin"]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="ConfirmTitle" type="Label" parent="ConfirmModal/Margin/VBox"]
+[node name="ConfirmTitle" type="Label" parent="ConfirmModal/DialogPanel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.35, 0.35, 1)
 theme_override_font_sizes/font_size = 16
 text = "CONFIRM DATA PURGE"
 horizontal_alignment = 1
 
-[node name="ConfirmMessage" type="Label" parent="ConfirmModal/Margin/VBox"]
+[node name="ConfirmMessage" type="Label" parent="ConfirmModal/DialogPanel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.85, 0.9, 1)
 theme_override_font_sizes/font_size = 12
@@ -224,18 +233,18 @@ text = "Warning: This will delete all chamber progression, best loop records, an
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="BtnRow" type="HBoxContainer" parent="ConfirmModal/Margin/VBox"]
+[node name="BtnRow" type="HBoxContainer" parent="ConfirmModal/DialogPanel/Margin/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 16
 alignment = 1
 
-[node name="CancelResetButton" type="Button" parent="ConfirmModal/Margin/VBox/BtnRow"]
+[node name="CancelResetButton" type="Button" parent="ConfirmModal/DialogPanel/Margin/VBox/BtnRow"]
 custom_minimum_size = Vector2(130, 34)
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
 text = "CANCEL"
 
-[node name="ConfirmResetButton" type="Button" parent="ConfirmModal/Margin/VBox/BtnRow"]
+[node name="ConfirmResetButton" type="Button" parent="ConfirmModal/DialogPanel/Margin/VBox/BtnRow"]
 custom_minimum_size = Vector2(130, 34)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)

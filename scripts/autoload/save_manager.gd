@@ -166,8 +166,5 @@ func reset_all_progress() -> void:
 	best_times.clear()
 	discovered_lore.clear()
 	reset_settings()
-	if FileAccess.file_exists(SAVE_FILE_PATH):
-		var err := DirAccess.remove_absolute(SAVE_FILE_PATH)
-		if err != OK:
-			printerr("SaveManager: Failed to delete save file at %s (Error %d)" % [SAVE_FILE_PATH, err])
+	save_data()
 	progress_updated.emit()

@@ -4,9 +4,23 @@ extends Node2D
 # InteractionPrompt: Subtle in-world holographic floating prompt with smooth fade in/out
 # and gentle sci-fi pulsating breathing animation.
 
-@export var prompt_text: String = "[E] INTERACT"
-@export var prompt_color: Color = Color(0.35, 0.9, 1.0, 1.0)
-@export var float_offset_y: float = -34.0
+@export var prompt_text: String = "[E] INTERACT":
+	set(val):
+		prompt_text = val
+		if label:
+			label.text = val
+
+@export var prompt_color: Color = Color(0.35, 0.9, 1.0, 1.0):
+	set(val):
+		prompt_color = val
+		if label:
+			label.add_theme_color_override("font_color", val)
+
+@export var float_offset_y: float = -34.0:
+	set(val):
+		float_offset_y = val
+		if label:
+			label.position.y = val
 
 var label: Label = null
 var _tween: Tween = null
@@ -33,8 +47,12 @@ func _init() -> void:
 	add_child(label)
 
 func _ready() -> void:
-	if label and not label.is_inside_tree():
-		add_child(label)
+	if label:
+		if not label.is_inside_tree():
+			add_child(label)
+		label.text = prompt_text
+		label.position.y = float_offset_y
+		label.add_theme_color_override("font_color", prompt_color)
 
 func _process(delta: float) -> void:
 	if label and label.visible and label.modulate.a > 0.01:
@@ -52,8 +70,14 @@ func show_prompt() -> void:
 	label.visible = true
 	if _tween and _tween.is_valid():
 		_tween.kill()
-	_tween = create_tween()
-	_tween.tween_property(label, "modulate:a", 1.0, 0.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	if is_inside_tree():
+		_tween = create_tween()
+		if _tween:
+			_tween.tween_property(label, "modulate:a", 1.0, 0.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		else:
+			label.modulate.a = 1.0
+	else:
+		label.modulate.a = 1.0
 
 func hide_prompt() -> void:
 	_is_showing = false
@@ -61,12 +85,20 @@ func hide_prompt() -> void:
 		return
 	if _tween and _tween.is_valid():
 		_tween.kill()
-	_tween = create_tween()
-	_tween.tween_property(label, "modulate:a", 0.0, 0.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-	_tween.finished.connect(func():
-		if not _is_showing and label:
+	if is_inside_tree():
+		_tween = create_tween()
+		if _tween:
+			_tween.tween_property(label, "modulate:a", 0.0, 0.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+			_tween.finished.connect(func():
+				if not _is_showing and label:
+					label.visible = false
+			)
+		else:
+			label.modulate.a = 0.0
 			label.visible = false
-	)
+	else:
+		label.modulate.a = 0.0
+		label.visible = false
 
 func set_prompt_visible(p_visible: bool) -> void:
 	if p_visible:
@@ -75,4 +107,4 @@ func set_prompt_visible(p_visible: bool) -> void:
 		hide_prompt()
 
 func is_prompt_visible() -> bool:
-	return label != null and label.visible and label.modulate.a > 0.05
+	return label != null and label.visible and (_is_showing or label.modulate.a > 0.05)
