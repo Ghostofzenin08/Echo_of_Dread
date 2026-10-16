@@ -96,6 +96,15 @@ func _connect_interactable_trauma() -> void:
 				if camera and is_active:
 					camera.add_trauma(0.25)
 			)
+		elif child.is_in_group("enemies"):
+			if child.has_signal("player_caught_target") and not child.player_caught_target.is_connected(_on_drone_caught_player):
+				child.player_caught_target.connect(_on_drone_caught_player)
+
+func _on_drone_caught_player(_drone: Node, _target: Node) -> void:
+	if game_hud and game_hud.has_method("trigger_interception_flash"):
+		game_hud.trigger_interception_flash()
+	if loop_manager:
+		loop_manager.reset_loop()
 
 func trigger_temporal_rewind_fx(duration: float = 0.55) -> void:
 	var use_crt := true
