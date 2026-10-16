@@ -53,8 +53,14 @@ func start_game() -> void:
 func load_level(level_idx: int) -> void:
 	current_level_index = clampi(level_idx, 1, TOTAL_LEVELS)
 	var scene_path: String = LEVEL_SCENE_PATHS.get(current_level_index, "res://scenes/ui/main_menu.tscn")
-	get_tree().change_scene_to_file(scene_path)
-	level_started.emit(current_level_index)
+	var err := get_tree().change_scene_to_file(scene_path)
+	if err == OK:
+		_emit_level_started_deferred.call_deferred(current_level_index)
+	else:
+		printerr("GameManager: Failed to load scene: %s (Error %d)" % [scene_path, err])
+
+func _emit_level_started_deferred(idx: int) -> void:
+	level_started.emit(idx)
 
 func restart_current_level() -> void:
 	load_level(current_level_index)

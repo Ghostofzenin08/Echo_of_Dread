@@ -38,6 +38,12 @@ func initialize(target_player: Player, initial_spawn: Vector2) -> void:
 	
 	if not player.interaction_performed.is_connected(_on_player_interaction):
 		player.interaction_performed.connect(_on_player_interaction)
+		
+	if GameManager:
+		if not GameManager.loop_reset_requested.is_connected(reset_loop):
+			GameManager.loop_reset_requested.connect(reset_loop)
+		if not GameManager.echoes_cleared_requested.is_connected(clear_all_echoes):
+			GameManager.echoes_cleared_requested.connect(clear_all_echoes)
 	
 	current_loop_time = 0.0
 	current_loop_number = 1
@@ -112,10 +118,13 @@ func reset_loop() -> void:
 	current_loop_number += 1
 	current_loop_time = 0.0
 	
-	# Reset player position and velocity
+	# Reset player position, velocity, and interaction state
 	if player:
-		player.global_position = spawn_position
-		player.velocity = Vector2.ZERO
+		if player.has_method("reset_state"):
+			player.reset_state(spawn_position)
+		else:
+			player.global_position = spawn_position
+			player.velocity = Vector2.ZERO
 		
 	# Reset all puzzle interactables and hazard states
 	_reset_world_entities()
@@ -141,8 +150,11 @@ func clear_all_echoes() -> void:
 	current_loop_time = 0.0
 	
 	if player:
-		player.global_position = spawn_position
-		player.velocity = Vector2.ZERO
+		if player.has_method("reset_state"):
+			player.reset_state(spawn_position)
+		else:
+			player.global_position = spawn_position
+			player.velocity = Vector2.ZERO
 		
 	# Reset all puzzle interactables and hazard states
 	_reset_world_entities()

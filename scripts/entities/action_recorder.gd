@@ -37,7 +37,8 @@ func record_interaction(time_offset: float) -> void:
 func get_interactions_in_interval(start_time: float, end_time: float) -> int:
 	var count := 0
 	for t in interaction_times:
-		if t > start_time and t <= end_time:
+		var in_window := (t >= start_time and t <= end_time) if start_time <= 0.0 else (t > start_time and t <= end_time)
+		if in_window:
 			count += 1
 	return count
 

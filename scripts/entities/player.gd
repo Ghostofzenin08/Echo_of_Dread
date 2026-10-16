@@ -77,3 +77,13 @@ func _on_interactable_entered(area: Area2D) -> void:
 
 func _on_interactable_exited(area: Area2D) -> void:
 	nearby_interactables.erase(area)
+
+func reset_state(spawn_pos: Vector2) -> void:
+	global_position = spawn_pos
+	velocity = Vector2.ZERO
+	facing_direction = Vector2.DOWN
+	is_interacting = false
+	nearby_interactables.clear()
+	if visual_root:
+		visual_root.rotation = PI
+

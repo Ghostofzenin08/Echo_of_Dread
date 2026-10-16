@@ -28,8 +28,10 @@ func is_level_unlocked(level_idx: int) -> bool:
 	return level_idx <= unlocked_levels
 
 func unlock_level(level_idx: int) -> void:
-	if level_idx > unlocked_levels:
-		unlocked_levels = level_idx
+	var max_level := GameManager.TOTAL_LEVELS if GameManager else 4
+	var target_level := clampi(level_idx, 1, max_level)
+	if target_level > unlocked_levels:
+		unlocked_levels = target_level
 		save_data()
 		progress_updated.emit()
 
@@ -117,9 +119,15 @@ func load_data() -> bool:
 		printerr("SaveManager: JSON parse error in save file: %s" % test_json.get_error_message())
 		return false
 		
+	if not (test_json.data is Dictionary):
+		printerr("SaveManager: Save data is corrupted (root is not a JSON object).")
+		return false
+		
 	var data: Dictionary = test_json.data
+	var _save_version: int = int(data.get("version", 1))
 	if data.has("unlocked_levels"):
-		unlocked_levels = int(data["unlocked_levels"])
+		var max_lvl := GameManager.TOTAL_LEVELS if GameManager else 4
+		unlocked_levels = clampi(int(data["unlocked_levels"]), 1, max_lvl)
 		
 	if data.has("best_loop_counts") and data["best_loop_counts"] is Dictionary:
 		best_loop_counts.clear()
@@ -159,5 +167,7 @@ func reset_all_progress() -> void:
 	discovered_lore.clear()
 	reset_settings()
 	if FileAccess.file_exists(SAVE_FILE_PATH):
-		DirAccess.remove_absolute(SAVE_FILE_PATH)
+		var err := DirAccess.remove_absolute(SAVE_FILE_PATH)
+		if err != OK:
+			printerr("SaveManager: Failed to delete save file at %s (Error %d)" % [SAVE_FILE_PATH, err])
 	progress_updated.emit()

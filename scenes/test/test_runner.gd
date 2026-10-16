@@ -74,7 +74,9 @@ func test_narrative_database() -> void:
 func test_action_recorder_and_interpolation() -> void:
 	var rec := ActionRecorder.new()
 	rec.start_recording(Vector2(100, 100))
+	rec.record_interaction(0.0) # Test interaction at t=0.0 boundary (BUG-06)
 	rec.record_frame(1.0, Vector2(200, 100), Vector2(100, 0), Vector2.RIGHT, false)
+	rec.record_interaction(1.2)
 	rec.record_frame(2.0, Vector2(300, 100), Vector2(100, 0), Vector2.RIGHT, true)
 	rec.stop_recording(2.0)
 	
@@ -90,6 +92,12 @@ func test_action_recorder_and_interpolation() -> void:
 	var f_late := rec.get_frame_at_time(5.0)
 	_assert_test(f_late.pos.distance_to(Vector2(300, 100)) < 0.1, "Recorder: t=5.0 holds final position")
 	_assert_test(f_late.is_finished == true, "Recorder: t=5.0 flags is_finished true")
+	
+	# Test interaction query intervals
+	var due_at_start := rec.get_interactions_in_interval(0.0, 0.5)
+	_assert_test(due_at_start == 1, "Recorder: Interaction recorded at t=0.0 is captured in [0.0, 0.5] interval")
+	var due_at_mid := rec.get_interactions_in_interval(0.5, 1.5)
+	_assert_test(due_at_mid == 1, "Recorder: Interaction recorded at t=1.2 is captured in (0.5, 1.5] interval")
 
 func test_echo_playback_and_hold() -> void:
 	var echo_scene := load("res://scenes/entities/echo.tscn") as PackedScene
@@ -247,6 +255,31 @@ func test_loop_manager_lifecycle() -> void:
 	_assert_test(lm.past_recordings.size() == 1, "LoopManager: Past recording stored")
 	_assert_test(lm.active_echoes.size() == 1, "LoopManager: Exactly 1 echo spawned for loop #2")
 	_assert_test(pl.global_position.distance_to(Vector2(100, 100)) < 0.1, "LoopManager: Player reset to spawn position")
+	
+	# Test Player nearby_interactables purged on loop reset (BUG-05)
+	var dummy_area := Area2D.new()
+	dummy_area.add_to_group("interactable")
+	pl.nearby_interactables.append(dummy_area)
+	_assert_test(pl.nearby_interactables.size() == 1, "Player: Has nearby interactables before loop reset")
+	lm.reset_loop()
+	_assert_test(pl.nearby_interactables.is_empty(), "LoopManager: Purges Player nearby_interactables cache on loop reset")
+	dummy_area.free()
+	
+	# Test max echoes capping
+	lm.max_echoes = 2
+	for _i in range(3):
+		pl.global_position = Vector2(150, 100)
+		lm._physics_process(0.5)
+		pl.global_position = Vector2(200, 100)
+		lm._physics_process(0.5)
+		lm.reset_loop()
+	_assert_test(lm.past_recordings.size() == 2, "LoopManager: Past recordings capped at max_echoes (2)")
+	_assert_test(lm.active_echoes.size() == 2, "LoopManager: Active echoes count capped at max_echoes (2)")
+	
+	# Test short loop (0 frames after reset) does not append empty recording
+	var pre_count := lm.past_recordings.size()
+	lm.reset_loop()
+	_assert_test(lm.past_recordings.size() == pre_count, "LoopManager: Short loop without movement frames does not store phantom recording")
 	
 	# Clear all echoes
 	lm.clear_all_echoes()
@@ -462,6 +495,7 @@ func test_scene_instantiations() -> void:
 				inst.free()
 
 func test_save_manager_persistence() -> void:
+	SaveManager.reset_all_progress() # Guarantee test hermeticity & isolation (BUG-01)
 	_assert_test(SaveManager.is_level_unlocked(1) == true, "SaveManager: Chamber 1 is unlocked by default")
 	_assert_test(SaveManager.is_level_unlocked(2) == false, "SaveManager: Chamber 2 is initially locked")
 	
@@ -480,6 +514,11 @@ func test_save_manager_persistence() -> void:
 	SaveManager.record_level_completion(1, 5, 29.0)
 	_assert_test(SaveManager.get_best_loops(1) == 2, "SaveManager: Preserves superior loop count of 2")
 	
+	# Completing final Chamber 4 should clamp to TOTAL_LEVELS and NOT unlock Chamber 5 (BUG-02)
+	SaveManager.record_level_completion(4, 1, 19.5)
+	_assert_test(SaveManager.is_level_unlocked(5) == false, "SaveManager: Completing Chamber 4 does not unlock nonexistent Chamber 5")
+	_assert_test(SaveManager.unlocked_levels <= 4, "SaveManager: Unlocked levels clamped to TOTAL_LEVELS (4)")
+	
 	# Test disk serialization & roundtrip
 	var saved := SaveManager.save_data()
 	_assert_test(saved == true, "SaveManager: Successfully saves state to disk")
@@ -490,6 +529,15 @@ func test_save_manager_persistence() -> void:
 	_assert_test(loaded == true, "SaveManager: Successfully reloads state from disk")
 	_assert_test(SaveManager.is_level_unlocked(2) == true, "SaveManager: Reloaded state preserves unlocked level 2")
 	_assert_test(SaveManager.get_best_loops(1) == 2, "SaveManager: Reloaded state preserves best loops")
+	
+	# Corrupted JSON / non-object root check (BUG-04)
+	var bad_file := FileAccess.open(SaveManager.SAVE_FILE_PATH, FileAccess.WRITE)
+	if bad_file:
+		bad_file.store_string("[1, 2, 3]")
+		bad_file.close()
+	var corrupt_loaded := SaveManager.load_data()
+	_assert_test(corrupt_loaded == false, "SaveManager: Safely rejects non-object JSON array without crashing")
+	SaveManager.save_data() # Restore valid format
 	
 	# Lore discovery
 	SaveManager.record_lore_discovered("log_01")
