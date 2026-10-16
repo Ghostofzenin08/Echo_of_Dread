@@ -15,6 +15,7 @@ var nearby_interactables: Array[Area2D] = []
 @onready var visual_root: Node2D = $VisualRoot
 
 func _ready() -> void:
+	add_to_group("player")
 	collision_layer = 2 # Layer 2: Player
 	collision_mask = 1  # Layer 1: World
 	if interaction_detector:
