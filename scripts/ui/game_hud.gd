@@ -84,6 +84,13 @@ func trigger_rewind_effect() -> void:
 	var tween := create_tween()
 	tween.tween_property(rewind_flash, "color", Color(0.2, 0.8, 1.0, 0.0), 0.5)
 
+func trigger_interception_flash() -> void:
+	if not rewind_flash:
+		return
+	rewind_flash.color = Color(1.0, 0.15, 0.2, 0.75)
+	var tween := create_tween()
+	tween.tween_property(rewind_flash, "color", Color(1.0, 0.1, 0.2, 0.0), 0.65)
+
 func _on_narrative_opened(log_data: Dictionary) -> void:
 	if not terminal_modal:
 		return
