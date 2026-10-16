@@ -37,10 +37,10 @@ func _ready() -> void:
 		add_child(player_2d)
 		_spatial_players.append(player_2d)
 		
-	# Dedicated ambient drone player routed through Ambience bus
+	# Dedicated background audio player routed through Music / Ambience bus
 	_ambient_drone_player = AudioStreamPlayer.new()
 	_ambient_drone_player.name = "AmbientDronePlayer"
-	_ambient_drone_player.bus = &"Ambience" if _bus_exists("Ambience") else &"Master"
+	_ambient_drone_player.bus = &"Music" if _bus_exists("Music") else (&"Ambience" if _bus_exists("Ambience") else &"Master")
 	add_child(_ambient_drone_player)
 		
 	_setup_urgency_filter()
@@ -136,21 +136,40 @@ func stop_all() -> void:
 	stop_ambient_drone()
 	reset_urgency()
 
+const BGM_PATH = "res://assets/audio/background_music.mp3"
+var _bgm_stream: AudioStream = null
+
+func _get_bgm_stream() -> AudioStream:
+	if _bgm_stream == null and ResourceLoader.exists(BGM_PATH):
+		var s := load(BGM_PATH) as AudioStream
+		if s is AudioStreamMP3:
+			(s as AudioStreamMP3).loop = true
+		_bgm_stream = s
+	if _bgm_stream == null:
+		if _drone_stream == null:
+			_drone_stream = _generate_ambient_drone()
+		return _drone_stream
+	return _bgm_stream
+
 func play_ambient_drone(volume_db: float = -6.0) -> void:
 	if _ambient_drone_player == null:
 		_ambient_drone_player = AudioStreamPlayer.new()
 		_ambient_drone_player.name = "AmbientDronePlayer"
-		_ambient_drone_player.bus = &"Ambience" if _bus_exists("Ambience") else &"Master"
+		_ambient_drone_player.bus = &"Music" if _bus_exists("Music") else (&"Ambience" if _bus_exists("Ambience") else &"Master")
 		add_child(_ambient_drone_player)
 		
-	if _drone_stream == null:
-		_drone_stream = _generate_ambient_drone()
-		
-	if _ambient_drone_player.stream != _drone_stream:
-		_ambient_drone_player.stream = _drone_stream
+	var target_stream := _get_bgm_stream()
+	if _ambient_drone_player.stream != target_stream:
+		_ambient_drone_player.stream = target_stream
 	_ambient_drone_player.volume_db = volume_db
 	if not _ambient_drone_player.playing:
 		_ambient_drone_player.play()
+
+func play_music(volume_db: float = -6.0) -> void:
+	play_ambient_drone(volume_db)
+
+func stop_music() -> void:
+	stop_ambient_drone()
 
 func stop_ambient_drone() -> void:
 	if _ambient_drone_player and _ambient_drone_player.playing:
@@ -254,6 +273,8 @@ func _build_sound_library() -> void:
 	_sounds["terminal_beep"] = _generate_tone(1200.0, 0.05, "sine", 0.25)
 	_sounds["tick"] = _generate_tone(1000.0, 0.03, "sine", 0.2)
 	_sounds["alarm"] = _generate_tone(750.0, 0.18, "saw", 0.35, 600.0)
+	_sounds["drone_alert"] = _generate_sweep(450.0, 1400.0, 0.22, "saw", 0.45)
+	_sounds["player_caught"] = _generate_sweep(1200.0, 60.0, 0.48, "square", 0.55)
 
 func _generate_tone(start_freq: float, duration: float, wave_type: String, amplitude: float = 0.5, end_freq: float = -1.0) -> AudioStreamWAV:
 	var sample_rate := 22050
