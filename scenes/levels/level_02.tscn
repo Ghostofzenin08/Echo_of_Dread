@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scripts/levels/level_02.gd" id="1_lvl2"]
 [ext_resource type="Script" path="res://scripts/levels/room_builder.gd" id="2_room"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://scenes/interactables/circuit_wire.tscn" id="10_wire"]
 [ext_resource type="PackedScene" path="res://scenes/interactables/lever_switch.tscn" id="11_lever"]
 [ext_resource type="PackedScene" path="res://scenes/ui/game_hud.tscn" id="12_hud"]
+[ext_resource type="PackedScene" path="res://scenes/entities/security_drone.tscn" id="13_drone"]
 
 [node name="Level02" type="Node2D"]
 script = ExtResource("1_lvl2")
@@ -56,5 +57,10 @@ position = Vector2(1080, 360)
 [node name="WireAlpha" parent="." instance=ExtResource("10_wire")]
 
 [node name="WireBeta" parent="." instance=ExtResource("10_wire")]
+
+[node name="SecurityDrone" parent="." instance=ExtResource("13_drone")]
+position = Vector2(640, 520)
+waypoint_offsets = PackedVector2Array(0, 0, -260, 0)
+patrol_speed = 65.0
 
 [node name="GameHUD" parent="." instance=ExtResource("12_hud")]
