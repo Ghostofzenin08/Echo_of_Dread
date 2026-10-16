@@ -1,5 +1,7 @@
 extends Node2D
 
+const SecurityDroneClass = preload("res://scripts/entities/security_drone.gd")
+
 var total_tests := 0
 var passed_tests := 0
 
@@ -35,6 +37,7 @@ func _ready() -> void:
 	test_scene_instantiations()
 	test_ambient_drone_audio()
 	test_in_world_interaction_prompts()
+	test_security_drone_enemy_mechanics()
 	test_settings_menu_component()
 	test_settings_persistence_roundtrip()
 	test_project_branding_and_title()
@@ -485,6 +488,7 @@ func test_scene_instantiations() -> void:
 		"res://scenes/ui/pause_menu.tscn",
 		"res://scenes/ui/settings_menu.tscn",
 		"res://scenes/ui/victory_screen.tscn",
+		"res://scenes/entities/security_drone.tscn",
 		"res://scenes/levels/level_01.tscn",
 		"res://scenes/levels/level_02.tscn",
 		"res://scenes/levels/level_03.tscn",
@@ -740,33 +744,44 @@ func test_base_level_post_processing_and_camera_integration() -> void:
 func test_ambient_drone_audio() -> void:
 	_assert_test(SoundManager.has_method("play_ambient_drone"), "SoundManager: Has play_ambient_drone method")
 	_assert_test(SoundManager.has_method("stop_ambient_drone"), "SoundManager: Has stop_ambient_drone method")
+	_assert_test(SoundManager.has_method("play_music"), "SoundManager: Has play_music method")
+	_assert_test(SoundManager.has_method("stop_music"), "SoundManager: Has stop_music method")
 	
 	SoundManager.play_ambient_drone(-8.0)
-	_assert_test(SoundManager.is_ambient_drone_playing() == true, "SoundManager: Ambient drone starts playing")
+	_assert_test(SoundManager.is_ambient_drone_playing() == true, "SoundManager: Background audio starts playing")
 	
 	var player := SoundManager.get_ambient_drone_player()
-	_assert_test(player != null, "SoundManager: Ambient drone player instantiated")
+	_assert_test(player != null, "SoundManager: Ambient audio player instantiated")
 	if player:
-		_assert_test(player.bus == &"Ambience", "SoundManager: Ambient drone routed through Ambience bus")
-		_assert_test(player.stream != null, "SoundManager: Ambient drone has active stream")
+		_assert_test(player.bus == &"Music" or player.bus == &"Ambience", "SoundManager: Audio routed through Music or Ambience bus")
+		_assert_test(player.stream != null, "SoundManager: Background audio has active stream")
 		if player.stream is AudioStreamWAV:
 			_assert_test((player.stream as AudioStreamWAV).loop_mode == AudioStreamWAV.LOOP_FORWARD, "SoundManager: Drone stream loops forward seamlessly")
+		elif player.stream is AudioStreamMP3:
+			_assert_test((player.stream as AudioStreamMP3).loop == true, "SoundManager: Background music MP3 loops seamlessly")
 			
 	# Test redundant play_ambient_drone preserves stream and uninterrupted playback
 	var active_stream := player.stream if player else null
 	SoundManager.play_ambient_drone(-6.0)
-	_assert_test(SoundManager.is_ambient_drone_playing() == true, "SoundManager: Ambient drone remains playing on re-invocation")
-	_assert_test(player.stream == active_stream, "SoundManager: Redundant play_ambient_drone preserves active stream reference")
+	_assert_test(SoundManager.is_ambient_drone_playing() == true, "SoundManager: Background audio remains playing on re-invocation")
+	_assert_test(player.stream == active_stream, "SoundManager: Redundant play preserves active stream reference")
 	
 	# Test bus mute when volume slider reaches 0.0
 	SaveManager.set_setting("music_volume", 0.0)
 	var amb_idx := AudioServer.get_bus_index("Ambience")
-	_assert_test(AudioServer.is_bus_mute(amb_idx) == true, "SoundManager: Ambience bus muted when music_volume is 0")
+	var mus_idx := AudioServer.get_bus_index("Music")
+	var is_muted := (amb_idx != -1 and AudioServer.is_bus_mute(amb_idx)) or (mus_idx != -1 and AudioServer.is_bus_mute(mus_idx))
+	_assert_test(is_muted == true, "SoundManager: Music / Ambience bus muted when music_volume is 0")
 	SaveManager.set_setting("music_volume", 1.0)
-	_assert_test(AudioServer.is_bus_mute(amb_idx) == false, "SoundManager: Ambience bus unmuted when music_volume restored")
+	var is_unmuted := (amb_idx == -1 or not AudioServer.is_bus_mute(amb_idx)) and (mus_idx == -1 or not AudioServer.is_bus_mute(mus_idx))
+	_assert_test(is_unmuted == true, "SoundManager: Music / Ambience bus unmuted when music_volume restored")
+	
+	# Test drone alert and player caught SFX exist in library
+	_assert_test(SoundManager._sounds.has("drone_alert"), "SoundManager: Has drone_alert SFX in library")
+	_assert_test(SoundManager._sounds.has("player_caught"), "SoundManager: Has player_caught SFX in library")
 			
 	SoundManager.stop_ambient_drone()
-	_assert_test(SoundManager.is_ambient_drone_playing() == false, "SoundManager: Ambient drone stops cleanly")
+	_assert_test(SoundManager.is_ambient_drone_playing() == false, "SoundManager: Background audio stops cleanly")
 
 func test_in_world_interaction_prompts() -> void:
 	# 1. LeverSwitch prompt
@@ -848,6 +863,65 @@ func test_in_world_interaction_prompts() -> void:
 	test_player.queue_free()
 	test_echo.queue_free()
 	test_lever.queue_free()
+
+func test_security_drone_enemy_mechanics() -> void:
+	var drone_scene := load("res://scenes/entities/security_drone.tscn") as PackedScene
+	_assert_test(drone_scene != null, "SecurityDrone: Scene loads successfully")
+	
+	var drone = drone_scene.instantiate()
+	drone.position = Vector2(300, 300)
+	drone.waypoint_offsets = PackedVector2Array([Vector2.ZERO, Vector2(100, 0)])
+	add_child(drone)
+	
+	_assert_test(drone.is_in_group("enemies"), "SecurityDrone: Belongs to group 'enemies'")
+	_assert_test(drone.is_in_group("resettable"), "SecurityDrone: Belongs to group 'resettable'")
+	_assert_test(drone.current_state == SecurityDroneClass.DroneState.PATROL, "SecurityDrone: Starts in PATROL state")
+	_assert_test(drone._world_waypoints.size() == 2, "SecurityDrone: World waypoints calculated accurately")
+	
+	# Spawn test player
+	var player_scene := load("res://scenes/entities/player.tscn") as PackedScene
+	var test_player: Player = player_scene.instantiate() as Player
+	test_player.position = Vector2(800, 800) # Far away, out of vision
+	add_child(test_player)
+	
+	# Out of detection range -> drone remains in PATROL
+	var detectable: Player = drone._find_detectable_player()
+	_assert_test(detectable == null, "SecurityDrone: Distant player is not detected")
+	_assert_test(drone.current_state == SecurityDroneClass.DroneState.PATROL, "SecurityDrone: Remains in PATROL when player is distant")
+	
+	# Place player in front of drone within vision cone (facing RIGHT)
+	drone.facing_direction = Vector2.RIGHT
+	test_player.position = drone.global_position + Vector2(100, 0) # 100px directly in front
+	var spotted: Player = drone._find_detectable_player()
+	_assert_test(spotted == test_player, "SecurityDrone: Player in vision cone is detected")
+	
+	# Engage chase
+	var alert_emitted := [false]
+	drone.alert_state_changed.connect(func(is_alert: bool): if is_alert: alert_emitted[0] = true)
+	drone._engage_chase(test_player)
+	_assert_test(drone.current_state == SecurityDroneClass.DroneState.CHASE, "SecurityDrone: Transitions to CHASE state on detection")
+	_assert_test(alert_emitted[0] == true, "SecurityDrone: Emits alert_state_changed signal")
+	
+	# Catch mechanics
+	var caught_emitted := [false]
+	var was_catching := [false]
+	drone.player_caught_target.connect(func(d, _p): 
+		caught_emitted[0] = true
+		was_catching[0] = d._is_catching
+	)
+	test_player.position = drone.global_position + Vector2(15, 0) # Within catch_radius (26px)
+	drone._process_chase(0.016, test_player)
+	_assert_test(caught_emitted[0] == true, "SecurityDrone: Catches player within catch radius and emits player_caught_target")
+	_assert_test(was_catching[0] == true or drone._is_catching == true, "SecurityDrone: Flags _is_catching true during interception")
+	
+	# Reset state mechanics
+	drone.reset_state()
+	_assert_test(drone.global_position == drone._initial_global_position, "SecurityDrone: Resets to initial position on reset_state")
+	_assert_test(drone.current_state == SecurityDroneClass.DroneState.PATROL, "SecurityDrone: Resets to PATROL state on reset_state")
+	_assert_test(drone._is_catching == false, "SecurityDrone: Clears _is_catching flag on reset_state")
+	
+	test_player.queue_free()
+	drone.queue_free()
 
 func test_settings_menu_component() -> void:
 	var settings_scene := load("res://scenes/ui/settings_menu.tscn") as PackedScene
