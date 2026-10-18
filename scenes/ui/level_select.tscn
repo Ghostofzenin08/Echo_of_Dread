@@ -18,81 +18,80 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.05, 0.07, 0.12, 1)
+color = Color(0.04, 0.05, 0.08, 1)
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -250.0
-offset_top = 80.0
-offset_right = 250.0
-offset_bottom = 130.0
+offset_left = -300.0
+offset_top = 40.0
+offset_right = 300.0
+offset_bottom = 85.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 32
-text = "SELECT RESEARCH CHAMBER"
+theme_override_font_sizes/font_size = 30
+text = "FACILITY SECTOR ARCHIVE"
 horizontal_alignment = 1
 
+[node name="StarCountLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -250.0
+offset_top = 90.0
+offset_right = 250.0
+offset_bottom = 120.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
+theme_override_font_sizes/font_size = 18
+text = "★ CHRONAL STARS: 0 / 150"
+horizontal_alignment = 1
+
+[node name="SectorContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -460.0
+offset_top = 135.0
+offset_right = 460.0
+offset_bottom = 185.0
+grow_horizontal = 2
+theme_override_constants/separation = 16
+alignment = 1
+
 [node name="GridContainer" type="GridContainer" parent="."]
-custom_minimum_size = Vector2(640, 240)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -320.0
-offset_top = -100.0
-offset_right = 320.0
-offset_bottom = 140.0
+offset_left = -480.0
+offset_top = -140.0
+offset_right = 480.0
+offset_bottom = 180.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/h_separation = 24
-theme_override_constants/v_separation = 20
-columns = 2
-
-[node name="Level1Button" type="Button" parent="GridContainer"]
-custom_minimum_size = Vector2(300, 90)
-layout_mode = 2
-text = "CHAMBER 01
-Temporal Resonance
-(Intro & Pressure Plates)"
-
-[node name="Level2Button" type="Button" parent="GridContainer"]
-custom_minimum_size = Vector2(300, 90)
-layout_mode = 2
-text = "CHAMBER 02
-Synchronized Isolation
-(Dual-Wing Coordination)"
-
-[node name="Level3Button" type="Button" parent="GridContainer"]
-custom_minimum_size = Vector2(300, 90)
-layout_mode = 2
-text = "CHAMBER 03
-The Vault & Capacitors
-(Timed Buttons & Lasers)"
-
-[node name="Level4Button" type="Button" parent="GridContainer"]
-custom_minimum_size = Vector2(300, 90)
-layout_mode = 2
-text = "CHAMBER 04
-The Resonance Core
-(Harmonic Multi-Echo Finale)"
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+columns = 5
 
 [node name="BackButton" type="Button" parent="."]
-custom_minimum_size = Vector2(160, 40)
+custom_minimum_size = Vector2(180, 44)
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -80.0
-offset_top = -100.0
-offset_right = 80.0
-offset_bottom = -60.0
+offset_left = -90.0
+offset_top = -80.0
+offset_right = 90.0
+offset_bottom = -36.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "MAIN MENU"
