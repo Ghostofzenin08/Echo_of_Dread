@@ -123,11 +123,18 @@ func _reset_stick() -> void:
 	direction_changed.emit(Vector2.ZERO)
 	
 	for action in _pressed_actions.keys():
-		if _pressed_actions[action]:
+		if _pressed_actions[action] or Input.is_action_pressed(action):
 			_pressed_actions[action] = false
 			Input.action_release(action)
 			
 	queue_redraw()
+
+func _exit_tree() -> void:
+	_reset_stick()
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_VISIBILITY_CHANGED and not is_visible_in_tree():
+		_reset_stick()
 
 func get_direction() -> Vector2:
 	return _output_vector
