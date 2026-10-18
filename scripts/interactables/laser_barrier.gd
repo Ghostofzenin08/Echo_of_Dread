@@ -59,7 +59,7 @@ func _update_state(active: bool) -> void:
 	if collision_shape:
 		collision_shape.set_deferred("disabled", not active)
 	if hazard_area:
-		hazard_area.monitoring = active
+		hazard_area.set_deferred("monitoring", active)
 	laser_state_changed.emit(active)
 	queue_redraw()
 
