@@ -90,6 +90,7 @@ func reset_playback() -> void:
 	current_playback_time = 0.0
 	last_playback_time = 0.0
 	_last_interact_state = false
+	nearby_interactables.clear()
 	trail_points.clear()
 	if trail_line:
 		trail_line.clear_points()
@@ -142,9 +143,12 @@ func _perform_playback_interaction() -> void:
 	var target: Area2D = null
 	var min_dist := 56.0
 	
+	# Purge invalid or queued-for-deletion areas
+	nearby_interactables = nearby_interactables.filter(func(a): return is_instance_valid(a) and not a.is_queued_for_deletion())
+	
 	# Check all registered interactables in group
 	for node in get_tree().get_nodes_in_group("interactable"):
-		if node is Area2D and is_instance_valid(node):
+		if node is Area2D and is_instance_valid(node) and not node.is_queued_for_deletion():
 			# Echoes must NEVER trigger narrative lore modals!
 			if node is TerminalLog:
 				continue
@@ -156,7 +160,7 @@ func _perform_playback_interaction() -> void:
 	# If not found via group, check nearby_interactables cache
 	if target == null:
 		for area in nearby_interactables:
-			if is_instance_valid(area) and not (area is TerminalLog):
+			if is_instance_valid(area) and not area.is_queued_for_deletion() and not (area is TerminalLog):
 				var dist := global_position.distance_to(area.global_position)
 				if dist < min_dist:
 					min_dist = dist
@@ -165,7 +169,7 @@ func _perform_playback_interaction() -> void:
 	if target and target.has_method("interact"):
 		target.interact(self)
 		interaction_performed.emit(target)
-	elif target and target.get_parent() and target.get_parent().has_method("interact"):
+	elif target and target.get_parent() and is_instance_valid(target.get_parent()) and not target.get_parent().is_queued_for_deletion() and target.get_parent().has_method("interact"):
 		target.get_parent().interact(self)
 		interaction_performed.emit(target.get_parent())
 
