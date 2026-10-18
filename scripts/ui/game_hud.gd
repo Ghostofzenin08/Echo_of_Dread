@@ -52,8 +52,10 @@ func _ready() -> void:
 	if terminal_close_btn:
 		terminal_close_btn.pressed.connect(_on_close_terminal_pressed)
 		
-	GameManager.narrative_opened.connect(_on_narrative_opened)
-	GameManager.narrative_closed.connect(_on_narrative_closed)
+	if not GameManager.narrative_opened.is_connected(_on_narrative_opened):
+		GameManager.narrative_opened.connect(_on_narrative_opened)
+	if not GameManager.narrative_closed.is_connected(_on_narrative_closed):
+		GameManager.narrative_closed.connect(_on_narrative_closed)
 	if not GameManager.chamber_cleared.is_connected(_on_chamber_cleared):
 		GameManager.chamber_cleared.connect(_on_chamber_cleared)
 
