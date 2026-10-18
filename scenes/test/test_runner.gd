@@ -1060,6 +1060,22 @@ func test_chamber_database_and_50_levels() -> void:
 		_assert_test(data.has("par_loops") and data.par_loops > 0, "ChamberDatabase: Chamber %d has positive par_loops" % c_id)
 		_assert_test(data.has("room_size") and data.room_size.x > 500, "ChamberDatabase: Chamber %d has valid room_size" % c_id)
 
+	# Verify passability across all 50 chambers
+	var any_chamber_blocked := false
+	for c_id in range(1, 51):
+		var c_data: Dictionary = ChamberDatabaseClass.get_chamber(c_id)
+		var c_walls: Array = c_data.get("interior_walls", [])
+		var s_pos: Vector2 = c_data.get("spawn_pos", Vector2(160, 360))
+		var e_pos: Vector2 = c_data.get("exit_pos", Vector2(1120, 360))
+		for w in c_walls:
+			if w is Rect2:
+				if w.has_point(s_pos) or w.has_point(e_pos) or w.size.y >= 500.0 or w.size.x >= 1000.0:
+					any_chamber_blocked = true
+					break
+		if any_chamber_blocked:
+			break
+	_assert_test(not any_chamber_blocked, "ChamberDatabase: All 50 chambers have unblocked spawns, exits, and doorways")
+
 func test_star_rating_and_retention_system() -> void:
 	SaveManager.reset_all_progress()
 	
@@ -1096,8 +1112,24 @@ func test_chamber_runner_dynamic_loading() -> void:
 	
 	_assert_test(runner.chamber_title == "CHAMBER 05: SPLIT FREQUENCY", "ChamberRunner: Correct title loaded for Chamber 5")
 	_assert_test(runner.room_builder != null, "ChamberRunner: RoomBuilder attached")
-	_assert_test(runner.room_builder.interior_walls.size() == 4, "ChamberRunner: RoomBuilder received 4 interior walls")
-	_assert_test(runner.room_builder._static_body != null and runner.room_builder._static_body.get_child_count() == 8, "ChamberRunner: RoomBuilder rebuilt collision with all perimeter and interior walls")
+	_assert_test(runner.room_builder.interior_walls.size() == 6, "ChamberRunner: RoomBuilder received 6 interior walls")
+	_assert_test(runner.room_builder._static_body != null and runner.room_builder._static_body.get_child_count() == 10, "ChamberRunner: RoomBuilder rebuilt collision with all perimeter and interior walls")
+	
+	# Verify Chamber 05 doorway passability
+	var walls: Array[Rect2] = runner.room_builder.interior_walls
+	var check_points: Array[Vector2] = [
+		Vector2(280, 180), # North doorway
+		Vector2(280, 520), # South doorway
+		Vector2(950, 360), # Corridor before door
+		Vector2(1000, 360) # Doorway aperture
+	]
+	var any_point_blocked := false
+	for pt in check_points:
+		for w in walls:
+			if w.has_point(pt):
+				any_point_blocked = true
+				break
+	_assert_test(not any_point_blocked, "ChamberRunner: Chamber 5 doorways and corridor are unblocked")
 	_assert_test(runner.player != null, "ChamberRunner: Player instantiated")
 	_assert_test(runner.level_exit != null, "ChamberRunner: LevelExit instantiated")
 	_assert_test(runner._doors_by_id.size() > 0, "ChamberRunner: Doors dynamically instantiated and registered")
