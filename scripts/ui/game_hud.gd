@@ -8,8 +8,10 @@ extends CanvasLayer
 @onready var echo_label: Label = $TopBar/Margin/HBox/EchoLabel
 
 const TimelineWidgetClass = preload("res://scripts/ui/timeline_widget.gd")
+const ChamberClearModalClass = preload("res://scripts/ui/chamber_clear_modal.gd")
 
 @onready var timeline_widget: Control = get_node_or_null("TopBar/Margin/HBox/TimerContainer/TimelineWidget")
+@onready var chamber_clear_modal: Control = get_node_or_null("ChamberClearModal")
 
 @onready var rewind_flash: ColorRect = $RewindFlash
 @onready var terminal_modal: PanelContainer = $TerminalModal
@@ -27,6 +29,22 @@ func _ready() -> void:
 			timeline_widget = TimelineWidgetClass.new()
 			container.add_child(timeline_widget)
 			
+	if chamber_clear_modal == null:
+		var modal_scene := load("res://scenes/ui/chamber_clear_modal.tscn") as PackedScene
+		if modal_scene:
+			chamber_clear_modal = modal_scene.instantiate()
+			chamber_clear_modal.name = "ChamberClearModal"
+			add_child(chamber_clear_modal)
+			
+	if chamber_clear_modal:
+		chamber_clear_modal.visible = false
+		if not chamber_clear_modal.next_chamber_requested.is_connected(_on_modal_next):
+			chamber_clear_modal.next_chamber_requested.connect(_on_modal_next)
+		if not chamber_clear_modal.retry_chamber_requested.is_connected(_on_modal_retry):
+			chamber_clear_modal.retry_chamber_requested.connect(_on_modal_retry)
+		if not chamber_clear_modal.sector_select_requested.is_connected(_on_modal_select):
+			chamber_clear_modal.sector_select_requested.connect(_on_modal_select)
+			
 	if rewind_flash:
 		rewind_flash.color = Color(0.2, 0.8, 1.0, 0.0)
 	if terminal_modal:
@@ -36,6 +54,8 @@ func _ready() -> void:
 		
 	GameManager.narrative_opened.connect(_on_narrative_opened)
 	GameManager.narrative_closed.connect(_on_narrative_closed)
+	if not GameManager.chamber_cleared.is_connected(_on_chamber_cleared):
+		GameManager.chamber_cleared.connect(_on_chamber_cleared)
 
 func set_chamber_title(title: String) -> void:
 	if chamber_label:
@@ -111,3 +131,23 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.is_action_pressed("interact") or event.is_action_pressed("pause"):
 			GameManager.close_narrative()
 			get_viewport().set_input_as_handled()
+
+func _on_chamber_cleared(data: Dictionary) -> void:
+	if not chamber_clear_modal:
+		return
+	var lvl: int = data.get("level_index", 1)
+	var loops: int = data.get("loop_count", 1)
+	var time: float = data.get("elapsed_time", 0.0)
+	var par: int = data.get("par_loops", 2)
+	var is_new: bool = data.get("is_new_record", false)
+	
+	chamber_clear_modal.display_results(lvl, loops, time, par, is_new)
+
+func _on_modal_next() -> void:
+	GameManager.advance_to_next_level()
+
+func _on_modal_retry() -> void:
+	GameManager.restart_current_level()
+
+func _on_modal_select() -> void:
+	GameManager.open_level_select()
