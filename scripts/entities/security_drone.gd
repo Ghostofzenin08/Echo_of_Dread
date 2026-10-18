@@ -226,6 +226,8 @@ func _process_investigate(delta: float, target_player: Player) -> void:
 		alert_state_changed.emit(false)
 
 func _catch_player(target_player: Player) -> void:
+	if _is_catching:
+		return
 	_is_catching = true
 	velocity = Vector2.ZERO
 	
@@ -236,26 +238,28 @@ func _catch_player(target_player: Player) -> void:
 	if camera and camera.has_method("add_trauma"):
 		camera.add_trauma(0.85)
 		
+	var had_listeners := not player_caught_target.get_connections().is_empty()
 	player_caught_target.emit(self, target_player)
 	
-	# Find loop manager to collapse the timeline
-	var loop_mgr: LoopManager = null
-	var parent_node := get_parent()
-	while parent_node:
-		if parent_node.has_node("LoopManager"):
-			loop_mgr = parent_node.get_node("LoopManager") as LoopManager
-			break
-		parent_node = parent_node.get_parent()
-		
-	if not loop_mgr:
-		var loop_managers := get_tree().get_nodes_in_group("loop_manager")
-		for candidate in loop_managers:
-			if is_instance_valid(candidate) and not candidate.is_queued_for_deletion():
-				loop_mgr = candidate as LoopManager
+	# If parent level did not connect to player_caught_target, fallback to manual loop reset
+	if not had_listeners:
+		var loop_mgr: LoopManager = null
+		var parent_node := get_parent()
+		while parent_node:
+			if parent_node.has_node("LoopManager"):
+				loop_mgr = parent_node.get_node("LoopManager") as LoopManager
 				break
+			parent_node = parent_node.get_parent()
 			
-	if loop_mgr:
-		loop_mgr.reset_loop()
+		if not loop_mgr:
+			var loop_managers := get_tree().get_nodes_in_group("loop_manager")
+			for candidate in loop_managers:
+				if is_instance_valid(candidate) and not candidate.is_queued_for_deletion():
+					loop_mgr = candidate as LoopManager
+					break
+				
+		if loop_mgr:
+			loop_mgr.reset_loop()
 
 func _draw() -> void:
 	var is_alert := (current_state == DroneState.CHASE)
