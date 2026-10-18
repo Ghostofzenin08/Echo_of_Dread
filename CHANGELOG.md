@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.0] - 2026-10-18 (50-Chamber Scale, Sector System, 3-Star Retention & Thorne Narrative Bible)
+
+### Added
+- **50-Chamber Content Architecture (`scripts/world/chamber_database.gd`):**
+  - Expanded game content from 4 demo chambers to 50 fully structured puzzle chambers partitioned into 5 thematic Sectors (10 chambers each).
+  - Sector 1: Alpha Wing — Temporal Resonance (Chambers 01–10; par loops 1–3).
+  - Sector 2: Beta Wing — High-Voltage Relays (Chambers 11–20; timed capacitors & laser grids; par loops 2–4).
+  - Sector 3: Gamma Wing — Optical Manifolds & Phase Gates (Chambers 21–30; spatial routing & intersecting sentries; par loops 3–4).
+  - Sector 4: Delta Wing — The Blackout Protocol (Chambers 31–40; stealth corridors, multiple sentries & decoy tactics; par loops 3–5).
+  - Sector 5: Omega Wing — The Singularity Breach (Chambers 41–50; quad-wing synchronization & the core rupture; par loops 4–5).
+- **Universal Dynamic Chamber Loader (`scripts/levels/chamber_runner.gd`, `scenes/levels/chamber_runner.tscn`):**
+  - Extends `BaseLevel` to dynamically instantiate and wire room geometry, triggers, doors, lasers, drones, terminals, and wires from `ChamberDatabase`.
+  - Integrates seamlessly with `GameManager.load_level(idx)` with automatic fallback routing for all 50 chambers.
+- **3-Star Dopamine Retention System (`scripts/autoload/save_manager.gd`):**
+  - Added loop-economy scoring: ★★★ (Chronal Master, $\le \text{par\_loops}$), ★★☆ (Chronal Adept, $\le \text{par\_loops} + 1$), and ★☆☆ (Temporal Survivor).
+  - Added `get_level_stars(level_idx)` and `get_total_stars()` aggregating up to 150 stars across the campaign.
+- **Modern Sector-Paginated Level Select UI (`scripts/ui/level_select.gd`, `scenes/ui/level_select.tscn`):**
+  - Sector tabs (Alpha, Beta, Gamma, Delta, Omega) with dynamic 10-card chamber grid.
+  - Displays chamber status, 3-star rating symbols, best loop count, and best completion time.
+  - Total Chronal Stars banner in the header (`★ XX / 150`).
+- **Deep Narrative Lore Expansion (`scripts/autoload/narrative_data.gd`):**
+  - Expanded lore archive to 10 narrative terminals chronicling Dr. Aris Thorne's descent, Director Cole's Project Chronos weaponization, Dr. Elena Vane's warnings, the causal bleed crisis, and the revelation of the player as synthetic temporal vessel "Proxy-Zero".
+- **Automated Verification Harness Expansion:** Expanded automated test runner (`scenes/test/test_runner.gd`) to 299 tests with a 100% pass rate (299/299 passed cleanly), validating all 50 chamber geometries, 5 sector bounds, star rating calculations, narrative completeness, dynamic chamber running, and sector tab switching.
+
+---
+
 ## [0.4.0] - 2026-10-16 (Custom Audio Track & Security Drone Enemy Patrols)
 
 ### Added
