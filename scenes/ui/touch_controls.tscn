@@ -1,0 +1,103 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/touch_controls.gd" id="1_touch"]
+[ext_resource type="Script" path="res://scripts/ui/virtual_joystick.gd" id="2_joystick"]
+
+[node name="TouchControls" type="CanvasLayer"]
+layer = 15
+script = ExtResource("1_touch")
+
+[node name="RootControl" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BottomLeft" type="MarginContainer" parent="RootControl"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -200.0
+offset_right = 200.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="Joystick" type="Control" parent="RootControl/BottomLeft"]
+custom_minimum_size = Vector2(160, 160)
+layout_mode = 2
+script = ExtResource("2_joystick")
+
+[node name="BottomRight" type="MarginContainer" parent="RootControl"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -200.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="RootControl/BottomRight"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 2
+
+[node name="AuxRow" type="HBoxContainer" parent="RootControl/BottomRight/VBox"]
+layout_mode = 2
+alignment = 2
+
+[node name="ClearBtn" type="Button" parent="RootControl/BottomRight/VBox/AuxRow"]
+custom_minimum_size = Vector2(60, 36)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 13
+text = "CLR"
+
+[node name="MainRow" type="HBoxContainer" parent="RootControl/BottomRight/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 2
+
+[node name="LoopBtn" type="Button" parent="RootControl/BottomRight/VBox/MainRow"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.8, 0.25, 1)
+theme_override_font_sizes/font_size = 14
+text = "LOOP"
+
+[node name="InteractBtn" type="Button" parent="RootControl/BottomRight/VBox/MainRow"]
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "ACT"
+
+[node name="TopRight" type="MarginContainer" parent="RootControl"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -80.0
+offset_bottom = 60.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 16
+
+[node name="PauseBtn" type="Button" parent="RootControl/TopRight"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 16
+text = "||"
