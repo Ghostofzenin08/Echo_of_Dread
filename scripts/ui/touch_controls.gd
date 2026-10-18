@@ -70,10 +70,28 @@ func _update_visibility_from_settings() -> void:
 func _sync_visibility() -> void:
 	if not root_control:
 		return
+	var should_hide := false
 	if GameManager and (GameManager.is_narrative_open or GameManager.is_paused):
+		should_hide = true
+	elif is_inside_tree() and get_tree().paused:
+		should_hide = true
+		
+	if should_hide:
 		root_control.visible = false
+		_release_all_touch_actions()
 	else:
 		root_control.visible = _is_enabled
+
+func _release_all_touch_actions() -> void:
+	for action in ["interact", "reset_loop", "clear_echoes", "pause"]:
+		if Input.is_action_pressed(action):
+			Input.action_release(action)
+	var joystick := get_node_or_null("RootControl/BottomLeft/Joystick")
+	if joystick and joystick.has_method("_reset_stick"):
+		joystick._reset_stick()
+
+func _exit_tree() -> void:
+	_release_all_touch_actions()
 
 func _on_narrative_opened(_data: Dictionary) -> void:
 	_sync_visibility()
