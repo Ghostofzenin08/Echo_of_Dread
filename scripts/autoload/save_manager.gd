@@ -31,7 +31,7 @@ func is_level_unlocked(level_idx: int) -> bool:
 	return level_idx <= unlocked_levels
 
 func unlock_level(level_idx: int) -> void:
-	var max_level := GameManager.TOTAL_LEVELS if GameManager else 4
+	var max_level := GameManager.TOTAL_LEVELS if GameManager else 50
 	var target_level := clampi(level_idx, 1, max_level)
 	if target_level > unlocked_levels:
 		unlocked_levels = target_level
@@ -152,7 +152,7 @@ func load_data() -> bool:
 	var data: Dictionary = test_json.data
 	var _save_version: int = int(data.get("version", 1))
 	if data.has("unlocked_levels"):
-		var max_lvl := GameManager.TOTAL_LEVELS if GameManager else 4
+		var max_lvl := GameManager.TOTAL_LEVELS if GameManager else 50
 		unlocked_levels = clampi(int(data["unlocked_levels"]), 1, max_lvl)
 		
 	if data.has("best_loop_counts") and data["best_loop_counts"] is Dictionary:
