@@ -54,6 +54,10 @@ func _build_chamber(data: Dictionary) -> void:
 			walls.append(w)
 	room_builder.interior_walls = walls
 	
+	# Apply sector atmospheric color styling
+	var sector_idx := int(ceili(float(level_number) / 10.0))
+	_apply_sector_palette(room_builder, sector_idx)
+	
 	# 2. Setup Spawns & Exit
 	var spawn_pos: Vector2 = data.get("spawn_pos", Vector2(160, 360))
 	if spawn_point:
@@ -70,6 +74,7 @@ func _build_chamber(data: Dictionary) -> void:
 			add_child(level_exit)
 	if level_exit:
 		level_exit.position = exit_pos
+		_apply_exit_portal_color(level_exit, sector_idx)
 		
 	# 3. Instantiate Doors
 	for d in data.get("doors", []):
@@ -169,3 +174,44 @@ func _route_trigger_target(trigger_node: Node, target_id: String) -> void:
 		var laser: LaserBarrier = _lasers_by_id[target_id]
 		if trigger_node.has_signal("state_changed"):
 			trigger_node.state_changed.connect(laser._on_trigger_state_changed)
+
+func _apply_sector_palette(builder: RoomBuilder, sector: int) -> void:
+	match sector:
+		2: # Beta Wing: High-Voltage Hazard (Amber)
+			builder.floor_color = Color(0.11, 0.08, 0.04, 1.0)
+			builder.grid_line_color = Color(0.18, 0.13, 0.07, 1.0)
+			builder.wall_color = Color(0.24, 0.17, 0.10, 1.0)
+			builder.wall_border_color = Color(0.85, 0.55, 0.15, 1.0)
+		3: # Gamma Wing: Optical Manifold (Amethyst / Violet)
+			builder.floor_color = Color(0.10, 0.05, 0.13, 1.0)
+			builder.grid_line_color = Color(0.16, 0.09, 0.22, 1.0)
+			builder.wall_color = Color(0.22, 0.14, 0.28, 1.0)
+			builder.wall_border_color = Color(0.75, 0.35, 0.90, 1.0)
+		4: # Delta Wing: Blackout Protocol (Emergency Crimson)
+			builder.floor_color = Color(0.10, 0.03, 0.04, 1.0)
+			builder.grid_line_color = Color(0.18, 0.05, 0.07, 1.0)
+			builder.wall_color = Color(0.24, 0.07, 0.09, 1.0)
+			builder.wall_border_color = Color(0.85, 0.20, 0.25, 1.0)
+		5: # Omega Wing: The Singularity Breach (Chronal Platinum-Gold)
+			builder.floor_color = Color(0.08, 0.08, 0.06, 1.0)
+			builder.grid_line_color = Color(0.17, 0.17, 0.12, 1.0)
+			builder.wall_color = Color(0.24, 0.23, 0.16, 1.0)
+			builder.wall_border_color = Color(0.95, 0.85, 0.35, 1.0)
+		_: # Sector 1: Alpha Wing: Temporal Resonance (Cyan-Blue)
+			builder.floor_color = Color(0.06, 0.09, 0.14, 1.0)
+			builder.grid_line_color = Color(0.10, 0.15, 0.22, 1.0)
+			builder.wall_color = Color(0.16, 0.22, 0.30, 1.0)
+			builder.wall_border_color = Color(0.30, 0.60, 0.85, 1.0)
+
+func _apply_exit_portal_color(exit: LevelExit, sector: int) -> void:
+	match sector:
+		2:
+			exit.portal_color = Color(1.0, 0.70, 0.20, 1.0)
+		3:
+			exit.portal_color = Color(0.80, 0.40, 1.0, 1.0)
+		4:
+			exit.portal_color = Color(1.0, 0.25, 0.30, 1.0)
+		5:
+			exit.portal_color = Color(1.0, 0.92, 0.40, 1.0)
+		_:
+			exit.portal_color = Color(0.20, 0.90, 1.0, 1.0)
