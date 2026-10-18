@@ -52,6 +52,9 @@ func start_game() -> void:
 	load_level(1)
 
 func load_level(level_idx: int) -> void:
+	is_paused = false
+	is_narrative_open = false
+	get_tree().paused = false
 	current_level_index = clampi(level_idx, 1, TOTAL_LEVELS)
 	var scene_path: String = LEVEL_SCENE_PATHS.get(current_level_index, "")
 	if scene_path.is_empty() or not ResourceLoader.exists(scene_path):
@@ -102,6 +105,9 @@ func advance_to_next_level() -> void:
 	if current_level_index < TOTAL_LEVELS:
 		load_level(current_level_index + 1)
 	else:
+		is_paused = false
+		is_narrative_open = false
+		get_tree().paused = false
 		SoundManager.stop_ambient_drone()
 		get_tree().change_scene_to_file("res://scenes/ui/victory_screen.tscn")
 
