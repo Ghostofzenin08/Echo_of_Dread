@@ -112,7 +112,7 @@ func _on_hazard_entered(body: Node2D) -> void:
 		if parent_level:
 			if "camera" in parent_level and parent_level.camera:
 				parent_level.camera.add_trauma(0.8)
-			if parent_level.loop_manager:
+			if "loop_manager" in parent_level and parent_level.loop_manager:
 				parent_level.loop_manager.reset_loop()
 
 func _find_parent_level() -> Node:
