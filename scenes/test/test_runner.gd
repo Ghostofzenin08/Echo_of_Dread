@@ -58,10 +58,14 @@ func _ready() -> void:
 	print("TESTS COMPLETED: %d / %d PASSED" % [passed_tests, total_tests])
 	print("==================================================")
 	
-	# Allow deferred node deletions to flush cleanly to avoid ObjectDB leaks
-	await get_tree().process_frame
-	await get_tree().process_frame
+	# Stop all audio players and flush streams so AudioServer can cleanly release handles
 	SoundManager.stop_all()
+	SoundManager.cleanup()
+	
+	# Allow deferred node deletions and audio playbacks to flush cleanly to avoid ObjectDB leaks
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
 	
 	if passed_tests == total_tests:
 		print("ALL SYSTEMS NOMINAL. TEST RUNNER EXITING WITH CODE 0.")
@@ -1091,6 +1095,8 @@ func test_chamber_runner_dynamic_loading() -> void:
 	
 	_assert_test(runner.chamber_title == "CHAMBER 05: SPLIT FREQUENCY", "ChamberRunner: Correct title loaded for Chamber 5")
 	_assert_test(runner.room_builder != null, "ChamberRunner: RoomBuilder attached")
+	_assert_test(runner.room_builder.interior_walls.size() == 4, "ChamberRunner: RoomBuilder received 4 interior walls")
+	_assert_test(runner.room_builder._static_body != null and runner.room_builder._static_body.get_child_count() == 8, "ChamberRunner: RoomBuilder rebuilt collision with all perimeter and interior walls")
 	_assert_test(runner.player != null, "ChamberRunner: Player instantiated")
 	_assert_test(runner.level_exit != null, "ChamberRunner: LevelExit instantiated")
 	_assert_test(runner._doors_by_id.size() > 0, "ChamberRunner: Doors dynamically instantiated and registered")
