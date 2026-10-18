@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/game_hud.gd" id="1_hud"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="2_pause"]
 [ext_resource type="Script" path="res://scripts/ui/timeline_widget.gd" id="3_timeline"]
+[ext_resource type="PackedScene" path="res://scenes/ui/chamber_clear_modal.tscn" id="4_clear"]
 
 [node name="GameHUD" type="CanvasLayer"]
 layer = 20
@@ -162,4 +163,7 @@ size_flags_horizontal = 4
 text = "DISMISS [ESC]"
 
 [node name="PauseMenu" parent="." instance=ExtResource("2_pause")]
+visible = false
+
+[node name="ChamberClearModal" parent="." instance=ExtResource("4_clear")]
 visible = false
