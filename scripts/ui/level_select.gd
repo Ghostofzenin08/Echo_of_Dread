@@ -115,3 +115,8 @@ func _load_level(idx: int) -> void:
 func _on_back_pressed() -> void:
 	SoundManager.play_sfx("click")
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("pause") or event.is_action_pressed("ui_cancel"):
+		_on_back_pressed()
+		get_viewport().set_input_as_handled()
