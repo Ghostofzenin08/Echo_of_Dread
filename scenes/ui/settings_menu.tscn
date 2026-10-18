@@ -161,6 +161,11 @@ theme_override_font_sizes/font_size = 13
 button_pressed = true
 text = "CRT / Temporal Rewind Shaders"
 
+[node name="TouchControlsToggle" type="CheckBox" parent="Backdrop/Panel/Margin/VBox/VisualGroup"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Touch Controls (Mobile / On-Screen)"
+
 [node name="HSeparator3" type="HSeparator" parent="Backdrop/Panel/Margin/VBox"]
 layout_mode = 2
 
