@@ -35,7 +35,10 @@ func _ready() -> void:
 func initialize(target_player: Player, initial_spawn: Vector2) -> void:
 	player = target_player
 	spawn_position = initial_spawn
-	player.global_position = spawn_position
+	if player.has_method("reset_state"):
+		player.reset_state(spawn_position)
+	else:
+		player.global_position = spawn_position
 	
 	if not player.interaction_performed.is_connected(_on_player_interaction):
 		player.interaction_performed.connect(_on_player_interaction)
