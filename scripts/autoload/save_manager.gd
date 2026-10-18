@@ -63,6 +63,29 @@ func get_best_time(level_idx: int) -> float:
 		return float(best_times[str(level_idx)])
 	return 0.0
 
+func get_level_stars(level_idx: int) -> int:
+	var best := get_best_loops(level_idx)
+	if best <= 0:
+		return 0
+	var par := 2
+	if ResourceLoader.exists("res://scripts/world/chamber_database.gd"):
+		var db_class = load("res://scripts/world/chamber_database.gd")
+		if db_class and db_class.has_method("get_par_loops"):
+			par = db_class.get_par_loops(level_idx)
+	if best <= par:
+		return 3
+	elif best <= par + 1:
+		return 2
+	else:
+		return 1
+
+func get_total_stars() -> int:
+	var total := 0
+	var max_l := GameManager.TOTAL_LEVELS if GameManager else 50
+	for i in range(1, max_l + 1):
+		total += get_level_stars(i)
+	return total
+
 func record_lore_discovered(log_id: String) -> void:
 	if not discovered_lore.has(log_id):
 		discovered_lore.append(log_id)
