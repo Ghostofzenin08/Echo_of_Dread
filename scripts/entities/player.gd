@@ -55,20 +55,24 @@ func _try_interact() -> void:
 	if nearby_interactables.is_empty():
 		return
 		
+	# Purge invalid or queued-for-deletion areas
+	nearby_interactables = nearby_interactables.filter(func(a): return is_instance_valid(a) and not a.is_queued_for_deletion())
+	if nearby_interactables.is_empty():
+		return
+		
 	# Pick the closest interactable
 	var closest: Area2D = null
 	var min_dist := INF
 	for area in nearby_interactables:
-		if is_instance_valid(area):
-			var dist := global_position.distance_to(area.global_position)
-			if dist < min_dist:
-				min_dist = dist
-				closest = area
+		var dist := global_position.distance_to(area.global_position)
+		if dist < min_dist:
+			min_dist = dist
+			closest = area
 				
 	if closest and closest.has_method("interact"):
 		closest.interact(self)
 		interaction_performed.emit(closest)
-	elif closest and closest.get_parent() and closest.get_parent().has_method("interact"):
+	elif closest and closest.get_parent() and is_instance_valid(closest.get_parent()) and closest.get_parent().has_method("interact"):
 		closest.get_parent().interact(self)
 		interaction_performed.emit(closest.get_parent())
 
