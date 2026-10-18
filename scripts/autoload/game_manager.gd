@@ -9,7 +9,7 @@ signal narrative_closed
 signal loop_reset_requested
 signal echoes_cleared_requested
 
-const TOTAL_LEVELS: int = 4
+const TOTAL_LEVELS: int = 50
 
 var current_level_index: int = 1
 var is_narrative_open: bool = false
@@ -52,7 +52,9 @@ func start_game() -> void:
 
 func load_level(level_idx: int) -> void:
 	current_level_index = clampi(level_idx, 1, TOTAL_LEVELS)
-	var scene_path: String = LEVEL_SCENE_PATHS.get(current_level_index, "res://scenes/ui/main_menu.tscn")
+	var scene_path: String = LEVEL_SCENE_PATHS.get(current_level_index, "")
+	if scene_path.is_empty() or not ResourceLoader.exists(scene_path):
+		scene_path = "res://scenes/levels/chamber_runner.tscn"
 	var err := get_tree().change_scene_to_file(scene_path)
 	if err == OK:
 		_emit_level_started_deferred.call_deferred(current_level_index)
