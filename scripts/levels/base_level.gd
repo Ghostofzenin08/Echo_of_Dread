@@ -30,6 +30,7 @@ func _ready() -> void:
 		
 	_setup_tactile_camera()
 	_setup_post_processing()
+	_setup_touch_controls()
 	_connect_interactable_trauma()
 		
 	if game_hud:
@@ -83,6 +84,14 @@ func _setup_post_processing() -> void:
 			_shader_rect.material = _shader_material
 			
 		post_process_layer.add_child(_shader_rect)
+
+func _setup_touch_controls() -> void:
+	if get_node_or_null("TouchControls") == null:
+		var touch_scene := load("res://scenes/ui/touch_controls.tscn") as PackedScene
+		if touch_scene:
+			var touch_inst := touch_scene.instantiate()
+			touch_inst.name = "TouchControls"
+			add_child(touch_inst)
 
 func _connect_interactable_trauma() -> void:
 	for child in find_children("*", "", true, false):
