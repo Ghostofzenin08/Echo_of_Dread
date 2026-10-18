@@ -46,6 +46,13 @@ func _ready() -> void:
 	test_star_rating_and_retention_system()
 	test_chamber_runner_dynamic_loading()
 	test_level_select_sector_tabs()
+	test_sound_manager_celebrations()
+	test_save_manager_touch_controls_setting()
+	test_settings_menu_touch_controls_toggle()
+	test_mobile_virtual_joystick()
+	test_mobile_touch_controls_overlay()
+	test_chamber_clear_modal()
+	test_chamber_runner_sector_palette()
 	
 	print("==================================================")
 	print("TESTS COMPLETED: %d / %d PASSED" % [passed_tests, total_tests])
@@ -1106,5 +1113,135 @@ func test_level_select_sector_tabs() -> void:
 	_assert_test(ls.grid_container.get_child_count() == 10, "LevelSelect: Sector 3 populates 10 chamber buttons")
 	
 	ls.queue_free()
+
+func test_sound_manager_celebrations() -> void:
+	_assert_test(SoundManager._sounds.has("star_ding"), "SoundManager: Has star_ding SFX in library")
+	_assert_test(SoundManager._sounds.has("star_3_fanfare"), "SoundManager: Has star_3_fanfare SFX in library")
+	_assert_test(SoundManager._sounds.has("record_break"), "SoundManager: Has record_break SFX in library")
+
+func test_save_manager_touch_controls_setting() -> void:
+	var original_touch = SaveManager.get_setting("touch_controls", false)
+	SaveManager.set_setting("touch_controls", true)
+	_assert_test(SaveManager.get_setting("touch_controls") == true, "SaveManager: touch_controls can be set to true")
+	SaveManager.set_setting("touch_controls", false)
+	_assert_test(SaveManager.get_setting("touch_controls") == false, "SaveManager: touch_controls can be set to false")
+	SaveManager.set_setting("touch_controls", original_touch)
+
+func test_settings_menu_touch_controls_toggle() -> void:
+	var sm_scene := load("res://scenes/ui/settings_menu.tscn") as PackedScene
+	var sm = sm_scene.instantiate()
+	add_child(sm)
+	sm._ensure_node_refs()
+	
+	_assert_test(sm.touch_controls_toggle != null, "SettingsMenu: TouchControlsToggle CheckBox present")
+	sm._on_touch_controls_toggled(true)
+	_assert_test(SaveManager.get_setting("touch_controls") == true, "SettingsMenu: Toggling touch controls updates SaveManager")
+	sm._on_touch_controls_toggled(false)
+	_assert_test(SaveManager.get_setting("touch_controls") == false, "SettingsMenu: Untoggling touch controls updates SaveManager")
+	
+	sm.queue_free()
+
+func test_mobile_virtual_joystick() -> void:
+	const MobileVirtualJoystickClass = preload("res://scripts/ui/virtual_joystick.gd")
+	var vj = MobileVirtualJoystickClass.new()
+	add_child(vj)
+	vj.size = Vector2(160, 160)
+	vj._update_center()
+	
+	_assert_test(vj.get_direction() == Vector2.ZERO, "VirtualJoystick: Initial direction is zero")
+	
+	# Simulate drag right
+	vj._update_stick(vj._center_pos + Vector2(50, 0))
+	_assert_test(vj.get_direction().x > 0.0, "VirtualJoystick: Dragging right produces positive X direction")
+	_assert_test(Input.is_action_pressed("move_right"), "VirtualJoystick: Input action move_right is pressed")
+	
+	# Simulate drag up
+	vj._update_stick(vj._center_pos + Vector2(0, -50))
+	_assert_test(vj.get_direction().y < 0.0, "VirtualJoystick: Dragging up produces negative Y direction")
+	_assert_test(Input.is_action_pressed("move_up"), "VirtualJoystick: Input action move_up is pressed")
+	
+	# Reset stick
+	vj._reset_stick()
+	_assert_test(vj.get_direction() == Vector2.ZERO, "VirtualJoystick: Reset stick returns direction to zero")
+	_assert_test(not Input.is_action_pressed("move_right") and not Input.is_action_pressed("move_up"), "VirtualJoystick: Reset stick releases all movement input actions")
+	
+	vj.queue_free()
+
+func test_mobile_touch_controls_overlay() -> void:
+	var tc_scene := load("res://scenes/ui/touch_controls.tscn") as PackedScene
+	_assert_test(tc_scene != null, "TouchControls: Scene loads successfully")
+	var tc = tc_scene.instantiate()
+	add_child(tc)
+	
+	_assert_test(tc.joystick_container != null, "TouchControls: VirtualJoystick container present")
+	_assert_test(tc.interact_btn != null, "TouchControls: Interact button present")
+	_assert_test(tc.loop_btn != null, "TouchControls: Loop rewind button present")
+	_assert_test(tc.clear_btn != null, "TouchControls: Clear echoes button present")
+	_assert_test(tc.pause_btn != null, "TouchControls: Pause button present")
+	
+	tc.set_touch_enabled(true)
+	_assert_test(tc.is_touch_active() == true, "TouchControls: Enabled mode activates root control visibility")
+	tc.set_touch_enabled(false)
+	_assert_test(tc.is_touch_active() == false, "TouchControls: Disabled mode hides root control visibility")
+	
+	tc.queue_free()
+
+func test_chamber_clear_modal() -> void:
+	var ccm_scene := load("res://scenes/ui/chamber_clear_modal.tscn") as PackedScene
+	_assert_test(ccm_scene != null, "ChamberClearModal: Scene loads successfully")
+	var ccm = ccm_scene.instantiate()
+	add_child(ccm)
+	
+	_assert_test(ccm.title_label != null, "ChamberClearModal: Title label present")
+	_assert_test(ccm.next_button != null, "ChamberClearModal: Next button present")
+	_assert_test(ccm.retry_button != null, "ChamberClearModal: Retry button present")
+	_assert_test(ccm.select_button != null, "ChamberClearModal: Sector select button present")
+	
+	ccm.display_results(7, 2, 18.5, 2, true, "log_02")
+	_assert_test(ccm.visible == true, "ChamberClearModal: display_results makes modal visible")
+	_assert_test(ccm.title_label.text.contains("CHAMBER 07 SECURED"), "ChamberClearModal: Chamber title formatted properly")
+	_assert_test(ccm.earned_stars == 3, "ChamberClearModal: Completing in par_loops awards 3 stars")
+	_assert_test(ccm.record_badge.visible == true, "ChamberClearModal: Record badge visible for new record")
+	_assert_test(ccm.lore_badge.visible == true and ccm.lore_badge.text.contains("LOG_02"), "ChamberClearModal: Lore unlock badge decoded")
+	
+	ccm.queue_free()
+
+func test_chamber_runner_sector_palette() -> void:
+	var runner_scene := load("res://scenes/levels/chamber_runner.tscn") as PackedScene
+	
+	# Sector 1 (Alpha)
+	var r1 = runner_scene.instantiate()
+	r1.level_number_override = 1
+	add_child(r1)
+	_assert_test(r1.room_builder.wall_border_color == Color(0.30, 0.60, 0.85, 1.0), "ChamberRunner: Sector 1 styled with Alpha cyan palette")
+	r1.queue_free()
+	
+	# Sector 2 (Beta)
+	var r2 = runner_scene.instantiate()
+	r2.level_number_override = 15
+	add_child(r2)
+	_assert_test(r2.room_builder.wall_border_color == Color(0.85, 0.55, 0.15, 1.0), "ChamberRunner: Sector 2 styled with Beta amber palette")
+	r2.queue_free()
+	
+	# Sector 3 (Gamma)
+	var r3 = runner_scene.instantiate()
+	r3.level_number_override = 25
+	add_child(r3)
+	_assert_test(r3.room_builder.wall_border_color == Color(0.75, 0.35, 0.90, 1.0), "ChamberRunner: Sector 3 styled with Gamma amethyst palette")
+	r3.queue_free()
+	
+	# Sector 4 (Delta)
+	var r4 = runner_scene.instantiate()
+	r4.level_number_override = 35
+	add_child(r4)
+	_assert_test(r4.room_builder.wall_border_color == Color(0.85, 0.20, 0.25, 1.0), "ChamberRunner: Sector 4 styled with Delta crimson palette")
+	r4.queue_free()
+	
+	# Sector 5 (Omega)
+	var r5 = runner_scene.instantiate()
+	r5.level_number_override = 45
+	add_child(r5)
+	_assert_test(r5.room_builder.wall_border_color == Color(0.95, 0.85, 0.35, 1.0), "ChamberRunner: Sector 5 styled with Omega singularity gold palette")
+	r5.queue_free()
 
 
