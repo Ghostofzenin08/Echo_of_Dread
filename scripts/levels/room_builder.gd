@@ -19,6 +19,7 @@ func _ready() -> void:
 
 func rebuild_collision() -> void:
 	if _static_body and is_instance_valid(_static_body):
+		remove_child(_static_body)
 		_static_body.queue_free()
 		_static_body = null
 	_build_collision()
