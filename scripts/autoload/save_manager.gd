@@ -17,11 +17,14 @@ var settings: Dictionary = {
 	"sfx_volume": 1.0,
 	"music_volume": 1.0,
 	"screen_shake": true,
-	"crt_shader": true
+	"crt_shader": true,
+	"touch_controls": false
 }
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	if OS.has_feature("mobile") or OS.has_feature("touchscreen") or OS.has_feature("web_android") or OS.has_feature("web_ios"):
+		settings["touch_controls"] = true
 	load_data()
 
 func is_level_unlocked(level_idx: int) -> bool:
@@ -179,7 +182,8 @@ func reset_settings() -> void:
 		"sfx_volume": 1.0,
 		"music_volume": 1.0,
 		"screen_shake": true,
-		"crt_shader": true
+		"crt_shader": true,
+		"touch_controls": OS.has_feature("mobile") or OS.has_feature("touchscreen") or OS.has_feature("web_android") or OS.has_feature("web_ios")
 	}
 	settings_changed.emit()
 
