@@ -53,6 +53,7 @@ func _ready() -> void:
 	test_mobile_touch_controls_overlay()
 	test_chamber_clear_modal()
 	test_chamber_runner_sector_palette()
+	test_engine_hardening_and_modal_pausing()
 	
 	print("==================================================")
 	print("TESTS COMPLETED: %d / %d PASSED" % [passed_tests, total_tests])
@@ -1249,5 +1250,64 @@ func test_chamber_runner_sector_palette() -> void:
 	add_child(r5)
 	_assert_test(r5.room_builder.wall_border_color == Color(0.95, 0.85, 0.35, 1.0), "ChamberRunner: Sector 5 styled with Omega singularity gold palette")
 	r5.queue_free()
+
+func test_engine_hardening_and_modal_pausing() -> void:
+	# 1. Test GameHUD chamber cleared pauses tree and modal unpauses
+	var hud_scene := load("res://scenes/ui/game_hud.tscn") as PackedScene
+	var hud = hud_scene.instantiate()
+	add_child(hud)
+	get_tree().paused = false
+	
+	hud._on_chamber_cleared({"level_index": 1, "loop_count": 1, "elapsed_time": 12.0, "par_loops": 2, "is_new_record": true})
+	_assert_test(get_tree().paused == true, "Hardening: GameHUD pauses scene tree on chamber cleared")
+	_assert_test(hud.chamber_clear_modal.visible == true, "Hardening: ChamberClearModal is visible on clear")
+	
+	get_tree().paused = false
+	_assert_test(get_tree().paused == false, "Hardening: Scene tree unpauses cleanly")
+	
+	# 2. Test Interception flash preservation against cyan rewind overwrite
+	hud.trigger_interception_flash()
+	_assert_test(hud._is_interception_active == true, "Hardening: Drone interception flash active flag set")
+	_assert_test(hud.rewind_flash.color.r > 0.8, "Hardening: Interception flash is red chromatic tone")
+	
+	hud.trigger_rewind_effect()
+	_assert_test(hud._is_interception_active == true, "Hardening: Interception active flag preserved against rewind")
+	_assert_test(hud.rewind_flash.color.r > 0.8, "Hardening: Interception flash not overwritten by cyan rewind")
+	hud.queue_free()
+	
+	# 3. Test TouchControls and VirtualJoystick input release
+	var touch_scene := load("res://scenes/ui/touch_controls.tscn") as PackedScene
+	var touch = touch_scene.instantiate()
+	add_child(touch)
+	
+	Input.action_press("interact")
+	_assert_test(Input.is_action_pressed("interact") == true, "Hardening: Test action interact is pressed")
+	touch._release_all_touch_actions()
+	_assert_test(Input.is_action_pressed("interact") == false, "Hardening: TouchControls releases interact action")
+	
+	var joy_script = load("res://scripts/ui/virtual_joystick.gd")
+	var joy = joy_script.new()
+	add_child(joy)
+	Input.action_press("move_right")
+	_assert_test(Input.is_action_pressed("move_right") == true, "Hardening: Test action move_right is pressed")
+	joy._reset_stick()
+	_assert_test(Input.is_action_pressed("move_right") == false, "Hardening: VirtualJoystick releases move_right action on reset")
+	touch.queue_free()
+	joy.queue_free()
+	
+	# 4. Test SoundManager self-healing
+	SoundManager.cleanup()
+	_assert_test(SoundManager._sounds.is_empty(), "Hardening: SoundManager cleared sound library on cleanup")
+	SoundManager.play_sfx("click")
+	_assert_test(not SoundManager._sounds.is_empty(), "Hardening: SoundManager self-heals sound library if invoked after cleanup")
+	_assert_test(SoundManager._sounds.has("click"), "Hardening: SoundManager sound library has click SFX restored")
+	
+	# 5. Test VictoryScreen process mode
+	var victory_scene := load("res://scenes/ui/victory_screen.tscn") as PackedScene
+	var victory = victory_scene.instantiate()
+	add_child(victory)
+	_assert_test(victory.process_mode == Node.PROCESS_MODE_ALWAYS, "Hardening: VictoryScreen runs in PROCESS_MODE_ALWAYS")
+	victory.queue_free()
+
 
 
