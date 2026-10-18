@@ -52,7 +52,9 @@ func _build_chamber(data: Dictionary) -> void:
 	for w in walls_raw:
 		if w is Rect2:
 			walls.append(w)
+	room_builder.room_size = r_size
 	room_builder.interior_walls = walls
+	room_builder.rebuild_collision()
 	
 	# Apply sector atmospheric color styling
 	var sector_idx := int(ceili(float(level_number) / 10.0))
