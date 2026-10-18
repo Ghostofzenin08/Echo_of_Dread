@@ -225,6 +225,8 @@ func cleanup() -> void:
 	_sounds.clear()
 
 func play_sfx(sound_name: String, pitch_scale: float = 1.0, volume_db: float = 0.0, bus_name: String = "SFX", pitch_variance: float = 0.05) -> void:
+	if _sounds.is_empty():
+		_build_sound_library()
 	if not _sounds.has(sound_name):
 		return
 	var stream: AudioStreamWAV = _sounds[sound_name]
@@ -248,6 +250,8 @@ func play_sfx(sound_name: String, pitch_scale: float = 1.0, volume_db: float = 0
 	player.play()
 
 func play_sfx_at_position(sound_name: String, world_pos: Vector2, pitch_scale: float = 1.0, volume_db: float = 0.0, bus_name: String = "SFX", pitch_variance: float = 0.05) -> void:
+	if _sounds.is_empty():
+		_build_sound_library()
 	if not _sounds.has(sound_name):
 		return
 	var stream: AudioStreamWAV = _sounds[sound_name]
