@@ -53,6 +53,11 @@ func _on_pause_pressed() -> void:
 	ev_press.action = "pause"
 	ev_press.pressed = true
 	Input.parse_input_event(ev_press)
+	
+	var ev_release := InputEventAction.new()
+	ev_release.action = "pause"
+	ev_release.pressed = false
+	Input.parse_input_event(ev_release)
 
 func _update_visibility_from_settings() -> void:
 	if SaveManager:
