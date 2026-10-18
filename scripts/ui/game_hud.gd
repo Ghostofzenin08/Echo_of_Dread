@@ -99,19 +99,30 @@ func update_echo_count(count: int, max_echoes: int = 5) -> void:
 	if echo_label:
 		echo_label.text = "ECHOES: %d / %d" % [count, max_echoes]
 
+var _is_interception_active: bool = false
+var _flash_tween: Tween = null
+
 func trigger_rewind_effect() -> void:
 	if not rewind_flash:
 		return
+	if _is_interception_active:
+		return
+	if _flash_tween and _flash_tween.is_valid():
+		_flash_tween.kill()
 	rewind_flash.color = Color(0.3, 0.85, 1.0, 0.6)
-	var tween := create_tween()
-	tween.tween_property(rewind_flash, "color", Color(0.2, 0.8, 1.0, 0.0), 0.5)
+	_flash_tween = create_tween()
+	_flash_tween.tween_property(rewind_flash, "color", Color(0.2, 0.8, 1.0, 0.0), 0.5)
 
 func trigger_interception_flash() -> void:
 	if not rewind_flash:
 		return
+	_is_interception_active = true
+	if _flash_tween and _flash_tween.is_valid():
+		_flash_tween.kill()
 	rewind_flash.color = Color(1.0, 0.15, 0.2, 0.75)
-	var tween := create_tween()
-	tween.tween_property(rewind_flash, "color", Color(1.0, 0.1, 0.2, 0.0), 0.65)
+	_flash_tween = create_tween()
+	_flash_tween.tween_property(rewind_flash, "color", Color(1.0, 0.1, 0.2, 0.0), 0.65)
+	_flash_tween.finished.connect(func(): _is_interception_active = false)
 
 func _on_narrative_opened(log_data: Dictionary) -> void:
 	if not terminal_modal:
@@ -137,6 +148,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _on_chamber_cleared(data: Dictionary) -> void:
 	if not chamber_clear_modal:
 		return
+	get_tree().paused = true
 	var lvl: int = data.get("level_index", 1)
 	var loops: int = data.get("loop_count", 1)
 	var time: float = data.get("elapsed_time", 0.0)
@@ -146,10 +158,13 @@ func _on_chamber_cleared(data: Dictionary) -> void:
 	chamber_clear_modal.display_results(lvl, loops, time, par, is_new)
 
 func _on_modal_next() -> void:
+	get_tree().paused = false
 	GameManager.advance_to_next_level()
 
 func _on_modal_retry() -> void:
+	get_tree().paused = false
 	GameManager.restart_current_level()
 
 func _on_modal_select() -> void:
+	get_tree().paused = false
 	GameManager.open_level_select()
