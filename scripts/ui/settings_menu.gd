@@ -18,6 +18,7 @@ signal reset_completed
 
 @onready var screen_shake_toggle: CheckBox = find_child("ScreenShakeToggle", true, false) as CheckBox
 @onready var crt_shader_toggle: CheckBox = find_child("CRTShaderToggle", true, false) as CheckBox
+@onready var touch_controls_toggle: CheckBox = find_child("TouchControlsToggle", true, false) as CheckBox
 
 @onready var reset_button: Button = find_child("ResetButton", true, false) as Button
 @onready var back_button: Button = find_child("BackButton", true, false) as Button
@@ -43,6 +44,8 @@ func _ensure_node_refs() -> void:
 		screen_shake_toggle = find_child("ScreenShakeToggle", true, false) as CheckBox
 	if crt_shader_toggle == null:
 		crt_shader_toggle = find_child("CRTShaderToggle", true, false) as CheckBox
+	if touch_controls_toggle == null:
+		touch_controls_toggle = find_child("TouchControlsToggle", true, false) as CheckBox
 	if reset_button == null:
 		reset_button = find_child("ResetButton", true, false) as Button
 	if back_button == null:
@@ -75,6 +78,8 @@ func _bind_controls() -> void:
 		screen_shake_toggle.toggled.connect(_on_screen_shake_toggled)
 	if crt_shader_toggle and not crt_shader_toggle.toggled.is_connected(_on_crt_shader_toggled):
 		crt_shader_toggle.toggled.connect(_on_crt_shader_toggled)
+	if touch_controls_toggle and not touch_controls_toggle.toggled.is_connected(_on_touch_controls_toggled):
+		touch_controls_toggle.toggled.connect(_on_touch_controls_toggled)
 		
 	if reset_button and not reset_button.pressed.is_connected(_on_reset_pressed):
 		reset_button.pressed.connect(_on_reset_pressed)
@@ -94,6 +99,7 @@ func load_current_settings() -> void:
 	var music_pct := int(roundf(float(SaveManager.get_setting("music_volume", 1.0)) * 100.0))
 	var shake := bool(SaveManager.get_setting("screen_shake", true))
 	var crt := bool(SaveManager.get_setting("crt_shader", true))
+	var touch := bool(SaveManager.get_setting("touch_controls", false))
 	
 	if master_slider:
 		master_slider.set_value_no_signal(master_pct)
@@ -114,6 +120,8 @@ func load_current_settings() -> void:
 		screen_shake_toggle.set_pressed_no_signal(shake)
 	if crt_shader_toggle:
 		crt_shader_toggle.set_pressed_no_signal(crt)
+	if touch_controls_toggle:
+		touch_controls_toggle.set_pressed_no_signal(touch)
 
 func _on_master_slider_changed(value: float) -> void:
 	var linear := clampf(value / 100.0, 0.0, 1.0)
@@ -143,6 +151,10 @@ func _on_screen_shake_toggled(toggled_on: bool) -> void:
 func _on_crt_shader_toggled(toggled_on: bool) -> void:
 	if SaveManager:
 		SaveManager.set_setting("crt_shader", toggled_on)
+
+func _on_touch_controls_toggled(toggled_on: bool) -> void:
+	if SaveManager:
+		SaveManager.set_setting("touch_controls", toggled_on)
 
 func _on_reset_pressed() -> void:
 	SoundManager.play_sfx("click")
