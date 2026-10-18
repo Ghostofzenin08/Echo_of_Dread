@@ -17,6 +17,13 @@ func _ready() -> void:
 	_build_collision()
 	queue_redraw()
 
+func rebuild_collision() -> void:
+	if _static_body and is_instance_valid(_static_body):
+		_static_body.queue_free()
+		_static_body = null
+	_build_collision()
+	queue_redraw()
+
 func _build_collision() -> void:
 	_static_body = StaticBody2D.new()
 	_static_body.collision_layer = 1 # World
