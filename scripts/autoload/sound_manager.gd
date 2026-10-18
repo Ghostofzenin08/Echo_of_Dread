@@ -128,13 +128,22 @@ func _get_available_spatial_player() -> AudioStreamPlayer2D:
 
 func stop_all() -> void:
 	for player in _audio_players:
-		player.stop()
-		player.stream = null
+		if is_instance_valid(player):
+			player.stop()
+			player.stream = null
 	for p2 in _spatial_players:
-		p2.stop()
-		p2.stream = null
+		if is_instance_valid(p2):
+			p2.stop()
+			p2.stream = null
 	stop_ambient_drone()
+	if _ambient_drone_player and is_instance_valid(_ambient_drone_player):
+		_ambient_drone_player.stream = null
+	_bgm_stream = null
+	_drone_stream = null
 	reset_urgency()
+
+func _exit_tree() -> void:
+	cleanup()
 
 const BGM_PATH = "res://assets/audio/background_music.mp3"
 var _bgm_stream: AudioStream = null
