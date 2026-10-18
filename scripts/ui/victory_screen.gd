@@ -5,6 +5,7 @@ extends Control
 @onready var menu_btn: Button = $Panel/VBox/MenuButton
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	if has_node("Panel/VBox/LoreText") and SaveManager:
 		var lore_label: RichTextLabel = $Panel/VBox/LoreText
 		var stats_str := "\n\n[color=#33e699][b]— RESEARCH PROTOCOL SUMMARY —[/b][/color]\n"
@@ -31,3 +32,13 @@ func _ready() -> void:
 			SoundManager.play_sfx("click")
 			GameManager.return_to_main_menu()
 		)
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
+		SoundManager.play_sfx("click")
+		GameManager.start_game()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("pause") or event.is_action_pressed("ui_cancel"):
+		SoundManager.play_sfx("click")
+		GameManager.return_to_main_menu()
+		get_viewport().set_input_as_handled()
