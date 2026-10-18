@@ -51,3 +51,9 @@ func _on_how_to_play_pressed() -> void:
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if guide_modal and guide_modal.visible:
+		if event.is_action_pressed("pause") or event.is_action_pressed("ui_cancel") or event.is_action_pressed("interact"):
+			guide_modal.visible = false
+			get_viewport().set_input_as_handled()
