@@ -1,6 +1,7 @@
 extends Node2D
 
 const SecurityDroneClass = preload("res://scripts/entities/security_drone.gd")
+const ChamberDatabaseClass = preload("res://scripts/world/chamber_database.gd")
 
 var total_tests := 0
 var passed_tests := 0
@@ -41,6 +42,10 @@ func _ready() -> void:
 	test_settings_menu_component()
 	test_settings_persistence_roundtrip()
 	test_project_branding_and_title()
+	test_chamber_database_and_50_levels()
+	test_star_rating_and_retention_system()
+	test_chamber_runner_dynamic_loading()
+	test_level_select_sector_tabs()
 	
 	print("==================================================")
 	print("TESTS COMPLETED: %d / %d PASSED" % [passed_tests, total_tests])
@@ -73,11 +78,15 @@ func test_autoloads() -> void:
 	_assert_test(SaveManager != null, "Autoload: SaveManager is initialized")
 
 func test_narrative_database() -> void:
-	var logs := ["log_01", "log_02", "log_03", "log_04"]
+	var logs := [
+		"log_01", "log_02", "log_03", "log_04", "log_05",
+		"log_06", "log_07", "log_08", "log_09", "log_10"
+	]
 	for lid in logs:
 		var data: Dictionary = NarrativeData.get_log(lid)
 		var valid: bool = data.has("title") and data.has("content") and data.content.length() > 20
 		_assert_test(valid, "Narrative: Log entry '%s' is complete" % lid)
+	_assert_test(NarrativeData.get_log_count() == 10, "Narrative: Total story logs is exactly 10")
 
 func test_action_recorder_and_interpolation() -> void:
 	var rec := ActionRecorder.new()
@@ -492,7 +501,8 @@ func test_scene_instantiations() -> void:
 		"res://scenes/levels/level_01.tscn",
 		"res://scenes/levels/level_02.tscn",
 		"res://scenes/levels/level_03.tscn",
-		"res://scenes/levels/level_04.tscn"
+		"res://scenes/levels/level_04.tscn",
+		"res://scenes/levels/chamber_runner.tscn"
 	]
 	
 	for path in scenes_to_check:
@@ -524,10 +534,14 @@ func test_save_manager_persistence() -> void:
 	SaveManager.record_level_completion(1, 5, 29.0)
 	_assert_test(SaveManager.get_best_loops(1) == 2, "SaveManager: Preserves superior loop count of 2")
 	
-	# Completing final Chamber 4 should clamp to TOTAL_LEVELS and NOT unlock Chamber 5 (BUG-02)
+	# Completing Chamber 4 unlocks Chamber 5
 	SaveManager.record_level_completion(4, 1, 19.5)
-	_assert_test(SaveManager.is_level_unlocked(5) == false, "SaveManager: Completing Chamber 4 does not unlock nonexistent Chamber 5")
-	_assert_test(SaveManager.unlocked_levels <= 4, "SaveManager: Unlocked levels clamped to TOTAL_LEVELS (4)")
+	_assert_test(SaveManager.is_level_unlocked(5) == true, "SaveManager: Completing Chamber 4 unlocks Chamber 5")
+	
+	# Completing final Chamber 50 should clamp to TOTAL_LEVELS and NOT unlock Chamber 51 (BUG-02)
+	SaveManager.record_level_completion(50, 1, 19.5)
+	_assert_test(SaveManager.is_level_unlocked(51) == false, "SaveManager: Completing Chamber 50 does not unlock nonexistent Chamber 51")
+	_assert_test(SaveManager.unlocked_levels <= 50, "SaveManager: Unlocked levels clamped to TOTAL_LEVELS (50)")
 	
 	# Test disk serialization & roundtrip
 	var saved := SaveManager.save_data()
@@ -1017,4 +1031,80 @@ func test_project_branding_and_title() -> void:
 	var title_lbl: Label = menu.find_child("Title", true, false) as Label
 	_assert_test(title_lbl != null and title_lbl.text == "ECHO OF DREAD", "MainMenu: Title label harmonized to 'ECHO OF DREAD'")
 	menu.free()
+
+func test_chamber_database_and_50_levels() -> void:
+	_assert_test(ChamberDatabaseClass.get_chamber_count() == 50, "ChamberDatabase: Exactly 50 chambers registered")
+	_assert_test(ChamberDatabaseClass.SECTORS.size() == 5, "ChamberDatabase: Exactly 5 sectors registered")
+	
+	for s_id in range(1, 6):
+		var chambers: Array = ChamberDatabaseClass.get_sector_chambers(s_id)
+		_assert_test(chambers.size() == 10, "ChamberDatabase: Sector %d contains exactly 10 chambers" % s_id)
+		
+	# Sample check specific chambers across all 5 sectors
+	for c_id in [1, 10, 20, 30, 40, 50]:
+		var data: Dictionary = ChamberDatabaseClass.get_chamber(c_id)
+		_assert_test(data.has("title") and data.title.length() > 5, "ChamberDatabase: Chamber %d has valid title" % c_id)
+		_assert_test(data.has("spawn_pos") and data.has("exit_pos"), "ChamberDatabase: Chamber %d has spawn and exit points" % c_id)
+		_assert_test(data.has("par_loops") and data.par_loops > 0, "ChamberDatabase: Chamber %d has positive par_loops" % c_id)
+		_assert_test(data.has("room_size") and data.room_size.x > 500, "ChamberDatabase: Chamber %d has valid room_size" % c_id)
+
+func test_star_rating_and_retention_system() -> void:
+	SaveManager.reset_all_progress()
+	
+	# Initial unplayed level has 0 stars
+	_assert_test(SaveManager.get_level_stars(1) == 0, "StarSystem: Uncompleted chamber yields 0 stars")
+	_assert_test(SaveManager.get_total_stars() == 0, "StarSystem: Total stars starts at 0")
+	
+	# Chamber 1 par is 1 loop
+	# Solved in 1 loop -> 3 Stars
+	SaveManager.record_level_completion(1, 1, 12.0)
+	_assert_test(SaveManager.get_level_stars(1) == 3, "StarSystem: Completing in par_loops yields 3 stars")
+	
+	# Chamber 2 par is 2 loops
+	# Solved in 3 loops (par + 1) -> 2 Stars
+	SaveManager.record_level_completion(2, 3, 24.0)
+	_assert_test(SaveManager.get_level_stars(2) == 2, "StarSystem: Completing in par_loops + 1 yields 2 stars")
+	
+	# Chamber 3 par is 2 loops
+	# Solved in 4 loops (par + 2) -> 1 Star
+	SaveManager.record_level_completion(3, 4, 28.0)
+	_assert_test(SaveManager.get_level_stars(3) == 1, "StarSystem: Completing above par_loops + 1 yields 1 star")
+	
+	_assert_test(SaveManager.get_total_stars() == 6, "StarSystem: Total stars accurately aggregates across chambers (3 + 2 + 1 = 6)")
+
+func test_chamber_runner_dynamic_loading() -> void:
+	var runner_scene := load("res://scenes/levels/chamber_runner.tscn") as PackedScene
+	_assert_test(runner_scene != null, "ChamberRunner: Scene loaded successfully")
+	
+	var runner = runner_scene.instantiate()
+	_assert_test(runner != null, "ChamberRunner: Instantiated cleanly")
+	runner.level_number_override = 5
+	runner.level_number = 5 # Sector 1 Chamber 05
+	add_child(runner)
+	
+	_assert_test(runner.chamber_title == "CHAMBER 05: SPLIT FREQUENCY", "ChamberRunner: Correct title loaded for Chamber 5")
+	_assert_test(runner.room_builder != null, "ChamberRunner: RoomBuilder attached")
+	_assert_test(runner.player != null, "ChamberRunner: Player instantiated")
+	_assert_test(runner.level_exit != null, "ChamberRunner: LevelExit instantiated")
+	_assert_test(runner._doors_by_id.size() > 0, "ChamberRunner: Doors dynamically instantiated and registered")
+	_assert_test(runner._triggers_by_id.size() > 0, "ChamberRunner: Triggers dynamically instantiated and registered")
+	
+	runner.queue_free()
+
+func test_level_select_sector_tabs() -> void:
+	var ls_scene := load("res://scenes/ui/level_select.tscn") as PackedScene
+	var ls = ls_scene.instantiate()
+	add_child(ls)
+	
+	_assert_test(ls.sector_container != null, "LevelSelect: Sector tabs container present")
+	_assert_test(ls.sector_container.get_child_count() == 5, "LevelSelect: 5 Sector tabs created")
+	_assert_test(ls.grid_container.get_child_count() == 10, "LevelSelect: 10 chamber buttons created for active sector")
+	
+	# Switch to Sector 3 (Gamma)
+	ls.current_sector = 3
+	ls._update_sector_view()
+	_assert_test(ls.grid_container.get_child_count() == 10, "LevelSelect: Sector 3 populates 10 chamber buttons")
+	
+	ls.queue_free()
+
 
