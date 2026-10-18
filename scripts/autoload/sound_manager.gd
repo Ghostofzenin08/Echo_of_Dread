@@ -275,6 +275,9 @@ func _build_sound_library() -> void:
 	_sounds["alarm"] = _generate_tone(750.0, 0.18, "saw", 0.35, 600.0)
 	_sounds["drone_alert"] = _generate_sweep(450.0, 1400.0, 0.22, "saw", 0.45)
 	_sounds["player_caught"] = _generate_sweep(1200.0, 60.0, 0.48, "square", 0.55)
+	_sounds["star_ding"] = _generate_tone(1318.5, 0.16, "sine", 0.45, 1760.0)
+	_sounds["star_3_fanfare"] = _generate_melody([587.33, 739.99, 880.0, 1174.66], 0.14, 0.45)
+	_sounds["record_break"] = _generate_melody([659.25, 783.99, 987.77, 1318.5], 0.09, 0.4)
 
 func _generate_tone(start_freq: float, duration: float, wave_type: String, amplitude: float = 0.5, end_freq: float = -1.0) -> AudioStreamWAV:
 	var sample_rate := 22050
