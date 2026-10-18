@@ -133,9 +133,9 @@ static func get_chamber(chamber_id: int) -> Dictionary:
 			base["title"] = "CHAMBER 05: SPLIT FREQUENCY"
 			base["par_loops"] = 2
 			base["interior_walls"] = [
-				Rect2(280, 32, 32, 656),
-				Rect2(280, 344, 720, 32),
-				Rect2(1000, 32, 32, 320), Rect2(1000, 400, 32, 288)
+				Rect2(280, 32, 32, 100), Rect2(280, 228, 32, 264), Rect2(280, 588, 32, 100),
+				Rect2(312, 344, 588, 32),
+				Rect2(1000, 32, 32, 296), Rect2(1000, 392, 32, 296)
 			]
 			base["plates"] = [
 				{"id": "plate_north", "pos": Vector2(640, 180), "target": "door_exit"},
@@ -143,6 +143,11 @@ static func get_chamber(chamber_id: int) -> Dictionary:
 			]
 			base["doors"] = [{"id": "door_exit", "pos": Vector2(1000, 360), "rot": 1.5708, "logic": "AND", "req_count": 2}]
 			base["drones"] = [{"pos": Vector2(450, 180), "waypoints": PackedVector2Array([Vector2.ZERO, Vector2(380, 0)]), "patrol_speed": 80.0}]
+			base["wires"] = [
+				{"trigger_id": "plate_north", "from": Vector2(640, 180), "to": Vector2(1000, 345)},
+				{"trigger_id": "plate_south", "from": Vector2(640, 520), "to": Vector2(1000, 375)}
+			]
+
 		6:
 			base["title"] = "CHAMBER 06: THE SENTRY GAUNTLET"
 			base["par_loops"] = 2
@@ -273,7 +278,7 @@ static func get_chamber(chamber_id: int) -> Dictionary:
 		15:
 			base["title"] = "CHAMBER 15: PRESSURE SIPHON"
 			base["par_loops"] = 3
-			base["interior_walls"] = [Rect2(520, 32, 32, 656)]
+			base["interior_walls"] = [Rect2(520, 32, 32, 264), Rect2(520, 424, 32, 264)]
 			base["plates"] = [{"id": "p_siphon", "pos": Vector2(300, 240), "target": "laser_siphon"}]
 			base["timed_buttons"] = [{"id": "btn_siphon", "pos": Vector2(300, 480), "duration": 5.0, "target": "door_siphon"}]
 			base["lasers"] = [{"id": "laser_siphon", "pos": Vector2(520, 360), "length": 128.0, "orientation": "vertical", "target": "p_siphon"}]
@@ -344,8 +349,8 @@ static func get_chamber(chamber_id: int) -> Dictionary:
 			base["title"] = "CHAMBER 20: BETA APEX: THE TRANSFORMER"
 			base["par_loops"] = 4
 			base["interior_walls"] = [
-				Rect2(360, 32, 32, 656),
-				Rect2(800, 32, 32, 656)
+				Rect2(360, 32, 32, 258), Rect2(360, 430, 32, 258),
+				Rect2(800, 32, 32, 258), Rect2(800, 430, 32, 258)
 			]
 			base["timed_buttons"] = [
 				{"id": "b_trans_1", "pos": Vector2(200, 180), "duration": 6.0, "target": "las_trans_1"},
@@ -412,7 +417,8 @@ static func get_chamber(chamber_id: int) -> Dictionary:
 			base["title"] = "CHAMBER 25: CAUSAL BRIDGE"
 			base["par_loops"] = 3
 			base["interior_walls"] = [
-				Rect2(360, 32, 32, 656), Rect2(880, 32, 32, 656)
+				Rect2(360, 32, 32, 248), Rect2(360, 440, 32, 248),
+				Rect2(880, 32, 32, 248), Rect2(880, 440, 32, 248)
 			]
 			base["plates"] = [
 				{"id": "p_bridge_1", "pos": Vector2(200, 240), "target": "las_b1"},
@@ -438,7 +444,7 @@ static func get_chamber(chamber_id: int) -> Dictionary:
 		27:
 			base["title"] = "CHAMBER 27: THE DECOY CHAMBER"
 			base["par_loops"] = 3
-			base["interior_walls"] = [Rect2(540, 32, 32, 656)]
+			base["interior_walls"] = [Rect2(540, 32, 32, 258), Rect2(540, 430, 32, 258)]
 			base["timed_buttons"] = [{"id": "btn_decoy", "pos": Vector2(240, 540), "duration": 5.0, "target": "las_decoy"}]
 			base["lasers"] = [{"id": "las_decoy", "pos": Vector2(540, 360), "length": 140.0, "orientation": "vertical", "target": "btn_decoy"}]
 			base["doors"] = [{"id": "door_decoy", "pos": Vector2(980, 360), "rot": 1.5708, "logic": "AND", "req_count": 1}]
@@ -447,13 +453,17 @@ static func get_chamber(chamber_id: int) -> Dictionary:
 		28:
 			base["title"] = "CHAMBER 28: QUAD MATRIX"
 			base["par_loops"] = 4
-			base["interior_walls"] = [Rect2(624, 32, 32, 656), Rect2(32, 344, 1216, 32)]
+			base["interior_walls"] = [
+				Rect2(624, 32, 32, 100), Rect2(624, 228, 32, 264), Rect2(624, 588, 32, 100),
+				Rect2(240, 344, 384, 32), Rect2(656, 344, 304, 32),
+				Rect2(1040, 32, 32, 296), Rect2(1040, 392, 32, 296)
+			]
 			base["plates"] = [
 				{"id": "qm_1", "pos": Vector2(250, 180), "target": "door_qm"},
 				{"id": "qm_2", "pos": Vector2(950, 180), "target": "door_qm"},
 				{"id": "qm_3", "pos": Vector2(250, 540), "target": "door_qm"}
 			]
-			base["doors"] = [{"id": "door_qm", "pos": Vector2(950, 540), "rot": 0.0, "logic": "AND", "req_count": 3}]
+			base["doors"] = [{"id": "door_qm", "pos": Vector2(1040, 360), "rot": 1.5708, "logic": "AND", "req_count": 3}]
 			base["drones"] = [
 				{"pos": Vector2(400, 180), "waypoints": PackedVector2Array([Vector2.ZERO, Vector2(0, 120)]), "patrol_speed": 95.0},
 				{"pos": Vector2(800, 540), "waypoints": PackedVector2Array([Vector2.ZERO, Vector2(0, -120)]), "patrol_speed": 95.0}
@@ -517,7 +527,10 @@ static func get_chamber(chamber_id: int) -> Dictionary:
 		33:
 			base["title"] = "CHAMBER 33: THE GUILLOTINE"
 			base["par_loops"] = 4
-			base["interior_walls"] = [Rect2(360, 32, 32, 656), Rect2(720, 32, 32, 656)]
+			base["interior_walls"] = [
+				Rect2(360, 32, 32, 258), Rect2(360, 430, 32, 258),
+				Rect2(720, 32, 32, 258), Rect2(720, 430, 32, 258)
+			]
 			base["timed_buttons"] = [
 				{"id": "b_g1", "pos": Vector2(200, 200), "duration": 4.5, "target": "las_g1"},
 				{"id": "b_g2", "pos": Vector2(540, 540), "duration": 4.0, "target": "las_g2"}
@@ -556,7 +569,10 @@ static func get_chamber(chamber_id: int) -> Dictionary:
 		36:
 			base["title"] = "CHAMBER 36: PHANTOM GRID"
 			base["par_loops"] = 4
-			base["interior_walls"] = [Rect2(420, 32, 32, 656), Rect2(780, 32, 32, 656)]
+			base["interior_walls"] = [
+				Rect2(420, 32, 32, 258), Rect2(420, 430, 32, 258),
+				Rect2(780, 32, 32, 258), Rect2(780, 430, 32, 258)
+			]
 			base["timed_buttons"] = [
 				{"id": "b_pg1", "pos": Vector2(220, 200), "duration": 5.0, "target": "las_pg1"},
 				{"id": "b_pg2", "pos": Vector2(600, 520), "duration": 5.0, "target": "las_pg2"}
@@ -621,7 +637,9 @@ static func get_chamber(chamber_id: int) -> Dictionary:
 			base["title"] = "CHAMBER 40: DELTA APEX: THE CONTAINMENT SEAL"
 			base["par_loops"] = 5
 			base["interior_walls"] = [
-				Rect2(360, 32, 32, 656), Rect2(624, 32, 32, 656), Rect2(880, 32, 32, 656)
+				Rect2(360, 32, 32, 258), Rect2(360, 430, 32, 258),
+				Rect2(624, 32, 32, 258), Rect2(624, 430, 32, 258),
+				Rect2(880, 32, 32, 296), Rect2(880, 392, 32, 296)
 			]
 			base["timed_buttons"] = [
 				{"id": "b_cseal1", "pos": Vector2(200, 200), "duration": 5.0, "target": "las_cs1"},
@@ -655,7 +673,11 @@ static func get_chamber(chamber_id: int) -> Dictionary:
 		42:
 			base["title"] = "CHAMBER 42: CHRONAL CASCADE"
 			base["par_loops"] = 4
-			base["interior_walls"] = [Rect2(340, 32, 32, 656), Rect2(680, 32, 32, 656), Rect2(980, 32, 32, 656)]
+			base["interior_walls"] = [
+				Rect2(340, 32, 32, 258), Rect2(340, 430, 32, 258),
+				Rect2(680, 32, 32, 258), Rect2(680, 430, 32, 258),
+				Rect2(980, 32, 32, 258), Rect2(980, 430, 32, 258)
+			]
 			base["timed_buttons"] = [
 				{"id": "b_cc1", "pos": Vector2(180, 200), "duration": 5.0, "target": "las_cc1"},
 				{"id": "b_cc2", "pos": Vector2(510, 520), "duration": 5.0, "target": "las_cc2"},
@@ -683,13 +705,17 @@ static func get_chamber(chamber_id: int) -> Dictionary:
 		44:
 			base["title"] = "CHAMBER 44: THE GRAND HARMONIZER"
 			base["par_loops"] = 4
-			base["interior_walls"] = [Rect2(624, 32, 32, 656), Rect2(32, 344, 1216, 32)]
+			base["interior_walls"] = [
+				Rect2(624, 32, 32, 100), Rect2(624, 228, 32, 264), Rect2(624, 588, 32, 100),
+				Rect2(240, 344, 384, 32), Rect2(656, 344, 304, 32),
+				Rect2(1040, 32, 32, 296), Rect2(1040, 392, 32, 296)
+			]
 			base["timed_buttons"] = [
 				{"id": "b_gh1", "pos": Vector2(220, 180), "duration": 5.5, "target": "door_gh"},
 				{"id": "b_gh2", "pos": Vector2(980, 180), "duration": 5.5, "target": "door_gh"},
 				{"id": "b_gh3", "pos": Vector2(220, 540), "duration": 5.5, "target": "door_gh"}
 			]
-			base["doors"] = [{"id": "door_gh", "pos": Vector2(980, 540), "rot": 0.0, "logic": "AND", "req_count": 3}]
+			base["doors"] = [{"id": "door_gh", "pos": Vector2(1040, 360), "rot": 1.5708, "logic": "AND", "req_count": 3}]
 			base["drones"] = [
 				{"pos": Vector2(400, 180), "waypoints": PackedVector2Array([Vector2.ZERO, Vector2(0, 120)]), "patrol_speed": 105.0},
 				{"pos": Vector2(800, 540), "waypoints": PackedVector2Array([Vector2.ZERO, Vector2(0, -120)]), "patrol_speed": 105.0}
@@ -708,7 +734,10 @@ static func get_chamber(chamber_id: int) -> Dictionary:
 		46:
 			base["title"] = "CHAMBER 46: THE CAUSAL VORTEX"
 			base["par_loops"] = 5
-			base["interior_walls"] = [Rect2(340, 32, 32, 656), Rect2(880, 32, 32, 656)]
+			base["interior_walls"] = [
+				Rect2(340, 32, 32, 248), Rect2(340, 440, 32, 248),
+				Rect2(880, 32, 32, 248), Rect2(880, 440, 32, 248)
+			]
 			base["plates"] = [
 				{"id": "p_vx1", "pos": Vector2(180, 200), "target": "las_vx1"},
 				{"id": "p_vx2", "pos": Vector2(180, 520), "target": "las_vx2"}
