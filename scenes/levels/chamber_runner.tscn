@@ -1,0 +1,30 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/levels/chamber_runner.gd" id="1_runner"]
+[ext_resource type="Script" path="res://scripts/levels/room_builder.gd" id="2_room"]
+[ext_resource type="Script" path="res://scripts/entities/loop_manager.gd" id="3_loop"]
+[ext_resource type="PackedScene" path="res://scenes/entities/player.tscn" id="4_player"]
+[ext_resource type="PackedScene" path="res://scenes/entities/echo.tscn" id="5_echo"]
+[ext_resource type="PackedScene" path="res://scenes/interactables/level_exit.tscn" id="6_exit"]
+[ext_resource type="PackedScene" path="res://scenes/ui/game_hud.tscn" id="7_hud"]
+
+[node name="ChamberRunner" type="Node2D"]
+script = ExtResource("1_runner")
+
+[node name="RoomBuilder" type="Node2D" parent="."]
+script = ExtResource("2_room")
+
+[node name="SpawnPoint" type="Marker2D" parent="."]
+position = Vector2(160, 360)
+
+[node name="LoopManager" type="Node2D" parent="."]
+script = ExtResource("3_loop")
+echo_scene = ExtResource("5_echo")
+
+[node name="Player" parent="." instance=ExtResource("4_player")]
+position = Vector2(160, 360)
+
+[node name="LevelExit" parent="." instance=ExtResource("6_exit")]
+position = Vector2(1120, 360)
+
+[node name="GameHUD" parent="." instance=ExtResource("7_hud")]
