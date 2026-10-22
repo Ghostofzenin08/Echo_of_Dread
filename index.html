@@ -11,7 +11,7 @@
   <!-- Open Graph / Social Meta Tags -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Echo of Dread — 2D Sci-Fi Time-Loop Puzzle Game">
-  <meta property="og:description" content="&quot;You cannot escape alone in linear time. But within this loop, you are your own teammate.&quot; 50 Handcrafted Chambers, 385 Automated Tests, Built with Godot 4.7.">
+  <meta property="og:description" content="&quot;You cannot escape alone in linear time. But within this loop, you are your own teammate.&quot; 50 Handcrafted Chambers, 394 Automated Tests, Built with Godot 4.7.">
   <meta property="og:url" content="https://zeninxparth.itch.io/echo-of-dread">
   <meta property="og:site_name" content="Echo of Dread">
   <meta property="og:image" content="https://ghostofzenin08.github.io/Echo_of_Dread/builds/web/index.png">
@@ -19,7 +19,7 @@
   <!-- Twitter Meta Tags -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Echo of Dread — 2D Sci-Fi Time-Loop Puzzle Game">
-  <meta name="twitter:description" content="&quot;You cannot escape alone in linear time. But within this loop, you are your own teammate.&quot; 50 Handcrafted Chambers, 385 Automated Tests, Built with Godot 4.7.">
+  <meta name="twitter:description" content="&quot;You cannot escape alone in linear time. But within this loop, you are your own teammate.&quot; 50 Handcrafted Chambers, 394 Automated Tests, Built with Godot 4.7.">
   <meta name="twitter:image" content="https://ghostofzenin08.github.io/Echo_of_Dread/builds/web/index.png">
 
   <!-- Favicon / SVG Brand Icon -->
@@ -1661,10 +1661,10 @@
 
         <div class="hero-badges">
           <div class="badge-pill cyan">⚡ Godot Engine 4.7.2</div>
-          <div class="badge-pill">⏱ 30-Second Causal Curve</div>
+          <div class="badge-pill">⏱ 30s Loop & 15s Fast Pacing</div>
           <div class="badge-pill">👥 Multi-Echo Recording (ActionRecorder)</div>
           <div class="badge-pill">🏛 50 Handcrafted Chambers</div>
-          <div class="badge-pill green">🧪 385 / 385 Tests Passing</div>
+          <div class="badge-pill green">🧪 394 / 394 Tests Passing</div>
           <div class="badge-pill">📱 PC & Mobile Touch Ready</div>
         </div>
 
@@ -1734,7 +1734,7 @@
           <div class="card-icon">⏳</div>
           <h3 class="mechanic-title">TEMPORAL COLLAPSE</h3>
           <p class="mechanic-desc">
-            When the 30-second clock expires—or when you initiate an emergency manual rewind with <kbd class="key-badge">R</kbd> (unlocked at Chamber 11)—spacetime snaps back with full-screen CRT chromatic aberration. Your past actions crystallize into an autonomous holographic <strong>Echo</strong>.
+            When the 30-second clock expires (or 15 seconds with optional fast-loop pacing in Chambers 1–5)—or when you initiate an emergency manual rewind with <kbd class="key-badge">R</kbd> (unlocked at Chamber 11)—spacetime snaps back with full-screen CRT chromatic aberration. Your past actions crystallize into an autonomous holographic <strong>Echo</strong>.
           </p>
         </div>
 
@@ -1811,6 +1811,11 @@
                 <td><kbd class="key-badge">Space</kbd> / <kbd class="key-badge">Enter</kbd></td>
               </tr>
               <tr>
+                <td>Early Loop Pacing (15s/30s)</td>
+                <td><kbd class="key-badge" data-key="KeyT">T</kbd> <em style="font-size:0.75rem;color:var(--cyan)">(Chambers 1–5)</em></td>
+                <td>⚡ HUD Loop Duration Toggle</td>
+              </tr>
+              <tr>
                 <td>Manual Chronal Rewind</td>
                 <td><kbd class="key-badge" data-key="KeyR">R</kbd> <em style="font-size:0.75rem;color:var(--amber)">(Chamber 11+)</em></td>
                 <td>—</td>
@@ -1852,6 +1857,11 @@
                 <td><code style="color:var(--cyan)">[ACT]</code> Button</td>
                 <td>Bottom-Right Tap</td>
                 <td>Trigger buttons, pull levers, decrypt lore terminals</td>
+              </tr>
+              <tr>
+                <td><code style="color:var(--amber)">[15s / 30s]</code> Toggle</td>
+                <td>Top Bar Timer Tap</td>
+                <td>Toggle early chamber pacing (15s fast loop vs 30s standard loop, Chambers 1–5)</td>
               </tr>
               <tr>
                 <td><code style="color:var(--magenta)">[REWIND]</code> Button</td>
@@ -2073,6 +2083,21 @@ elif loops_taken &lt;= par_loops + 1:
     stars = 2
 SaveManager.record_chamber_clear(c_id, loops_taken, stars)</code></pre>
         </div>
+
+        <div class="arch-card">
+          <div class="arch-header">
+            <span class="arch-icon">⚡</span>
+            <h3 class="arch-title">Adaptive Chronal Pacing</h3>
+          </div>
+          <p class="arch-desc">
+            To accommodate player attention and optimize initial learning curves, early chambers (1–5) feature dynamic 15s / 30s loop pacing (<code style="color:var(--cyan)">[T]</code> or HUD toggle), dynamically rescaling active timers and low-pass audio filters without corrupting recorded trajectories.
+          </p>
+          <pre class="arch-code-snippet"><code># Early Chamber Pacing Calibration (Chambers 1–5)
+func toggle_early_loop_duration() -> void:
+    if current_chamber &gt; 5: return
+    loop_duration = 15.0 if loop_duration == 30.0 else 30.0
+    loop_duration_changed.emit(loop_duration)</code></pre>
+        </div>
       </div>
 
       <!-- Headless Automated Test Suite Dashboard -->
@@ -2082,7 +2107,7 @@ SaveManager.record_chamber_clear(c_id, loops_taken, stars)</code></pre>
             <span style="color:var(--cyan); font-weight:700;">// HEADLESS AUTOMATED TEST SUITE</span>
             <span style="color:var(--text-dim); margin-left:0.5rem;">[scenes/test/test_runner.gd]</span>
           </div>
-          <div class="test-score">385 / 385 TESTS PASSED (100%)</div>
+          <div class="test-score">394 / 394 TESTS PASSED (100%)</div>
         </div>
 
         <div class="test-feed" id="test-feed-box">
@@ -2098,6 +2123,7 @@ SaveManager.record_chamber_clear(c_id, loops_taken, stars)</code></pre>
           <div class="test-line"><span class="pass">[PASS]</span> LaserBarrier: Multi-lock optical collision matches circuit state</div>
           <div class="test-line"><span class="pass">[PASS]</span> RewindLock: Chamber 1–10 manual rewind locked for calibration</div>
           <div class="test-line"><span class="pass">[PASS]</span> RewindLock: Chamber 11 unlocks manual chronal rewind (Key: R)</div>
+          <div class="test-line"><span class="pass">[PASS]</span> ChronalPacing: Chambers 1–5 support fast 15s / standard 30s loop toggle</div>
           <div class="test-line"><span class="pass">[PASS]</span> SecurityDrone: Aegis sentry patrol detects line-of-sight & pursues Echo decoy</div>
           <div class="test-line"><span class="pass">[PASS]</span> MobileControls: VirtualJoystick analog radius clamped to 80px</div>
           <div class="test-line"><span class="pass">[PASS]</span> TouchOverlay: [ACT], [REWIND], [CLEAR] emit synthetic InputEvents</div>
@@ -2202,7 +2228,7 @@ SaveManager.record_chamber_clear(c_id, loops_taken, stars)</code></pre>
               <div class="portfolio-genre">Sci-Fi Puzzle • Godot 4.7</div>
               <h4 class="portfolio-title">Echo of Dread</h4>
               <p class="portfolio-desc">
-                "You cannot escape alone in linear time. But within this loop, you are your own teammate." 50 chambers, 385 automated tests.
+                "You cannot escape alone in linear time. But within this loop, you are your own teammate." 50 chambers, 394 automated tests.
               </p>
             </div>
             <div class="portfolio-platforms">
