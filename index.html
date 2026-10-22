@@ -13,7 +13,14 @@
   <meta property="og:title" content="Echo of Dread — 2D Sci-Fi Time-Loop Puzzle Game">
   <meta property="og:description" content="&quot;You cannot escape alone in linear time. But within this loop, you are your own teammate.&quot; 50 Handcrafted Chambers, 385 Automated Tests, Built with Godot 4.7.">
   <meta property="og:url" content="https://zeninxparth.itch.io/echo-of-dread">
-  <meta property="og:image" content="https://img.itch.zone/aW1nLzI5OTgxMjIwLnBuZw==/508x254%23mb/QSSg69.png">
+  <meta property="og:site_name" content="Echo of Dread">
+  <meta property="og:image" content="https://ghostofzenin08.github.io/Echo_of_Dread/builds/web/index.png">
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Echo of Dread — 2D Sci-Fi Time-Loop Puzzle Game">
+  <meta name="twitter:description" content="&quot;You cannot escape alone in linear time. But within this loop, you are your own teammate.&quot; 50 Handcrafted Chambers, 385 Automated Tests, Built with Godot 4.7.">
+  <meta name="twitter:image" content="https://ghostofzenin08.github.io/Echo_of_Dread/builds/web/index.png">
 
   <!-- Favicon / SVG Brand Icon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='28' fill='%230b0f19'/%3E%3Ccircle cx='64' cy='64' r='48' fill='none' stroke='%231a2e4a' stroke-width='4'/%3E%3Cpath d='M 64 20 A 44 44 0 1 1 20 64' fill='none' stroke='%2300e5ff' stroke-width='6' stroke-linecap='round' stroke-dasharray='180 30'/%3E%3Ccircle cx='64' cy='64' r='30' fill='none' stroke='%23d500f9' stroke-width='4' stroke-opacity='0.8' stroke-dasharray='80 20'/%3E%3Ccircle cx='64' cy='64' r='14' fill='%2300e5ff' fill-opacity='0.9'/%3E%3Ccircle cx='64' cy='64' r='6' fill='%23ffffff'/%3E%3Ccircle cx='64' cy='20' r='5' fill='%23ffffff'/%3E%3C/svg%3E">
@@ -933,6 +940,99 @@
     /* ==========================================================================
        LORE & NARRATIVE ARCHIVE (DR. ARIS THORNE)
        ========================================================================== */
+    
+    /* Chamber Blueprint Inspector Console */
+    .chamber-blueprint-card {
+      background: linear-gradient(135deg, rgba(16, 24, 36, 0.95) 0%, rgba(10, 16, 24, 0.95) 100%);
+      border: 1px solid var(--border-bright);
+      border-left: 4px solid var(--cyan);
+      border-radius: 8px;
+      padding: 1.75rem 2rem;
+      margin-top: -1rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      transition: all var(--transition-normal);
+    }
+
+    .blueprint-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .blueprint-tag {
+      color: var(--cyan);
+      letter-spacing: 0.1em;
+      font-weight: 700;
+    }
+
+    .blueprint-stars {
+      color: var(--amber);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .blueprint-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: #ffffff;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    .blueprint-meta-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .bp-pill {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 4px;
+      background: #090e15;
+      border: 1px solid #1a2a3e;
+      color: var(--text-main);
+    }
+
+    .bp-pill.cyan {
+      border-color: rgba(0, 240, 255, 0.4);
+      color: var(--cyan);
+    }
+
+    .bp-pill.amber {
+      border-color: rgba(255, 170, 0, 0.4);
+      color: var(--amber);
+    }
+
+    .bp-pill.purple {
+      border-color: rgba(189, 0, 255, 0.4);
+      color: #d500f9;
+    }
+
+    .bp-pill.purple a {
+      color: #e285ff;
+      text-decoration: none;
+    }
+
+    .bp-pill.purple a:hover {
+      text-decoration: underline;
+    }
+
+    .blueprint-briefing {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
     .lore-grid {
       display: grid;
       grid-template-columns: 0.35fr 0.65fr;
@@ -1507,6 +1607,7 @@
           <li><a href="#campaign" class="nav-link">// 50 CHAMBERS</a></li>
           <li><a href="#lore" class="nav-link">// LORE LOGS</a></li>
           <li><a href="#architecture" class="nav-link">// ARCHITECTURE</a></li>
+          <li><a href="#play" class="nav-link">// PLAY &amp; DOWNLOAD</a></li>
           <li><a href="#other-games" class="nav-link">// DEV PORTFOLIO</a></li>
         </ul>
       </nav>
@@ -1828,6 +1929,28 @@
           </div>
         </div>
       </div>
+
+      <!-- Chamber Blueprint Inspector Console -->
+      <div class="chamber-blueprint-card" id="chamber-blueprint-card">
+        <div class="blueprint-top">
+          <div class="blueprint-tag">// CHAMBER SCHEMATIC &amp; TACTICAL BLUEPRINT</div>
+          <div class="blueprint-stars" id="blueprint-stars">★★★ TARGET PAR: 1 LOOP</div>
+        </div>
+        <div class="blueprint-main">
+          <div class="blueprint-info">
+            <h3 class="blueprint-title" id="blueprint-title">CHAMBER 01: TEMPORAL RESONANCE</h3>
+            <div class="blueprint-meta-pills">
+              <span class="bp-pill" id="blueprint-sector-pill">SECTOR 1 • ALPHA WING</span>
+              <span class="bp-pill cyan" id="blueprint-par-pill">TARGET: PAR 1 LOOP</span>
+              <span class="bp-pill amber" id="blueprint-hazards-pill">1 Pressure Plate, 1 Blast Door</span>
+              <span class="bp-pill purple" id="blueprint-lore-pill"><a href="#lore" id="blueprint-lore-link">LORE TERMINAL: LOG 01 ↗</a></span>
+            </div>
+            <p class="blueprint-briefing" id="blueprint-briefing">
+              Initial calibration room. Step onto the primary observation pressure plate to power the isolation blast door circuit. The level exit is located in the adjacent containment wing.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1989,7 +2112,7 @@ SaveManager.record_chamber_clear(c_id, loops_taken, stars)</code></pre>
   <!-- ==========================================================================
        DOWNLOADS & PLAY NOW CTA SECTION
        ========================================================================== -->
-  <section class="section" style="background: linear-gradient(180deg, var(--bg-deep) 0%, #070c13 100%);">
+  <section id="play" class="section" style="background: linear-gradient(180deg, var(--bg-deep) 0%, #070c13 100%);">
     <div class="container">
       <div class="section-tag">// DEPLOYMENT PROTOCOL</div>
       <h2 class="section-title">CHOOSE YOUR PLATFORM</h2>
@@ -2272,107 +2395,557 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
     };
 
     const SECTORS_DATA = {
-      1: {
-        badge: "SECTOR 1 // SUB-LEVEL 4",
-        name: "ALPHA WING",
-        subtitle: "TEMPORAL RESONANCE & CALIBRATION",
-        desc: "The epicenter of the tachyon breach. Learn the fundamentals of temporal echoing across isolated observation wings. Navigate pressure plate logic gates, coordinate dual-switch authorizations, and discover Dr. Aris Thorne's initial panic logs.",
-        hazards: "Pressure Plates, Locked Blast Doors",
-        difficulty: "CALIBRATION",
-        chambers: [
-          { id: 1, title: "TEMPORAL RESONANCE", par: 1 },
-          { id: 2, title: "SYNCHRONIZED ISOLATION", par: 2 },
-          { id: 3, title: "SWITCHBACK RUN", par: 2 },
-          { id: 4, title: "QUADRANT HARMONICS", par: 3 },
-          { id: 5, title: "TWIN ANCHOR", par: 2 },
-          { id: 6, title: "CROSSOVER RELAY", par: 2 },
-          { id: 7, title: "PERIMETER GAUNTLET", par: 2 },
-          { id: 8, title: "CENTRAL HUB", par: 3 },
-          { id: 9, title: "DIVIDED LAB", par: 2 },
-          { id: 10, title: "SECTOR 1 OVERRIDE", par: 3 }
-        ]
+      "1": {
+            "badge": "SECTOR 1 // SUB-LEVEL 4",
+            "name": "ALPHA WING",
+            "subtitle": "TEMPORAL RESONANCE & CALIBRATION",
+            "desc": "The epicenter of the tachyon breach. Learn the fundamentals of temporal echoing across isolated observation wings. Navigate pressure plate logic gates, coordinate dual-switch authorizations, and discover Dr. Aris Thorne's initial panic logs.",
+            "hazards": "Pressure Plates, Dual-Key Blast Doors",
+            "difficulty": "CALIBRATION",
+            "chambers": [
+                  {
+                        "id": 1,
+                        "title": "TEMPORAL RESONANCE",
+                        "full_title": "CHAMBER 01: TEMPORAL RESONANCE",
+                        "par": 1,
+                        "sector": 1,
+                        "hazards": "1 Pressure Plate, 1 Blast Door",
+                        "log_id": "log_01",
+                        "briefing": "Initial calibration room. Step onto the primary observation pressure plate to power the isolation blast door circuit. The level exit is located in the adjacent containment wing."
+                  },
+                  {
+                        "id": 2,
+                        "title": "SYNCHRONIZED ISOLATION",
+                        "full_title": "CHAMBER 02: SYNCHRONIZED ISOLATION",
+                        "par": 2,
+                        "sector": 1,
+                        "hazards": "2 Pressure Plates, 1 Lever Switch, 1 Aegis Sentinel Drone, 2 Blast Doors",
+                        "log_id": "log_02",
+                        "briefing": "Chamber with dual observation wings. Coordinate with an Echo of your past self to depress separated authorization plates simultaneously and unlock the main blast door."
+                  },
+                  {
+                        "id": 3,
+                        "title": "THE VAULT & CAPACITORS",
+                        "full_title": "CHAMBER 03: THE VAULT & CAPACITORS",
+                        "par": 2,
+                        "sector": 1,
+                        "hazards": "2 Timed Buttons, 1 Laser Barrier, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": "log_03",
+                        "briefing": "Rapid chronal sequencing required. Activate 2 decaying capacitor buttons and reach the threshold before the circuit discharges."
+                  },
+                  {
+                        "id": 4,
+                        "title": "THE RESONANCE CORE",
+                        "full_title": "CHAMBER 04: THE RESONANCE CORE",
+                        "par": 3,
+                        "sector": 1,
+                        "hazards": "2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": "log_04",
+                        "briefing": "Execute synchronized temporal routing across 3 loops to breach the facility bulkhead and reach the exit vortex."
+                  },
+                  {
+                        "id": 5,
+                        "title": "SPLIT FREQUENCY",
+                        "full_title": "CHAMBER 05: SPLIT FREQUENCY",
+                        "par": 2,
+                        "sector": 1,
+                        "hazards": "2 Pressure Plates, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 1 Aegis patrol drone while advancing to depress 2 pressure plates."
+                  },
+                  {
+                        "id": 6,
+                        "title": "THE SENTRY GAUNTLET",
+                        "full_title": "CHAMBER 06: THE SENTRY GAUNTLET",
+                        "par": 2,
+                        "sector": 1,
+                        "hazards": "1 Pressure Plate, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 1 Aegis patrol drone while advancing to depress 1 pressure plate."
+                  },
+                  {
+                        "id": 7,
+                        "title": "DUAL THRESHOLD",
+                        "full_title": "CHAMBER 07: DUAL THRESHOLD",
+                        "par": 2,
+                        "sector": 1,
+                        "hazards": "1 Pressure Plate, 1 Timed Button, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Rapid chronal sequencing required. Activate 1 decaying capacitor button and reach the threshold before the circuit discharges."
+                  },
+                  {
+                        "id": 8,
+                        "title": "SECURITY OVERWRITE",
+                        "full_title": "CHAMBER 08: SECURITY OVERWRITE",
+                        "par": 3,
+                        "sector": 1,
+                        "hazards": "1 Lever Switch, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": "log_05",
+                        "briefing": "Execute synchronized temporal routing across 3 loops to breach the facility bulkhead and reach the exit vortex."
+                  },
+                  {
+                        "id": 9,
+                        "title": "CAUSAL CROSSROAD",
+                        "full_title": "CHAMBER 09: CAUSAL CROSSROAD",
+                        "par": 3,
+                        "sector": 1,
+                        "hazards": "3 Pressure Plates, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 1 Aegis patrol drone while advancing to depress 3 pressure plates."
+                  },
+                  {
+                        "id": 10,
+                        "title": "ALPHA APEX",
+                        "full_title": "CHAMBER 10: ALPHA APEX",
+                        "par": 3,
+                        "sector": 1,
+                        "hazards": "2 Pressure Plates, 1 Timed Button, 2 Aegis Sentinel Drones, 2 Blast Doors",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 2 pressure plates."
+                  }
+            ]
       },
-      2: {
-        badge: "SECTOR 2 // SUB-LEVEL 5",
-        name: "BETA WING",
-        subtitle: "HIGH-VOLTAGE CAPACITOR RELAYS",
-        desc: "Decaying emergency generators introduce capacitor-timed switches that discharge in only 3 to 5 seconds. In Chamber 11, the researcher calibrates the Tachyon Core, unlocking manual chronal rewind with the [R] key.",
-        hazards: "Decaying Capacitors, Manual Rewind Unlock",
-        difficulty: "MODERATE",
-        chambers: [
-          { id: 11, title: "CAPACITOR CALIBRATION", par: 2 },
-          { id: 12, title: "RAPID DISCHARGE", par: 2 },
-          { id: 13, title: "SERIES CIRCUIT", par: 3 },
-          { id: 14, title: "PINCER RUN", par: 2 },
-          { id: 15, title: "RELAY STATION 4", par: 3 },
-          { id: 16, title: "CAPACITOR SPRINT", par: 2 },
-          { id: 17, title: "DUAL TIMER LOCK", par: 3 },
-          { id: 18, title: "SPLIT CAPACITOR LAB", par: 2 },
-          { id: 19, title: "HIGH VOLTAGE MAZE", par: 3 },
-          { id: 20, title: "BETA GENERATOR CORE", par: 3 }
-        ]
+      "2": {
+            "badge": "SECTOR 2 // SUB-LEVEL 5",
+            "name": "BETA WING",
+            "subtitle": "HIGH-VOLTAGE CAPACITOR RELAYS",
+            "desc": "Decaying emergency generators introduce capacitor-timed switches that discharge in only 3 to 5 seconds. In Chamber 11, the researcher calibrates the Tachyon Core, unlocking manual chronal rewind with the [R] key.",
+            "hazards": "Capacitor Timed Switches, Manual Rewind Unlock [R]",
+            "difficulty": "MODERATE",
+            "chambers": [
+                  {
+                        "id": 11,
+                        "title": "LASER INGRESS",
+                        "full_title": "CHAMBER 11: LASER INGRESS",
+                        "par": 2,
+                        "sector": 2,
+                        "hazards": "1 Timed Button, 1 Laser Barrier, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Sector 2 entry point. Calibrate the Tachyon Core to unlock manual chronal rewind [R]. Coordinate with past echoes to navigate high-frequency optical barriers."
+                  },
+                  {
+                        "id": 12,
+                        "title": "CHRONOS RELAY",
+                        "full_title": "CHAMBER 12: CHRONOS RELAY",
+                        "par": 3,
+                        "sector": 2,
+                        "hazards": "1 Timed Button, 1 Laser Barrier, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": "log_06",
+                        "briefing": "Rapid chronal sequencing required. Activate 1 decaying capacitor button and reach the threshold before the circuit discharges."
+                  },
+                  {
+                        "id": 13,
+                        "title": "STAGGERED GATE",
+                        "full_title": "CHAMBER 13: STAGGERED GATE",
+                        "par": 3,
+                        "sector": 2,
+                        "hazards": "1 Pressure Plate, 2 Timed Buttons, 2 Laser Barriers, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Rapid chronal sequencing required. Activate 2 decaying capacitor buttons and reach the threshold before the circuit discharges."
+                  },
+                  {
+                        "id": 14,
+                        "title": "ELENA'S CORRIDOR",
+                        "full_title": "CHAMBER 14: ELENA'S CORRIDOR",
+                        "par": 3,
+                        "sector": 2,
+                        "hazards": "1 Lever Switch, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": "log_07",
+                        "briefing": "Execute synchronized temporal routing across 3 loops to breach the facility bulkhead and reach the exit vortex."
+                  },
+                  {
+                        "id": 15,
+                        "title": "PRESSURE SIPHON",
+                        "full_title": "CHAMBER 15: PRESSURE SIPHON",
+                        "par": 3,
+                        "sector": 2,
+                        "hazards": "1 Pressure Plate, 1 Timed Button, 1 Laser Barrier, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 1 Aegis patrol drone while advancing to depress 1 pressure plate."
+                  },
+                  {
+                        "id": 16,
+                        "title": "INTERCEPTOR ALLEY",
+                        "full_title": "CHAMBER 16: INTERCEPTOR ALLEY",
+                        "par": 3,
+                        "sector": 2,
+                        "hazards": "1 Pressure Plate, 1 Timed Button, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 1 Aegis patrol drone while advancing to depress 1 pressure plate."
+                  },
+                  {
+                        "id": 17,
+                        "title": "TRIPLE PHASE",
+                        "full_title": "CHAMBER 17: TRIPLE PHASE",
+                        "par": 3,
+                        "sector": 2,
+                        "hazards": "3 Timed Buttons, 2 Laser Barriers, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Rapid chronal sequencing required. Activate 3 decaying capacitor buttons and reach the threshold before the circuit discharges."
+                  },
+                  {
+                        "id": 18,
+                        "title": "HIGH-VOLTAGE LABYRINTH",
+                        "full_title": "CHAMBER 18: HIGH-VOLTAGE LABYRINTH",
+                        "par": 4,
+                        "sector": 2,
+                        "hazards": "3 Pressure Plates, 1 Timed Button, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 3 pressure plates."
+                  },
+                  {
+                        "id": 19,
+                        "title": "THE CAPACITANCE LOOP",
+                        "full_title": "CHAMBER 19: THE CAPACITANCE LOOP",
+                        "par": 4,
+                        "sector": 2,
+                        "hazards": "3 Timed Buttons, 2 Laser Barriers, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Rapid chronal sequencing required. Activate 3 decaying capacitor buttons and reach the threshold before the circuit discharges."
+                  },
+                  {
+                        "id": 20,
+                        "title": "BETA APEX: THE TRANSFORMER",
+                        "full_title": "CHAMBER 20: BETA APEX: THE TRANSFORMER",
+                        "par": 4,
+                        "sector": 2,
+                        "hazards": "1 Pressure Plate, 2 Timed Buttons, 2 Laser Barriers, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 1 pressure plate."
+                  }
+            ]
       },
-      3: {
-        badge: "SECTOR 3 // SUB-LEVEL 6",
-        name: "GAMMA WING",
-        subtitle: "OPTICAL MANIFOLDS & LASERS",
-        desc: "Optical containment chambers flooded with high-frequency laser barriers. Lethal on contact, lasers require complex AND/OR logic gates and multi-echo holding patterns to deactivate safe corridors.",
-        hazards: "High-Frequency Lasers, AND/OR Logic Gates",
-        difficulty: "ADVANCED",
-        chambers: [
-          { id: 21, title: "OPTICAL THRESHOLD", par: 2 },
-          { id: 22, title: "REFRACTION CORRIDOR", par: 3 },
-          { id: 23, title: "INTERLOCK BEAMS", par: 3 },
-          { id: 24, title: "OPTICAL MATRIX", par: 3 },
-          { id: 25, title: "BEAM SPLITTER", par: 3 },
-          { id: 26, title: "PRISM LAB", par: 2 },
-          { id: 27, title: "LASER GRIDLOCK", par: 3 },
-          { id: 28, title: "PHOTON SHUTTLE", par: 3 },
-          { id: 29, title: "CROSSFIRE LAB", par: 3 },
-          { id: 30, title: "GAMMA OPTICAL CORE", par: 4 }
-        ]
+      "3": {
+            "badge": "SECTOR 3 // SUB-LEVEL 6",
+            "name": "GAMMA WING",
+            "subtitle": "OPTICAL MANIFOLDS & LASERS",
+            "desc": "Optical containment chambers flooded with high-frequency laser barriers. Lethal on contact, lasers require complex AND/OR logic gates and multi-echo holding patterns to deactivate safe corridors.",
+            "hazards": "High-Frequency Laser Barriers, AND/OR Logic Gates",
+            "difficulty": "ADVANCED",
+            "chambers": [
+                  {
+                        "id": 21,
+                        "title": "INVERSION FIELD",
+                        "full_title": "CHAMBER 21: INVERSION FIELD",
+                        "par": 3,
+                        "sector": 3,
+                        "hazards": "2 Lever Switches, 1 Timed Button, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Rapid chronal sequencing required. Activate 1 decaying capacitor button and reach the threshold before the circuit discharges."
+                  },
+                  {
+                        "id": 22,
+                        "title": "CHRONAL BLEED",
+                        "full_title": "CHAMBER 22: CHRONAL BLEED",
+                        "par": 3,
+                        "sector": 3,
+                        "hazards": "2 Pressure Plates, 1 Timed Button, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": "log_07",
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 1 Aegis patrol drone while advancing to depress 2 pressure plates."
+                  },
+                  {
+                        "id": 23,
+                        "title": "THE PRISM BARRIER",
+                        "full_title": "CHAMBER 23: THE PRISM BARRIER",
+                        "par": 3,
+                        "sector": 3,
+                        "hazards": "2 Pressure Plates, 1 Lever Switch, 1 Timed Button, 2 Laser Barriers, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 1 Aegis patrol drone while advancing to depress 2 pressure plates."
+                  },
+                  {
+                        "id": 24,
+                        "title": "SENTRY INTERSECT",
+                        "full_title": "CHAMBER 24: SENTRY INTERSECT",
+                        "par": 3,
+                        "sector": 3,
+                        "hazards": "2 Pressure Plates, 1 Timed Button, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 2 pressure plates."
+                  },
+                  {
+                        "id": 25,
+                        "title": "CAUSAL BRIDGE",
+                        "full_title": "CHAMBER 25: CAUSAL BRIDGE",
+                        "par": 3,
+                        "sector": 3,
+                        "hazards": "2 Pressure Plates, 2 Lever Switches, 2 Laser Barriers, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 1 Aegis patrol drone while advancing to depress 2 pressure plates."
+                  },
+                  {
+                        "id": 26,
+                        "title": "STAGGERED MANIFOLD",
+                        "full_title": "CHAMBER 26: STAGGERED MANIFOLD",
+                        "par": 4,
+                        "sector": 3,
+                        "hazards": "3 Pressure Plates, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 3 pressure plates."
+                  },
+                  {
+                        "id": 27,
+                        "title": "THE DECOY CHAMBER",
+                        "full_title": "CHAMBER 27: THE DECOY CHAMBER",
+                        "par": 3,
+                        "sector": 3,
+                        "hazards": "2 Pressure Plates, 1 Timed Button, 1 Laser Barrier, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 1 Aegis patrol drone while advancing to depress 2 pressure plates."
+                  },
+                  {
+                        "id": 28,
+                        "title": "QUAD MATRIX",
+                        "full_title": "CHAMBER 28: QUAD MATRIX",
+                        "par": 4,
+                        "sector": 3,
+                        "hazards": "2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Execute synchronized temporal routing across 4 loops to breach the facility bulkhead and reach the exit vortex."
+                  },
+                  {
+                        "id": 29,
+                        "title": "HARMONIC DIVERGENCE",
+                        "full_title": "CHAMBER 29: HARMONIC DIVERGENCE",
+                        "par": 4,
+                        "sector": 3,
+                        "hazards": "2 Timed Buttons, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Rapid chronal sequencing required. Activate 2 decaying capacitor buttons and reach the threshold before the circuit discharges."
+                  },
+                  {
+                        "id": 30,
+                        "title": "GAMMA APEX: REACTOR CORE",
+                        "full_title": "CHAMBER 30: GAMMA APEX: REACTOR CORE",
+                        "par": 4,
+                        "sector": 3,
+                        "hazards": "1 Timed Button, 2 Laser Barriers, 2 Aegis Sentinel Drones, 4 Blast Doors",
+                        "log_id": null,
+                        "briefing": "Rapid chronal sequencing required. Activate 1 decaying capacitor button and reach the threshold before the circuit discharges."
+                  }
+            ]
       },
-      4: {
-        badge: "SECTOR 4 // SUB-LEVEL 7",
-        name: "DELTA WING",
-        subtitle: "BLACKOUT PROTOCOL & SENTINELS",
-        desc: "Director Cole's automated Aegis Sentinel Drones patrol quarantine sectors. Blind to time, they track chronal heat signatures. Players must use previous Echoes as sacrificial decoys to lure drones into dead ends.",
-        hazards: "Aegis Patrol Drones, Line of Sight, Decoy Sacrifices",
-        difficulty: "EXPERT",
-        chambers: [
-          { id: 31, title: "QUARANTINE BREACH", par: 2 },
-          { id: 32, title: "SENTINEL ALLEY", par: 2 },
-          { id: 33, title: "PATROL CROSSING", par: 3 },
-          { id: 34, title: "DECOY VECTOR", par: 3 },
-          { id: 35, title: "AEGIS QUARANTINE", par: 3 },
-          { id: 36, title: "SENTRY PINCH", par: 3 },
-          { id: 37, title: "DRONE RUN", par: 3 },
-          { id: 38, title: "CROSSING GUARD", par: 3 },
-          { id: 39, title: "SENTINEL LABYRINTH", par: 4 },
-          { id: 40, title: "DELTA BLACKOUT CORE", par: 4 }
-        ]
+      "4": {
+            "badge": "SECTOR 4 // SUB-LEVEL 7",
+            "name": "DELTA WING",
+            "subtitle": "BLACKOUT PROTOCOL & SENTINELS",
+            "desc": "Director Cole's automated Aegis Sentinel Drones patrol quarantine sectors. Blind to time, they track chronal heat signatures. Players must use previous Echoes as sacrificial decoys to lure drones into dead ends.",
+            "hazards": "Aegis Patrol Drones, Line of Sight, Decoy Sacrifices",
+            "difficulty": "EXPERT",
+            "chambers": [
+                  {
+                        "id": 31,
+                        "title": "BLACKOUT PROTOCOL",
+                        "full_title": "CHAMBER 31: BLACKOUT PROTOCOL",
+                        "par": 3,
+                        "sector": 4,
+                        "hazards": "1 Pressure Plate, 2 Lever Switches, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": "log_08",
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 1 Aegis patrol drone while advancing to depress 1 pressure plate."
+                  },
+                  {
+                        "id": 32,
+                        "title": "THE DECOY PARADIGM",
+                        "full_title": "CHAMBER 32: THE DECOY PARADIGM",
+                        "par": 3,
+                        "sector": 4,
+                        "hazards": "2 Pressure Plates, 1 Timed Button, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 2 pressure plates."
+                  },
+                  {
+                        "id": 33,
+                        "title": "THE GUILLOTINE",
+                        "full_title": "CHAMBER 33: THE GUILLOTINE",
+                        "par": 4,
+                        "sector": 4,
+                        "hazards": "1 Pressure Plate, 2 Timed Buttons, 2 Laser Barriers, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 1 Aegis patrol drone while advancing to depress 1 pressure plate."
+                  },
+                  {
+                        "id": 34,
+                        "title": "BLIND SPOT",
+                        "full_title": "CHAMBER 34: BLIND SPOT",
+                        "par": 4,
+                        "sector": 4,
+                        "hazards": "2 Pressure Plates, 1 Timed Button, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 2 pressure plates."
+                  },
+                  {
+                        "id": 35,
+                        "title": "HIGH ALERT",
+                        "full_title": "CHAMBER 35: HIGH ALERT",
+                        "par": 4,
+                        "sector": 4,
+                        "hazards": "3 Pressure Plates, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 3 pressure plates."
+                  },
+                  {
+                        "id": 36,
+                        "title": "PHANTOM GRID",
+                        "full_title": "CHAMBER 36: PHANTOM GRID",
+                        "par": 4,
+                        "sector": 4,
+                        "hazards": "1 Lever Switch, 2 Timed Buttons, 2 Laser Barriers, 1 Aegis Sentinel Drone, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Rapid chronal sequencing required. Activate 2 decaying capacitor buttons and reach the threshold before the circuit discharges."
+                  },
+                  {
+                        "id": 37,
+                        "title": "THE CATACOMB",
+                        "full_title": "CHAMBER 37: THE CATACOMB",
+                        "par": 4,
+                        "sector": 4,
+                        "hazards": "4 Pressure Plates, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 4 pressure plates."
+                  },
+                  {
+                        "id": 38,
+                        "title": "NEURAL FRACTURE",
+                        "full_title": "CHAMBER 38: NEURAL FRACTURE",
+                        "par": 4,
+                        "sector": 4,
+                        "hazards": "2 Pressure Plates, 2 Lever Switches, 2 Aegis Sentinel Drones, 2 Blast Doors",
+                        "log_id": "log_09",
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 2 pressure plates."
+                  },
+                  {
+                        "id": 39,
+                        "title": "THE GAUNTLET OF DREAD",
+                        "full_title": "CHAMBER 39: THE GAUNTLET OF DREAD",
+                        "par": 5,
+                        "sector": 4,
+                        "hazards": "2 Pressure Plates, 1 Timed Button, 1 Laser Barrier, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 2 pressure plates."
+                  },
+                  {
+                        "id": 40,
+                        "title": "DELTA APEX: THE CONTAINMENT SEAL",
+                        "full_title": "CHAMBER 40: DELTA APEX: THE CONTAINMENT SEAL",
+                        "par": 5,
+                        "sector": 4,
+                        "hazards": "2 Pressure Plates, 2 Timed Buttons, 2 Laser Barriers, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 2 pressure plates."
+                  }
+            ]
       },
-      5: {
-        badge: "SECTOR 5 // SUB-LEVEL 8",
-        name: "OMEGA WING",
-        subtitle: "THE SINGULARITY BREACH",
-        desc: "The deepest facility sector where causality completely ruptures. Requires hyper-choreography across 4 to 5 concurrent Echoes to harmonize all quadrant anchor plates before reality collapses into the Event Horizon.",
-        hazards: "Singularity Core, 5-Echo Synchronization",
-        difficulty: "MASTER",
-        chambers: [
-          { id: 41, title: "SINGULARITY THRESHOLD", par: 3 },
-          { id: 42, title: "GRAVITATIONAL SHEAR", par: 3 },
-          { id: 43, title: "TACHYON HARMONIC", par: 4 },
-          { id: 44, title: "QUADRANT MATRIX", par: 4 },
-          { id: 45, title: "TEMPORAL FLUX LAB", par: 4 },
-          { id: 46, title: "CONVERGENCE RELAY", par: 4 },
-          { id: 47, title: "FIVE-FOLD HARMONY", par: 5 },
-          { id: 48, title: "EVENT HORIZON GATE", par: 4 },
-          { id: 49, title: "CHRONAL NEXUS", par: 5 },
-          { id: 50, title: "THE EVENT HORIZON (FINALE)", par: 5 }
-        ]
+      "5": {
+            "badge": "SECTOR 5 // SUB-LEVEL 8",
+            "name": "OMEGA WING",
+            "subtitle": "THE SINGULARITY BREACH",
+            "desc": "The deepest facility sector where causality completely ruptures. Requires hyper-choreography across 4 to 5 concurrent Echoes to harmonize all quadrant anchor plates before reality collapses into the Event Horizon.",
+            "hazards": "Singularity Core, 5-Echo Synchronization",
+            "difficulty": "MASTER",
+            "chambers": [
+                  {
+                        "id": 41,
+                        "title": "SINGULARITY THRESHOLD",
+                        "full_title": "CHAMBER 41: SINGULARITY THRESHOLD",
+                        "par": 5,
+                        "sector": 5,
+                        "hazards": "4 Pressure Plates, 2 Aegis Sentinel Drones, 2 Blast Doors",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 4 pressure plates."
+                  },
+                  {
+                        "id": 42,
+                        "title": "CHRONAL CASCADE",
+                        "full_title": "CHAMBER 42: CHRONAL CASCADE",
+                        "par": 5,
+                        "sector": 5,
+                        "hazards": "3 Timed Buttons, 3 Laser Barriers, 2 Aegis Sentinel Drones",
+                        "log_id": null,
+                        "briefing": "Rapid chronal sequencing required. Activate 3 decaying capacitor buttons and reach the threshold before the circuit discharges."
+                  },
+                  {
+                        "id": 43,
+                        "title": "PARADOX ENGINE",
+                        "full_title": "CHAMBER 43: PARADOX ENGINE",
+                        "par": 5,
+                        "sector": 5,
+                        "hazards": "4 Pressure Plates, 1 Timed Button, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 4 pressure plates."
+                  },
+                  {
+                        "id": 44,
+                        "title": "THE GRAND HARMONIZER",
+                        "full_title": "CHAMBER 44: THE GRAND HARMONIZER",
+                        "par": 5,
+                        "sector": 5,
+                        "hazards": "4 Timed Buttons, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Rapid chronal sequencing required. Activate 4 decaying capacitor buttons and reach the threshold before the circuit discharges."
+                  },
+                  {
+                        "id": 45,
+                        "title": "PROXY-ZERO SANCTUM",
+                        "full_title": "CHAMBER 45: PROXY-ZERO SANCTUM",
+                        "par": 5,
+                        "sector": 5,
+                        "hazards": "4 Pressure Plates, 1 Laser Barrier, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": "log_09",
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 4 pressure plates."
+                  },
+                  {
+                        "id": 46,
+                        "title": "THE CAUSAL VORTEX",
+                        "full_title": "CHAMBER 46: THE CAUSAL VORTEX",
+                        "par": 5,
+                        "sector": 5,
+                        "hazards": "2 Pressure Plates, 2 Lever Switches, 2 Laser Barriers, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 2 pressure plates."
+                  },
+                  {
+                        "id": 47,
+                        "title": "INFINITE HORIZON",
+                        "full_title": "CHAMBER 47: INFINITE HORIZON",
+                        "par": 5,
+                        "sector": 5,
+                        "hazards": "4 Pressure Plates, 1 Timed Button, 1 Laser Barrier, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 4 pressure plates."
+                  },
+                  {
+                        "id": 48,
+                        "title": "THE SINGULARITY CRUCIBLE",
+                        "full_title": "CHAMBER 48: THE SINGULARITY CRUCIBLE",
+                        "par": 5,
+                        "sector": 5,
+                        "hazards": "2 Pressure Plates, 2 Timed Buttons, 2 Laser Barriers, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 2 Aegis patrol drones while advancing to depress 2 pressure plates."
+                  },
+                  {
+                        "id": 49,
+                        "title": "THORNE'S LAST STAND",
+                        "full_title": "CHAMBER 49: THORNE'S LAST STAND",
+                        "par": 5,
+                        "sector": 5,
+                        "hazards": "4 Pressure Plates, 1 Timed Button, 1 Laser Barrier, 3 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": null,
+                        "briefing": "Deploy past Echoes as sacrificial decoys to divert 3 Aegis patrol drones while advancing to depress 4 pressure plates."
+                  },
+                  {
+                        "id": 50,
+                        "title": "THE SINGULARITY BREACH",
+                        "full_title": "CHAMBER 50: THE SINGULARITY BREACH",
+                        "par": 5,
+                        "sector": 5,
+                        "hazards": "4 Pressure Plates, 2 Timed Buttons, 2 Laser Barriers, 2 Aegis Sentinel Drones, 1 Blast Door",
+                        "log_id": "log_10",
+                        "briefing": "The Singularity Breach. Four corner quantum anchors must be energized simultaneously by 4 past Echoes while dodging elite defense drones to rupture the event horizon and restore linear time."
+                  }
+            ]
       }
-    };
+};
 
     /* --------------------------------------------------------------------------
        2. PROCEDURAL WEB AUDIO SYNTHESIZER (NO EXTERNAL AUDIO FILES)
@@ -2465,6 +3038,7 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
 
     function playChime(freq = 880, duration = 0.08, type = 'sine') {
       if (!isAudioActive || !audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
       try {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
@@ -2482,6 +3056,7 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
 
     function playRewindSound() {
       if (!isAudioActive || !audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
       try {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
@@ -2494,6 +3069,26 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
         gain.connect(audioCtx.destination);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.35);
+      } catch (e) {}
+    }
+
+    function playVictorySound() {
+      if (!isAudioActive || !audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      try {
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.08);
+          gain.gain.setValueAtTime(0.12, audioCtx.currentTime + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.08 + 0.22);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(audioCtx.currentTime + i * 0.08);
+          osc.stop(audioCtx.currentTime + i * 0.08 + 0.22);
+        });
       } catch (e) {}
     }
 
@@ -2569,7 +3164,7 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
     }
 
     /* --------------------------------------------------------------------------
-       4. INTERACTIVE TIME-LOOP CANVAS MINI-SIMULATOR
+       4. INTERACTIVE TIME-LOOP CANVAS MINI-SIMULATOR (CHAMBER 02)
        -------------------------------------------------------------------------- */
     const simCanvas = document.getElementById('sim-canvas');
     const simCtx = simCanvas.getContext('2d');
@@ -2580,6 +3175,9 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
     const LOOP_DURATION = 15.0; // Scaled for snappier web demonstration
     let isSimPaused = false;
     let simLoopNumber = 1;
+    let simVictory = false;
+    let victoryTimer = 0.0;
+    let victorySparkles = [];
 
     // Simulation Puzzle Objects
     const simPlate = { x: 120, y: 190, r: 18, active: false };
@@ -2593,8 +3191,44 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
     // Past Echo Recordings: array of recorded trajectory frames
     let pastEchoes = [];
 
+    // Interactive pointer target
+    let manualTarget = null;
+    let lastManualTime = 0;
+
+    function spawnVictorySparkles(cx, cy) {
+      victorySparkles = [];
+      for (let i = 0; i < 30; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const spd = Math.random() * 80 + 30;
+        victorySparkles.push({
+          x: cx,
+          y: cy,
+          vx: Math.cos(angle) * spd,
+          vy: Math.sin(angle) * spd,
+          life: 1.0,
+          color: Math.random() > 0.5 ? '#00f0ff' : '#ffaa00'
+        });
+      }
+    }
+
     function runSimulationStep(dt) {
       if (isSimPaused) return;
+
+      // Handle Chamber Cleared Victory State
+      if (simVictory) {
+        victoryTimer += dt;
+        victorySparkles.forEach(p => {
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          p.life -= dt * 0.7;
+        });
+        if (victoryTimer > 2.6) {
+          simVictory = false;
+          victoryTimer = 0.0;
+          simReset();
+        }
+        return;
+      }
 
       simTime += dt;
       const progressRatio = Math.min(simTime / LOOP_DURATION, 1.0);
@@ -2605,33 +3239,44 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
       const millis = Math.floor((remaining - secs) * 100);
       simTimerEl.textContent = `00:${secs < 10 ? '0' : ''}${secs}.${millis < 10 ? '0' : ''}${millis}`;
 
-      // Loop #1 AI behavior: walks to the plate, steps on it, holds it
-      // Loop #2 AI behavior: sprints past the opened door to the exit
-      if (simLoopNumber === 1) {
-        if (simTime < 4.0) {
-          playerPos.x += (simPlate.x - playerPos.x) * 0.06;
-          playerPos.y += (simPlate.y - playerPos.y) * 0.06;
-        } else {
-          // Standing on plate
-          playerPos.x = simPlate.x;
-          playerPos.y = simPlate.y;
+      const now = performance.now();
+      const isManual = manualTarget && (now - lastManualTime < 4000);
+
+      if (isManual) {
+        const dx = manualTarget.x - playerPos.x;
+        const dy = manualTarget.y - playerPos.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist > 3) {
+          const moveStep = 110 * dt;
+          playerPos.x += (dx / dist) * Math.min(dist, moveStep);
+          playerPos.y += (dy / dist) * Math.min(dist, moveStep);
         }
       } else {
-        // Loop #2: wait 0.5s then sprint towards the exit
-        if (simTime > 0.8 && playerPos.x < simExit.x) {
-          playerPos.x += 1.8;
-          playerPos.y += (simExit.y - playerPos.y) * 0.05;
+        // Deterministic AI Choreography
+        if (simLoopNumber === 1) {
+          if (simTime < 3.2) {
+            const dx = simPlate.x - playerPos.x;
+            const dy = simPlate.y - playerPos.y;
+            playerPos.x += dx * Math.min(1.0, 3.5 * dt);
+            playerPos.y += dy * Math.min(1.0, 3.5 * dt);
+          } else {
+            playerPos.x = simPlate.x;
+            playerPos.y = simPlate.y;
+          }
+        } else {
+          // Loop 2+: Wait 0.6s then advance towards exit
+          if (simTime > 0.6 && playerPos.x < simExit.x) {
+            playerPos.x += 105 * dt;
+            playerPos.y += (simExit.y - playerPos.y) * Math.min(1.0, 4.0 * dt);
+          }
         }
       }
 
-      playerPath.push({ x: playerPos.x, y: playerPos.y, t: simTime });
-
-      // Check pressure plate trigger
+      // Check pressure plate trigger: Player or any Past Echo
       let platePressed = false;
       const distPlayer = Math.hypot(playerPos.x - simPlate.x, playerPos.y - simPlate.y);
       if (distPlayer < simPlate.r) platePressed = true;
 
-      // Echoes pressing the plate
       pastEchoes.forEach(echo => {
         const frame = getEchoFrameAtTime(echo, simTime);
         if (frame) {
@@ -2642,6 +3287,26 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
 
       simPlate.active = platePressed;
       simDoor.open = platePressed;
+
+      // Realistic Blast Door Barrier Collision:
+      // When door is closed, player cannot pass through x = simDoor.x
+      if (!simDoor.open) {
+        if (playerPos.x >= simDoor.x - 12 && playerPos.x <= simDoor.x + simDoor.w + 4) {
+          playerPos.x = simDoor.x - 12;
+        }
+      }
+
+      playerPath.push({ x: playerPos.x, y: playerPos.y, t: simTime });
+
+      // Check Victory Condition: Enter Exit Vortex through opened door
+      const distExit = Math.hypot(playerPos.x - simExit.x, playerPos.y - simExit.y);
+      if (distExit < simExit.r && playerPos.x > simDoor.x) {
+        simVictory = true;
+        victoryTimer = 0.0;
+        playVictorySound();
+        spawnVictorySparkles(simExit.x, simExit.y);
+        return;
+      }
 
       // When loop finishes, reset or rewind
       if (simTime >= LOOP_DURATION) {
@@ -2669,6 +3334,7 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
       playerPos = { x: 60, y: 150 };
       playerPath = [];
       simLoopNumber = pastEchoes.length + 1;
+      manualTarget = null;
     }
 
     function simReset() {
@@ -2677,6 +3343,8 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
       playerPath = [];
       playerPos = { x: 60, y: 150 };
       simLoopNumber = 1;
+      manualTarget = null;
+      simVictory = false;
       playChime(440, 0.1);
     }
 
@@ -2797,16 +3465,62 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
       simCtx.textAlign = 'center';
       simCtx.fillText('RESEARCHER', playerPos.x, playerPos.y - 14);
 
+      // Render Click Target indicator if manual mode
+      const now = performance.now();
+      if (manualTarget && (now - lastManualTime < 4000)) {
+        simCtx.strokeStyle = 'rgba(0, 255, 136, 0.7)';
+        simCtx.lineWidth = 1.5;
+        simCtx.beginPath();
+        simCtx.arc(manualTarget.x, manualTarget.y, 6, 0, Math.PI * 2);
+        simCtx.stroke();
+      }
+
       // Simulation HUD Tag
       simCtx.textAlign = 'left';
       simCtx.font = '10px monospace';
       simCtx.fillStyle = '#4f6c8d';
-      simCtx.fillText(`LOOP: #${simLoopNumber}  |  ACTIVE ECHOES: ${pastEchoes.length}`, 15, 20);
+      simCtx.fillText(`LOOP: #${simLoopNumber}  |  ACTIVE ECHOES: ${pastEchoes.length}  |  CLICK CANVAS TO NAVIGATE`, 15, 20);
+
+      // Draw Chamber Cleared Celebration Overlay
+      if (simVictory) {
+        simCtx.fillStyle = 'rgba(5, 8, 13, 0.82)';
+        simCtx.fillRect(0, 0, simCanvas.width, simCanvas.height);
+
+        // Victory Particles
+        victorySparkles.forEach(p => {
+          if (p.life > 0) {
+            simCtx.fillStyle = p.color;
+            simCtx.globalAlpha = Math.max(0, p.life);
+            simCtx.beginPath();
+            simCtx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+            simCtx.fill();
+            simCtx.globalAlpha = 1.0;
+          }
+        });
+
+        simCtx.textAlign = 'center';
+        simCtx.font = 'bold 16px Orbitron, sans-serif';
+        simCtx.fillStyle = '#00f0ff';
+        simCtx.shadowColor = '#00f0ff';
+        simCtx.shadowBlur = 16;
+        simCtx.fillText('★ CHAMBER 02 CLEARED! ★', simCanvas.width / 2, simCanvas.height / 2 - 18);
+
+        simCtx.font = 'bold 12px Space Mono, monospace';
+        simCtx.fillStyle = '#00ff88';
+        simCtx.shadowColor = '#00ff88';
+        simCtx.shadowBlur = 8;
+        simCtx.fillText('PAR RATING: 2 / 2 LOOPS (★★★)', simCanvas.width / 2, simCanvas.height / 2 + 8);
+
+        simCtx.font = '10px Space Mono, monospace';
+        simCtx.fillStyle = '#8499b0';
+        simCtx.shadowBlur = 0;
+        simCtx.fillText('CAUSAL EQUILIBRIUM ACHIEVED • RESYNCHRONIZING...', simCanvas.width / 2, simCanvas.height / 2 + 30);
+      }
     }
 
     let lastSimTimestamp = performance.now();
     function simLoop(now) {
-      const dt = (now - lastSimTimestamp) / 1000;
+      const dt = Math.min((now - lastSimTimestamp) / 1000, 0.1);
       lastSimTimestamp = now;
       runSimulationStep(dt);
       renderSimulation();
@@ -2849,32 +3563,67 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
     }
 
     /* --------------------------------------------------------------------------
-       6. 50-CHAMBER CAMPAIGN & SECTOR TABS
+       6. 50-CHAMBER CAMPAIGN & INTERACTIVE BLUEPRINT INSPECTION
        -------------------------------------------------------------------------- */
     let currentSectorId = 1;
+
+    function selectChamber(c) {
+      document.getElementById('blueprint-title').textContent = c.full_title;
+      document.getElementById('blueprint-stars').textContent = `${'★'.repeat(c.par)} TARGET: PAR ${c.par} LOOP${c.par > 1 ? 'S' : ''}`;
+      document.getElementById('blueprint-sector-pill').textContent = `SECTOR ${c.sector} • ${SECTORS_DATA[c.sector].name}`;
+      document.getElementById('blueprint-par-pill').textContent = `TARGET: PAR ${c.par} LOOP${c.par > 1 ? 'S' : ''}`;
+      document.getElementById('blueprint-hazards-pill').textContent = c.hazards;
+
+      const lorePill = document.getElementById('blueprint-lore-pill');
+      const loreLink = document.getElementById('blueprint-lore-link');
+      if (c.log_id && LORE_LOGS[c.log_id]) {
+        lorePill.style.display = 'inline-block';
+        loreLink.textContent = `TERMINAL ${c.log_id.toUpperCase()}: ${LORE_LOGS[c.log_id].title.split(':')[1]?.trim() || 'STORY LOG'} ↗`;
+        loreLink.onclick = (e) => {
+          e.preventDefault();
+          const targetLog = LORE_LOGS[c.log_id];
+          document.querySelectorAll('.lore-item-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.logId === c.log_id);
+          });
+          displayLog(targetLog);
+          document.getElementById('lore').scrollIntoView({ behavior: 'smooth' });
+          playChime(880, 0.05);
+        };
+      } else {
+        lorePill.style.display = 'none';
+      }
+
+      document.getElementById('blueprint-briefing').textContent = c.briefing;
+    }
 
     function renderSectorChambers(sectorId) {
       const container = document.getElementById('sector-chambers-container');
       container.innerHTML = '';
       const sector = SECTORS_DATA[sectorId];
 
-      sector.chambers.forEach(c => {
+      sector.chambers.forEach((c, idx) => {
         const pip = document.createElement('div');
-        pip.className = 'chamber-pip';
+        pip.className = `chamber-pip ${idx === 0 ? 'current' : ''}`;
         pip.innerHTML = `
           <div>${c.id < 10 ? '0' + c.id : c.id}</div>
           <div class="par-tag">PAR ${c.par}</div>
         `;
-        pip.title = `${c.title} — Par: ${c.par} Loops`;
+        pip.title = `${c.full_title} — Par: ${c.par} Loops`;
 
         pip.addEventListener('click', () => {
           document.querySelectorAll('.chamber-pip').forEach(p => p.classList.remove('current'));
           pip.classList.add('current');
+          selectChamber(c);
           playChime(1100, 0.04);
         });
 
         container.appendChild(pip);
       });
+
+      // Default to inspecting the first chamber of the selected sector
+      if (sector.chambers.length > 0) {
+        selectChamber(sector.chambers[0]);
+      }
     }
 
     function selectSector(sectorId) {
@@ -2906,13 +3655,12 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
     }
 
     /* --------------------------------------------------------------------------
-       7. KEYBOARD LISTENER & UI AUDIT WIDGETS
+       7. KEYBOARD LISTENER & ROBUST UI WIDGETS
        -------------------------------------------------------------------------- */
     window.addEventListener('keydown', (e) => {
-      const keyBadge = document.querySelector(`.key-badge[data-key="${e.code}"]`);
-      if (keyBadge) {
-        keyBadge.classList.add('pressed');
-      }
+      document.querySelectorAll(`.key-badge[data-key="${e.code}"]`).forEach(badge => {
+        badge.classList.add('pressed');
+      });
       if (e.code === 'KeyR') {
         simRewind();
       } else if (e.code === 'KeyC') {
@@ -2921,35 +3669,70 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
     });
 
     window.addEventListener('keyup', (e) => {
-      const keyBadge = document.querySelector(`.key-badge[data-key="${e.code}"]`);
-      if (keyBadge) {
-        keyBadge.classList.remove('pressed');
-      }
+      document.querySelectorAll(`.key-badge[data-key="${e.code}"]`).forEach(badge => {
+        badge.classList.remove('pressed');
+      });
     });
 
+    // Fallback clipboard copy for unsecure contexts / file:// protocol
+    function fallbackCopyText(text, cb) {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        cb();
+      } catch (err) {
+        console.warn('Fallback copy error:', err);
+      }
+    }
+
     // Git Clone Button Click-to-Copy
-    document.getElementById('copy-git-btn').addEventListener('click', () => {
-      navigator.clipboard.writeText('git clone https://github.com/Ghostofzenin08/Echo_of_Dread.git');
-      const btn = document.getElementById('copy-git-btn');
-      btn.textContent = 'COPIED!';
-      playChime(1300, 0.08);
-      setTimeout(() => {
-        btn.textContent = 'COPY COMMAND';
-      }, 2000);
-    });
+    const copyGitBtn = document.getElementById('copy-git-btn');
+    if (copyGitBtn) {
+      copyGitBtn.addEventListener('click', () => {
+        const cmd = 'git clone https://github.com/Ghostofzenin08/Echo_of_Dread.git';
+        const onCopied = () => {
+          copyGitBtn.textContent = 'COPIED TO CLIPBOARD!';
+          playChime(1300, 0.08);
+          setTimeout(() => {
+            copyGitBtn.textContent = 'COPY COMMAND';
+          }, 2000);
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(cmd).then(onCopied).catch(() => {
+            fallbackCopyText(cmd, onCopied);
+          });
+        } else {
+          fallbackCopyText(cmd, onCopied);
+        }
+      });
+    }
 
     // CRT Scanline Filter Toggle
     const crtToggleBtn = document.getElementById('crt-toggle');
-    crtToggleBtn.addEventListener('click', () => {
-      document.body.classList.toggle('crt-disabled');
-      const isEnabled = !document.body.classList.contains('crt-disabled');
-      crtToggleBtn.classList.toggle('active', isEnabled);
-      crtToggleBtn.children[1].textContent = isEnabled ? 'CRT ON' : 'CRT OFF';
-      playChime(800, 0.04);
-    });
+    if (crtToggleBtn) {
+      crtToggleBtn.addEventListener('click', () => {
+        document.body.classList.toggle('crt-disabled');
+        const isEnabled = !document.body.classList.contains('crt-disabled');
+        crtToggleBtn.classList.toggle('active', isEnabled);
+        crtToggleBtn.children[1].textContent = isEnabled ? 'CRT ON' : 'CRT OFF';
+        playChime(800, 0.04);
+      });
+    }
 
     // Audio Button
-    document.getElementById('audio-toggle').addEventListener('click', toggleAudio);
+    const audioToggleBtn = document.getElementById('audio-toggle');
+    if (audioToggleBtn) {
+      audioToggleBtn.addEventListener('click', toggleAudio);
+    }
 
     // Simulation Buttons
     document.getElementById('sim-rewind-btn').addEventListener('click', simRewind);
@@ -2960,17 +3743,34 @@ Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we wer
       playChime(600, 0.04);
     });
 
+    // Interactive canvas pointer navigation
+    simCanvas.addEventListener('pointerdown', (e) => {
+      const rect = simCanvas.getBoundingClientRect();
+      const scaleX = simCanvas.width / rect.width;
+      const scaleY = simCanvas.height / rect.height;
+      const clickX = (e.clientX - rect.left) * scaleX;
+      const clickY = (e.clientY - rect.top) * scaleY;
+      manualTarget = {
+        x: Math.max(20, Math.min(simCanvas.width - 20, clickX)),
+        y: Math.max(20, Math.min(simCanvas.height - 20, clickY))
+      };
+      lastManualTime = performance.now();
+      playChime(950, 0.04);
+    });
+
     // Mobile Navigation Drawer Toggle
     const navToggle = document.getElementById('nav-toggle-btn');
     const navMenu = document.getElementById('nav-menu');
-    navToggle.addEventListener('click', () => {
-      navMenu.classList.toggle('open');
-    });
+    if (navToggle && navMenu) {
+      navToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('open');
+      });
+    }
 
     // Close mobile menu upon clicking links
     document.querySelectorAll('.nav-link').forEach(link => {
       link.addEventListener('click', () => {
-        navMenu.classList.remove('open');
+        if (navMenu) navMenu.classList.remove('open');
       });
     });
 
