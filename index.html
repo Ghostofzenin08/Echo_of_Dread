@@ -1,0 +1,2994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Echo of Dread — 2D Sci-Fi Time-Loop Puzzle Game</title>
+  <meta name="description" content="Echo of Dread is a 2D top-down sci-fi time-loop puzzle game built in Godot 4.7. Coordinate with autonomous holographic echoes of your past self to escape the Chronos Research Facility.">
+  <meta name="keywords" content="Echo of Dread, time loop puzzle, Godot 4.7, indie game, ZeninXParth, itch.io, sci-fi game, procedural audio">
+  <meta name="author" content="ZeninXParth">
+
+  <!-- Open Graph / Social Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Echo of Dread — 2D Sci-Fi Time-Loop Puzzle Game">
+  <meta property="og:description" content="&quot;You cannot escape alone in linear time. But within this loop, you are your own teammate.&quot; 50 Handcrafted Chambers, 385 Automated Tests, Built with Godot 4.7.">
+  <meta property="og:url" content="https://zeninxparth.itch.io/echo-of-dread">
+  <meta property="og:image" content="https://img.itch.zone/aW1nLzI5OTgxMjIwLnBuZw==/508x254%23mb/QSSg69.png">
+
+  <!-- Favicon / SVG Brand Icon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='128' height='128' rx='28' fill='%230b0f19'/%3E%3Ccircle cx='64' cy='64' r='48' fill='none' stroke='%231a2e4a' stroke-width='4'/%3E%3Cpath d='M 64 20 A 44 44 0 1 1 20 64' fill='none' stroke='%2300e5ff' stroke-width='6' stroke-linecap='round' stroke-dasharray='180 30'/%3E%3Ccircle cx='64' cy='64' r='30' fill='none' stroke='%23d500f9' stroke-width='4' stroke-opacity='0.8' stroke-dasharray='80 20'/%3E%3Ccircle cx='64' cy='64' r='14' fill='%2300e5ff' fill-opacity='0.9'/%3E%3Ccircle cx='64' cy='64' r='6' fill='%23ffffff'/%3E%3Ccircle cx='64' cy='20' r='5' fill='%23ffffff'/%3E%3C/svg%3E">
+
+  <!-- Typography: Orbitron, Space Mono, Inter with fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@500;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       CSS VARIABLES & THEME SETUP
+       ========================================================================== */
+    :root {
+      --bg-deep: #05080d;
+      --bg-surface: #0b1118;
+      --bg-card: #101824;
+      --bg-card-hover: #152233;
+      --border-subtle: #192738;
+      --border-bright: #294460;
+      --border-glow: rgba(0, 240, 255, 0.4);
+
+      --cyan: #00f0ff;
+      --cyan-glow: rgba(0, 240, 255, 0.35);
+      --magenta: #bd00ff;
+      --magenta-glow: rgba(189, 0, 255, 0.35);
+      --amber: #ffaa00;
+      --amber-glow: rgba(255, 170, 0, 0.35);
+      --red: #ff3366;
+      --red-glow: rgba(255, 51, 102, 0.35);
+      --green: #00ff88;
+      --green-glow: rgba(0, 255, 136, 0.35);
+
+      --text-main: #e6f0fa;
+      --text-muted: #8499b0;
+      --text-dim: #4d637b;
+
+      --font-display: 'Orbitron', -apple-system, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+      --max-width: 1240px;
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    ::selection {
+      background-color: var(--cyan);
+      color: var(--bg-deep);
+    }
+
+    a {
+      color: var(--cyan);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    a:hover {
+      color: #70f7ff;
+      text-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    /* ==========================================================================
+       CRT & SCANLINE POST-PROCESSING OVERLAY
+       ========================================================================== */
+    #crt-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%),
+                  radial-gradient(circle at center, transparent 65%, rgba(0, 0, 0, 0.6) 100%);
+      background-size: 100% 3px, 100% 100%;
+      transition: opacity var(--transition-normal);
+    }
+
+    body.crt-disabled #crt-overlay {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* Background Particle Canvas */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ==========================================================================
+       UTILITIES & LAYOUT
+       ========================================================================== */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section {
+      padding: 6rem 0;
+      position: relative;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.75rem;
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #ffffff;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .section-desc {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 680px;
+      line-height: 1.7;
+      margin-bottom: 3rem;
+    }
+
+    .terminal-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-bright);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .terminal-header {
+      background: #0d1520;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #2a3a4d;
+    }
+    .terminal-dot.red { background: #ff4d6d; }
+    .terminal-dot.yellow { background: #ffbe0b; }
+    .terminal-dot.green { background: #00ff88; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.85rem 1.6rem;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      border: none;
+      outline: none;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: var(--cyan);
+      color: #03080e;
+      box-shadow: 0 0 20px var(--cyan-glow);
+    }
+
+    .btn-primary:hover {
+      background: #4df4ff;
+      color: #000;
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.7);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: rgba(189, 0, 255, 0.12);
+      color: #e285ff;
+      border: 1px solid var(--magenta);
+      box-shadow: 0 0 15px var(--magenta-glow);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(189, 0, 255, 0.25);
+      color: #ffffff;
+      box-shadow: 0 0 25px var(--magenta-glow);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--border-bright);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      background: rgba(0, 240, 255, 0.05);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .btn-sm {
+      padding: 0.45rem 0.9rem;
+      font-size: 0.75rem;
+    }
+
+    /* ==========================================================================
+       NAVIGATION BAR
+       ========================================================================== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(5, 8, 13, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: background var(--transition-fast);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 0.1em;
+    }
+
+    .brand-svg {
+      width: 36px;
+      height: 36px;
+      filter: drop-shadow(0 0 8px var(--cyan-glow));
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--green);
+      background: rgba(0, 255, 136, 0.08);
+      border: 1px solid rgba(0, 255, 136, 0.25);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      margin-left: 0.5rem;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse-dot 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      transition: color var(--transition-fast);
+      padding: 0.4rem 0.2rem;
+    }
+
+    .nav-link:hover {
+      color: var(--cyan);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .util-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all var(--transition-fast);
+    }
+
+    .util-btn:hover, .util-btn.active {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      background: rgba(0, 240, 255, 0.08);
+    }
+
+    /* Mobile Menu Toggle */
+    .nav-toggle {
+      display: none;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       HERO SECTION
+       ========================================================================== */
+    .hero-section {
+      min-height: calc(100vh - 70px);
+      display: flex;
+      align-items: center;
+      padding: 5rem 0 6rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 3.5rem;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 4.2rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: 0.04em;
+      color: #ffffff;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 35px rgba(0, 240, 255, 0.3);
+    }
+
+    .hero-title span {
+      background: linear-gradient(135deg, #00f0ff 0%, #bd00ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-quote {
+      font-size: 1.25rem;
+      font-style: italic;
+      color: var(--cyan);
+      border-left: 3px solid var(--cyan);
+      padding-left: 1.25rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge-pill {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 4px;
+      background: rgba(16, 24, 36, 0.85);
+      border: 1px solid var(--border-bright);
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .badge-pill.green {
+      border-color: rgba(0, 255, 136, 0.4);
+      color: #8affc1;
+    }
+
+    .badge-pill.cyan {
+      border-color: rgba(0, 240, 255, 0.4);
+      color: #80f7ff;
+    }
+
+    .hero-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    /* Hero Right: Holographic Mini Simulator */
+    .sim-card {
+      background: #090e15;
+      border: 1px solid var(--border-bright);
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(0, 240, 255, 0.15);
+      position: relative;
+    }
+
+    .sim-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    .sim-title {
+      color: var(--cyan);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sim-timer {
+      font-family: var(--font-mono);
+      color: #ffffff;
+      background: #05080c;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid #1a2a3e;
+      font-size: 0.85rem;
+    }
+
+    .sim-canvas-wrap {
+      position: relative;
+      background: #040609;
+      border: 1px solid #152233;
+      border-radius: 6px;
+      overflow: hidden;
+      aspect-ratio: 16 / 10;
+      width: 100%;
+    }
+
+    #sim-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .sim-timeline-bar {
+      margin-top: 0.75rem;
+      height: 6px;
+      background: #111a26;
+      border-radius: 3px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .sim-timeline-progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--cyan), var(--amber), var(--red));
+      transition: width 0.08s linear;
+    }
+
+    .sim-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.75rem;
+      gap: 0.5rem;
+    }
+
+    .sim-btn {
+      flex: 1;
+      background: #111a26;
+      border: 1px solid #1e3148;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 0.45rem 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+      transition: all var(--transition-fast);
+    }
+
+    .sim-btn:hover {
+      background: #19273a;
+      color: var(--cyan);
+      border-color: var(--cyan);
+    }
+
+    /* ==========================================================================
+       HOW TO PLAY & CORE GAME SYSTEMS
+       ========================================================================== */
+    .mechanics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+    }
+
+    .mechanic-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 2rem 1.5rem;
+      position: relative;
+      transition: all var(--transition-normal);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mechanic-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--cyan);
+      box-shadow: 0 10px 30px rgba(0, 240, 255, 0.12);
+    }
+
+    .card-step {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.08);
+      position: absolute;
+      top: 1rem;
+      right: 1.25rem;
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1.25rem;
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      color: var(--cyan);
+    }
+
+    .mechanic-card:nth-child(2) .card-icon {
+      background: rgba(189, 0, 255, 0.1);
+      border-color: rgba(189, 0, 255, 0.3);
+      color: var(--magenta);
+    }
+
+    .mechanic-card:nth-child(3) .card-icon {
+      background: rgba(0, 255, 136, 0.1);
+      border-color: rgba(0, 255, 136, 0.3);
+      color: var(--green);
+    }
+
+    .mechanic-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: #ffffff;
+      margin-bottom: 0.75rem;
+    }
+
+    .mechanic-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Hazards & Elements Grid */
+    .hazards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 4rem;
+    }
+
+    .hazard-item {
+      background: #0a1017;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 1.25rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      transition: border-color var(--transition-fast);
+    }
+
+    .hazard-item:hover {
+      border-color: var(--border-bright);
+    }
+
+    .hazard-glyph {
+      font-size: 1.5rem;
+      line-height: 1;
+      padding: 0.5rem;
+      background: #111a26;
+      border-radius: 6px;
+      border: 1px solid #1c2e42;
+    }
+
+    .hazard-name {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      color: #ffffff;
+      margin-bottom: 0.3rem;
+    }
+
+    .hazard-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Controls Schema */
+    .controls-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .control-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .control-table th, .control-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .control-table th {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .key-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      padding: 0.2rem 0.55rem;
+      background: #131c28;
+      border: 1px solid var(--border-bright);
+      border-radius: 4px;
+      color: var(--cyan);
+      box-shadow: 0 2px 0 #070c12;
+      transition: all 0.1s ease;
+    }
+
+    .key-badge.pressed {
+      transform: translateY(2px);
+      box-shadow: none;
+      background: var(--cyan);
+      color: #000;
+    }
+
+    /* ==========================================================================
+       50-CHAMBER CAMPAIGN & FACILITY WINGS
+       ========================================================================== */
+    .sector-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 2rem;
+    }
+
+    .sector-tab {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all var(--transition-fast);
+    }
+
+    .sector-tab:hover {
+      color: #ffffff;
+      border-color: var(--cyan);
+    }
+
+    .sector-tab.active {
+      background: rgba(0, 240, 255, 0.1);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+    }
+
+    .sector-tab[data-sector="2"].active {
+      background: rgba(255, 170, 0, 0.1);
+      border-color: var(--amber);
+      color: var(--amber);
+      box-shadow: 0 0 15px var(--amber-glow);
+    }
+    .sector-tab[data-sector="3"].active {
+      background: rgba(0, 255, 136, 0.1);
+      border-color: var(--green);
+      color: var(--green);
+      box-shadow: 0 0 15px var(--green-glow);
+    }
+    .sector-tab[data-sector="4"].active {
+      background: rgba(255, 51, 102, 0.1);
+      border-color: var(--red);
+      color: var(--red);
+      box-shadow: 0 0 15px var(--red-glow);
+    }
+    .sector-tab[data-sector="5"].active {
+      background: rgba(189, 0, 255, 0.1);
+      border-color: var(--magenta);
+      color: var(--magenta);
+      box-shadow: 0 0 15px var(--magenta-glow);
+    }
+
+    .sector-display-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      border-radius: 8px;
+      padding: 2.5rem;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 3rem;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sector-meta-badge {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--cyan);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.1em;
+    }
+
+    .sector-display-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+    }
+
+    .sector-display-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .sector-display-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .sector-chambers-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.6rem;
+    }
+
+    .chamber-pip {
+      aspect-ratio: 1;
+      background: #090e15;
+      border: 1px solid #1a2a3e;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      position: relative;
+    }
+
+    .chamber-pip:hover {
+      border-color: var(--cyan);
+      transform: scale(1.05);
+      background: #111a26;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+
+    .chamber-pip.current {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+    }
+
+    .chamber-pip .par-tag {
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* ==========================================================================
+       LORE & NARRATIVE ARCHIVE (DR. ARIS THORNE)
+       ========================================================================== */
+    .lore-grid {
+      display: grid;
+      grid-template-columns: 0.35fr 0.65fr;
+      gap: 2rem;
+    }
+
+    .lore-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 520px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .lore-menu::-webkit-scrollbar {
+      width: 4px;
+    }
+    .lore-menu::-webkit-scrollbar-thumb {
+      background: var(--border-bright);
+      border-radius: 2px;
+    }
+
+    .lore-item-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .lore-item-btn:hover {
+      border-color: var(--cyan);
+      background: var(--bg-card-hover);
+    }
+
+    .lore-item-btn.active {
+      border-color: var(--cyan);
+      background: rgba(0, 240, 255, 0.08);
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+    }
+
+    .lore-item-title {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .lore-item-meta {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--cyan);
+    }
+
+    .lore-reader {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      border-radius: 8px;
+      padding: 2.2rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 520px;
+    }
+
+    .reader-header {
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .reader-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      color: #ffffff;
+      margin-bottom: 0.4rem;
+    }
+
+    .reader-author {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--magenta);
+    }
+
+    .reader-timestamp {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    .reader-body {
+      font-size: 1.05rem;
+      color: var(--text-main);
+      line-height: 1.8;
+      white-space: pre-line;
+      flex: 1;
+    }
+
+    .reader-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 1rem;
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    /* ==========================================================================
+       GAME ARCHITECTURE & TECH EXCELLENCE
+       ========================================================================== */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .arch-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      border-radius: 8px;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .arch-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .arch-icon {
+      font-size: 1.5rem;
+      color: var(--cyan);
+    }
+
+    .arch-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: #ffffff;
+    }
+
+    .arch-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    .arch-code-snippet {
+      background: #06090e;
+      border: 1px solid #142030;
+      border-radius: 6px;
+      padding: 0.85rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #9cdcfe;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    /* Automated Test Terminal */
+    .test-dashboard {
+      background: #04070b;
+      border: 1px solid #1c2f45;
+      border-radius: 8px;
+      padding: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .test-status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #142233;
+      margin-bottom: 1rem;
+    }
+
+    .test-score {
+      font-size: 1.1rem;
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .test-feed {
+      height: 240px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      color: #9db2c7;
+      padding-right: 0.5rem;
+    }
+
+    .test-feed::-webkit-scrollbar {
+      width: 4px;
+    }
+    .test-feed::-webkit-scrollbar-thumb {
+      background: #1e334a;
+    }
+
+    .test-line {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .test-line .pass {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       DOWNLOADS & PLAY NOW CTA SECTION
+       ========================================================================== */
+    .cta-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .cta-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      border-radius: 8px;
+      padding: 2.25rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all var(--transition-normal);
+      position: relative;
+    }
+
+    .cta-card.featured {
+      border-color: var(--cyan);
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+      background: linear-gradient(180deg, rgba(0, 240, 255, 0.06) 0%, var(--bg-card) 100%);
+    }
+
+    .cta-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .cta-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+      display: inline-block;
+    }
+
+    .cta-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      color: #ffffff;
+      margin-bottom: 0.6rem;
+    }
+
+    .cta-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .git-clone-box {
+      background: #04070b;
+      border: 1px solid #1a2c3f;
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #c0d4ea;
+    }
+
+    .copy-btn {
+      background: #111a26;
+      border: 1px solid var(--border-bright);
+      color: var(--cyan);
+      padding: 0.35rem 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      transition: all var(--transition-fast);
+    }
+
+    .copy-btn:hover {
+      background: var(--cyan);
+      color: #000;
+    }
+
+    /* ==========================================================================
+       FOOTER & DEVELOPER PORTFOLIO SHOWCASE
+       ========================================================================== */
+    .site-footer {
+      background: #030508;
+      border-top: 1px solid var(--border-subtle);
+      padding: 5rem 0 2rem 0;
+      position: relative;
+    }
+
+    .footer-showcase-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-showcase-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+    }
+
+    .dev-portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+    }
+
+    .portfolio-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all var(--transition-normal);
+      text-decoration: none;
+    }
+
+    .portfolio-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--cyan);
+      box-shadow: 0 10px 25px rgba(0, 240, 255, 0.15);
+    }
+
+    .portfolio-thumb {
+      width: 100%;
+      height: 160px;
+      background: #0c1420;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .portfolio-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--transition-normal);
+    }
+
+    .portfolio-card:hover .portfolio-thumb img {
+      transform: scale(1.05);
+    }
+
+    .portfolio-thumb-fallback {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--cyan);
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .portfolio-content {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .portfolio-genre {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--cyan);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .portfolio-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+    }
+
+    .portfolio-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+
+    .portfolio-platforms {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .platform-tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      background: #0b1118;
+      border: 1px solid #1a2a3e;
+      color: var(--text-dim);
+      padding: 0.15rem 0.45rem;
+      border-radius: 3px;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+    }
+
+    .footer-links a:hover {
+      color: var(--cyan);
+    }
+
+    /* ==========================================================================
+       RESPONSIVE BREAKPOINTS
+       ========================================================================== */
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+      }
+      .mechanics-grid, .cta-cards, .dev-portfolio-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .sector-display-card {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .lore-grid {
+        grid-template-columns: 1fr;
+      }
+      .arch-grid {
+        grid-template-columns: 1fr;
+      }
+      .controls-wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .section {
+        padding: 4rem 0;
+      }
+      .nav-links {
+        display: none;
+      }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: var(--bg-surface);
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--border-bright);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      }
+      .nav-toggle {
+        display: block;
+      }
+      .mechanics-grid, .cta-cards, .dev-portfolio-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-title {
+        font-size: 2.6rem;
+      }
+      .hero-ctas {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .hero-ctas .btn {
+        width: 100%;
+      }
+      .git-clone-box {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: stretch;
+        text-align: center;
+      }
+      .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Retro CRT Scanline & Phosphor Overlay -->
+  <div id="crt-overlay"></div>
+
+  <!-- Ambient Tachyon Particle Background -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- ==========================================================================
+       NAVIGATION BAR
+       ========================================================================== -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#home" class="nav-brand">
+        <!-- Embedded Echo of Dread Icon SVG -->
+        <svg class="brand-svg" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="128" height="128" rx="28" fill="#0b0f19"/>
+          <circle cx="64" cy="64" r="48" stroke="#1a2e4a" stroke-width="4"/>
+          <path d="M 64 20 A 44 44 0 1 1 20 64" stroke="#00e5ff" stroke-width="6" stroke-linecap="round" stroke-dasharray="180 30"/>
+          <circle cx="64" cy="64" r="30" stroke="#d500f9" stroke-width="4" stroke-opacity="0.8" stroke-dasharray="80 20"/>
+          <circle cx="64" cy="64" r="14" fill="#00e5ff" fill-opacity="0.9"/>
+          <circle cx="64" cy="64" r="6" fill="#ffffff"/>
+          <circle cx="64" cy="20" r="5" fill="#ffffff"/>
+        </svg>
+        <span>ECHO OF DREAD</span>
+        <span class="status-badge"><span class="status-dot"></span>CAUSAL STABLE</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="nav-menu">
+          <li><a href="#home" class="nav-link">// HOME</a></li>
+          <li><a href="#how-to-play" class="nav-link">// HOW TO PLAY</a></li>
+          <li><a href="#campaign" class="nav-link">// 50 CHAMBERS</a></li>
+          <li><a href="#lore" class="nav-link">// LORE LOGS</a></li>
+          <li><a href="#architecture" class="nav-link">// ARCHITECTURE</a></li>
+          <li><a href="#other-games" class="nav-link">// DEV PORTFOLIO</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Procedural Web Audio Synthesizer Toggle -->
+        <button id="audio-toggle" class="util-btn" title="Toggle Procedural Audio Drone & SFX">
+          <span id="audio-icon">🔇</span>
+          <span id="audio-label">SFX OFF</span>
+        </button>
+
+        <!-- CRT Post-Processing Filter Toggle -->
+        <button id="crt-toggle" class="util-btn active" title="Toggle Retro CRT Scanlines">
+          <span>📺</span>
+          <span>CRT ON</span>
+        </button>
+
+        <a href="https://zeninxparth.itch.io/echo-of-dread" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+          PLAY NOW
+        </a>
+
+        <button class="nav-toggle" id="nav-toggle-btn" aria-label="Toggle Navigation Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       HERO SECTION WITH REAL-TIME TIME-LOOP MINI-SIMULATOR
+       ========================================================================== -->
+  <main id="home" class="hero-section">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <span>// PROJECT CHRONOS</span>
+          <span>•</span>
+          <span>SUB-LEVEL 4 ANOMALY</span>
+        </div>
+
+        <h1 class="hero-title">
+          COLLAPSE TIME.<br>
+          <span>BECOME YOUR OWN ECHO.</span>
+        </h1>
+
+        <blockquote class="hero-quote">
+          "You cannot escape alone in linear time. But within this loop, you are your own teammate."
+        </blockquote>
+
+        <p class="hero-desc">
+          Trapped inside the subterranean Chronos Research Facility after a catastrophic tachyon manifold breach, reality snaps back every 30 seconds. Record physical iterations of your past actions to operate pressure pads, bypass lethal laser grids, decoy security drones, and breach the Singularity.
+        </p>
+
+        <div class="hero-badges">
+          <div class="badge-pill cyan">⚡ Godot Engine 4.7.2</div>
+          <div class="badge-pill">⏱ 30-Second Causal Curve</div>
+          <div class="badge-pill">👥 Multi-Echo Recording (ActionRecorder)</div>
+          <div class="badge-pill">🏛 50 Handcrafted Chambers</div>
+          <div class="badge-pill green">🧪 385 / 385 Tests Passing</div>
+          <div class="badge-pill">📱 PC & Mobile Touch Ready</div>
+        </div>
+
+        <div class="hero-ctas">
+          <a href="https://zeninxparth.itch.io/echo-of-dread" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            <span>🎮 PLAY FREE IN BROWSER</span>
+          </a>
+          <a href="https://github.com/Ghostofzenin08/Echo_of_Dread.git" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+            <span>💻 GITHUB REPO</span>
+          </a>
+          <a href="#how-to-play" class="btn btn-secondary">
+            <span>📖 GAME GUIDE</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Interactive Canvas Time-Loop Simulator -->
+      <div class="sim-card">
+        <div class="sim-card-header">
+          <div class="sim-title">
+            <span>●</span> LIVE TIME-LOOP SIMULATION [CHAMBER 02]
+          </div>
+          <div class="sim-timer" id="sim-timer-display">00:30.00</div>
+        </div>
+
+        <div class="sim-canvas-wrap">
+          <canvas id="sim-canvas" width="480" height="300"></canvas>
+        </div>
+
+        <div class="sim-timeline-bar">
+          <div class="sim-timeline-progress" id="sim-progress-bar"></div>
+        </div>
+
+        <div class="sim-controls">
+          <button id="sim-rewind-btn" class="sim-btn" title="Rewind loop immediately">REWIND LOOP (R)</button>
+          <button id="sim-pause-btn" class="sim-btn" title="Pause or Resume simulation">PAUSE</button>
+          <button id="sim-reset-btn" class="sim-btn" title="Clear all Echo recordings">CLEAR ECHOES (C)</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       HOW TO PLAY & SYSTEM MECHANICS
+       ========================================================================== */
+  -->
+  <section id="how-to-play" class="section">
+    <div class="container">
+      <div class="section-tag">// SURVIVAL PROTOCOL</div>
+      <h2 class="section-title">THE 30-SECOND TEMPORAL LOOP</h2>
+      <p class="section-desc">
+        Linear time is dead. You cannot brute-force the facility's synchronized security locks alone. Master the three phases of chronological coordination.
+      </p>
+
+      <div class="mechanics-grid">
+        <div class="mechanic-card">
+          <div class="card-step">01</div>
+          <div class="card-icon">⚡</div>
+          <h3 class="mechanic-title">EXPLORE & RECORD</h3>
+          <p class="mechanic-desc">
+            Sprint across the chamber, step on high-pressure activation plates, hit capacitor relays, or access story terminals. The <code style="color:var(--cyan)">ActionRecorder</code> records your sub-frame coordinate trajectory, facing angle, and button presses with binary search determinism.
+          </p>
+        </div>
+
+        <div class="mechanic-card">
+          <div class="card-step">02</div>
+          <div class="card-icon">⏳</div>
+          <h3 class="mechanic-title">TEMPORAL COLLAPSE</h3>
+          <p class="mechanic-desc">
+            When the 30-second clock expires—or when you initiate an emergency manual rewind with <kbd class="key-badge">R</kbd> (unlocked at Chamber 11)—spacetime snaps back with full-screen CRT chromatic aberration. Your past actions crystallize into an autonomous holographic <strong>Echo</strong>.
+          </p>
+        </div>
+
+        <div class="mechanic-card">
+          <div class="card-step">03</div>
+          <div class="card-icon">👥</div>
+          <h3 class="mechanic-title">COOPERATE WITH YOURSELF</h3>
+          <p class="mechanic-desc">
+            Coordinate with up to 5 concurrent Echoes. While your previous iteration stands on an observation deck pressure plate or draws a lethal security drone away from the corridor, your current self sprints through the opened blast door to safety.
+          </p>
+        </div>
+      </div>
+
+      <!-- Facility Hazards & Mechanics -->
+      <div class="section-tag">// FACILITY HAZARDS</div>
+      <h2 class="section-title" style="font-size: 1.8rem;">CHAMBER LOGIC & HAZARDS</h2>
+      <div class="hazards-grid">
+        <div class="hazard-item">
+          <div class="hazard-glyph" style="color:var(--cyan)">⏣</div>
+          <div>
+            <div class="hazard-name">Quantum Pressure Plates</div>
+            <div class="hazard-desc">Physical sensors that depress under player or Echo mass to energize circuit pathways and unlock reinforced blast doors.</div>
+          </div>
+        </div>
+        <div class="hazard-item">
+          <div class="hazard-glyph" style="color:var(--amber)">⏱</div>
+          <div>
+            <div class="hazard-name">Capacitor Timed Switches</div>
+            <div class="hazard-desc">Decaying power relays that remain active for only 3 to 5 seconds. Requires frame-perfect temporal coordination with past Echoes.</div>
+          </div>
+        </div>
+        <div class="hazard-item">
+          <div class="hazard-glyph" style="color:var(--red)">⚡</div>
+          <div>
+            <div class="hazard-name">High-Frequency Laser Grids</div>
+            <div class="hazard-desc">Lethal optical barriers powered by multi-lock AND/OR logic gates. Contact results in immediate chronal dissolution.</div>
+          </div>
+        </div>
+        <div class="hazard-item">
+          <div class="hazard-glyph" style="color:var(--magenta)">👁</div>
+          <div>
+            <div class="hazard-name">Aegis Sentinel Drones</div>
+            <div class="hazard-desc">Autonomous security drones roaming facility corridors. They track chronal heat signatures—use previous Echoes as sacrificial decoys!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dual Controls Schema (PC & Mobile) -->
+      <div class="section-tag">// INTERFACE SCHEMATICS</div>
+      <h2 class="section-title" style="font-size: 1.8rem;">DUAL INPUT ARCHITECTURE</h2>
+      <div class="controls-wrapper">
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <span>DESKTOP KEYBOARD CONTROLS</span>
+            <div class="terminal-dots"><div class="terminal-dot green"></div></div>
+          </div>
+          <table class="control-table">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Primary Key</th>
+                <th>Secondary Key</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Move Researcher</td>
+                <td><kbd class="key-badge" data-key="KeyW">W</kbd> <kbd class="key-badge" data-key="KeyA">A</kbd> <kbd class="key-badge" data-key="KeyS">S</kbd> <kbd class="key-badge" data-key="KeyD">D</kbd></td>
+                <td><kbd class="key-badge">Arrow Keys</kbd></td>
+              </tr>
+              <tr>
+                <td>Interact / Toggle Switch</td>
+                <td><kbd class="key-badge" data-key="KeyE">E</kbd></td>
+                <td><kbd class="key-badge">Space</kbd> / <kbd class="key-badge">Enter</kbd></td>
+              </tr>
+              <tr>
+                <td>Manual Chronal Rewind</td>
+                <td><kbd class="key-badge" data-key="KeyR">R</kbd> <em style="font-size:0.75rem;color:var(--amber)">(Chamber 11+)</em></td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>Clear All Past Echoes</td>
+                <td><kbd class="key-badge" data-key="KeyC">C</kbd></td>
+                <td><kbd class="key-badge">Backspace</kbd></td>
+              </tr>
+              <tr>
+                <td>Pause / Settings / Dismiss</td>
+                <td><kbd class="key-badge" data-key="Escape">ESC</kbd></td>
+                <td><kbd class="key-badge">P</kbd></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <span>TOUCH & MOBILE CONTROLS</span>
+            <div class="terminal-dots"><div class="terminal-dot yellow"></div></div>
+          </div>
+          <table class="control-table">
+            <thead>
+              <tr>
+                <th>Mobile Element</th>
+                <th>Gesture / Touch</th>
+                <th>Functionality</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Virtual Analog Joystick</td>
+                <td>Left Screen Drag</td>
+                <td>Precision 360-degree analog researcher navigation</td>
+              </tr>
+              <tr>
+                <td><code style="color:var(--cyan)">[ACT]</code> Button</td>
+                <td>Bottom-Right Tap</td>
+                <td>Trigger buttons, pull levers, decrypt lore terminals</td>
+              </tr>
+              <tr>
+                <td><code style="color:var(--magenta)">[REWIND]</code> Button</td>
+                <td>Upper-Right Tap</td>
+                <td>Instantly collapse loop & spawn new Echo instance</td>
+              </tr>
+              <tr>
+                <td><code style="color:var(--red)">[CLEAR]</code> Button</td>
+                <td>HUD Top-Right Tap</td>
+                <td>Wipe all recordings & restart current chamber at Loop #1</td>
+              </tr>
+              <tr>
+                <td><code style="color:var(--text-main)">[ || ]</code> Menu Button</td>
+                <td>Top-Right Tap</td>
+                <td>Access audio sliders, CRT shader toggles, & level selection</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       50-CHAMBER CAMPAIGN & FACILITY SECTORS
+       ========================================================================== -->
+  <section id="campaign" class="section">
+    <div class="container">
+      <div class="section-tag">// FACILITY SCHEMATICS</div>
+      <h2 class="section-title">THE 50-CHAMBER CAMPAIGN</h2>
+      <p class="section-desc">
+        Explore 5 escalating facility wings inside the Chronos Complex. Each wing introduces novel physical hazards, cognitive synchrony challenges, and Dr. Thorne's encrypted story logs.
+      </p>
+
+      <!-- Sector Selector Tabs -->
+      <div class="sector-tabs">
+        <button class="sector-tab active" data-sector="1">
+          <span>SECTOR 1: ALPHA WING</span> [CH 01–10]
+        </button>
+        <button class="sector-tab" data-sector="2">
+          <span>SECTOR 2: BETA WING</span> [CH 11–20]
+        </button>
+        <button class="sector-tab" data-sector="3">
+          <span>SECTOR 3: GAMMA WING</span> [CH 21–30]
+        </button>
+        <button class="sector-tab" data-sector="4">
+          <span>SECTOR 4: DELTA WING</span> [CH 31–40]
+        </button>
+        <button class="sector-tab" data-sector="5">
+          <span>SECTOR 5: OMEGA WING</span> [CH 41–50]
+        </button>
+      </div>
+
+      <!-- Sector Detail Display Card -->
+      <div class="sector-display-card" id="sector-display">
+        <div class="sector-info">
+          <div class="sector-meta-badge" id="sector-badge">SECTOR 1 // SUB-LEVEL 4</div>
+          <h3 class="sector-display-title" id="sector-name">ALPHA WING</h3>
+          <div class="sector-display-subtitle" id="sector-subtitle">TEMPORAL RESONANCE & CALIBRATION</div>
+          <p class="sector-display-desc" id="sector-desc">
+            The epicenter of the tachyon breach. Learn the fundamentals of temporal echoing across isolated observation wings. Navigate pressure plate logic gates, coordinate dual-switch authorizations, and discover Dr. Aris Thorne's initial panic logs.
+          </p>
+          <div style="display:flex; gap:1.5rem; font-family:var(--font-mono); font-size:0.85rem;">
+            <div><span style="color:var(--text-dim)">HAZARDS:</span> <span id="sector-hazards" style="color:var(--text-main)">Pressure Plates, Locked Doors</span></div>
+            <div><span style="color:var(--text-dim)">DIFFICULTY:</span> <span id="sector-diff" style="color:var(--cyan)">CALIBRATION</span></div>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-dim); margin-bottom:0.75rem;">
+            SELECT CHAMBER TO INSPECT BLUEPRINT:
+          </div>
+          <div class="sector-chambers-grid" id="sector-chambers-container">
+            <!-- Populated via JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       LORE ARCHIVE: DR. ARIS THORNE'S RECOVERED LOGS
+       ========================================================================== -->
+  <section id="lore" class="section">
+    <div class="container">
+      <div class="section-tag">// DECRYPTED MEMORY CORE</div>
+      <h2 class="section-title">THE CHRONOS TRANSMISSIONS</h2>
+      <p class="section-desc">
+        10 encrypted audio transcripts left behind by Dr. Aris Thorne, Lead Temporal Physicist, documenting the true militarized nature of Project Chronos and the emergence of Proxy-Zero.
+      </p>
+
+      <div class="lore-grid">
+        <!-- Log Selector Menu -->
+        <div class="lore-menu" id="lore-menu-container">
+          <!-- Populated via JavaScript -->
+        </div>
+
+        <!-- Terminal Reader Display -->
+        <div class="lore-reader" id="lore-reader-box">
+          <div class="reader-header">
+            <div class="reader-timestamp" id="log-timestamp">CYCLE 001 - 08:14:02</div>
+            <h3 class="reader-title" id="log-title">LOG 01: TACHYON MANIFOLD BREACH</h3>
+            <div class="reader-author" id="log-author">Dr. Aris Thorne, Lead Temporal Physicist</div>
+          </div>
+
+          <div class="reader-body" id="log-content">
+            Resonance containment has suffered catastrophic failure. The tachyon manifold fractured, collapsing Sub-Level 4 into a closed causal curve. Exactly 30 seconds before reality snaps back.
+
+            Preliminary scans reveal something astonishing: actions taken during a loop leave physical quantum imprints. A temporal 'Echo'. If you stand on an activation pad, your echo will remain there when time resets.
+
+            Use your past to forge a path forward.
+          </div>
+
+          <div class="reader-footer">
+            <span>TERMINAL STATUS: DECRYPTED</span>
+            <span>CHRONAL INTEGRITY: 98.4%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       GAME ARCHITECTURE & TEST SUITE EXCELLENCE
+       ========================================================================== -->
+  <section id="architecture" class="section">
+    <div class="container">
+      <div class="section-tag">// TECHNICAL RIGOR</div>
+      <h2 class="section-title">ENGINEERING & SYSTEM TOPOLOGY</h2>
+      <p class="section-desc">
+        Echo of Dread is architected for zero external asset bloat, absolute mathematical determinism, and instant web loading.
+      </p>
+
+      <div class="arch-grid">
+        <div class="arch-card">
+          <div class="arch-header">
+            <span class="arch-icon">⚡</span>
+            <h3 class="arch-title">Sub-Frame Trajectory Interpolation</h3>
+          </div>
+          <p class="arch-desc">
+            The <code style="color:var(--cyan)">ActionRecorder</code> records player coordinates, orientations, and interactions every physics tick. Replay utilizes a binary search interpolation algorithm guaranteeing that Echoes never desynchronize or drift across 50+ playback cycles.
+          </p>
+          <pre class="arch-code-snippet"><code># ActionRecorder Binary Search Frame Interpolation
+var low := 0
+var high := frames.size() - 1
+while low &lt;= high:
+    var mid := (low + high) / 2
+    if frames[mid].t &lt; target_t:
+        low = mid + 1
+    else:
+        high = mid - 1</code></pre>
+        </div>
+
+        <div class="arch-card">
+          <div class="arch-header">
+            <span class="arch-icon">🔊</span>
+            <h3 class="arch-title">Procedural Audio Synthesizer</h3>
+          </div>
+          <p class="arch-desc">
+            No massive audio WAV banks. The <code style="color:var(--cyan)">SoundManager</code> synthesizes procedural waveforms in real-time, dynamically modulating an <code style="color:var(--amber)">AudioEffectLowPassFilter</code> (20,000 Hz down to 900 Hz) whenever loop time falls below 5.0 seconds.
+          </p>
+          <pre class="arch-code-snippet"><code># Low-Pass Filter Emergency Urgency Modulation
+var urgency_ratio := clampf((5.0 - remaining_t) / 5.0, 0.0, 1.0)
+var target_cutoff := lerpf(20000.0, 900.0, urgency_ratio)
+AudioServer.get_bus_effect(sfx_bus, 0).cutoff_hz = target_cutoff</code></pre>
+        </div>
+
+        <div class="arch-card">
+          <div class="arch-header">
+            <span class="arch-icon">📺</span>
+            <h3 class="arch-title">GLSL Rewind & Aberration Shader</h3>
+          </div>
+          <p class="arch-desc">
+            Custom GLSL fragment shader simulating screen curvature, CRT scanline phosphor decay, and high-frequency RGB chromatic aberration during temporal collapse events.
+          </p>
+          <pre class="arch-code-snippet"><code>// GLSL Temporal Rewind Chromatic Aberration
+vec2 uv = SCREEN_UV;
+float r = texture(screen_texture, uv + vec2(aberration, 0.0)).r;
+float g = texture(screen_texture, uv).g;
+float b = texture(screen_texture, uv - vec2(aberration, 0.0)).b;
+COLOR = vec4(r, g, b, 1.0);</code></pre>
+        </div>
+
+        <div class="arch-card">
+          <div class="arch-header">
+            <span class="arch-icon">💾</span>
+            <h3 class="arch-title">Persistence & Star Retention</h3>
+          </div>
+          <p class="arch-desc">
+            High-efficiency <code style="color:var(--cyan)">SaveManager</code> storing chamber completion times, loop par ratings (1–3 stars), unlocked story logs, and tactile preferences via sanitized <code style="color:var(--green)">user://savegame.json</code>.
+          </p>
+          <pre class="arch-code-snippet"><code># Par Loop Retention Calculation
+var stars := 1
+if loops_taken &lt;= par_loops:
+    stars = 3
+elif loops_taken &lt;= par_loops + 1:
+    stars = 2
+SaveManager.record_chamber_clear(c_id, loops_taken, stars)</code></pre>
+        </div>
+      </div>
+
+      <!-- Headless Automated Test Suite Dashboard -->
+      <div class="terminal-box test-dashboard">
+        <div class="test-status-bar">
+          <div>
+            <span style="color:var(--cyan); font-weight:700;">// HEADLESS AUTOMATED TEST SUITE</span>
+            <span style="color:var(--text-dim); margin-left:0.5rem;">[scenes/test/test_runner.gd]</span>
+          </div>
+          <div class="test-score">385 / 385 TESTS PASSED (100%)</div>
+        </div>
+
+        <div class="test-feed" id="test-feed-box">
+          <div class="test-line"><span class="pass">[PASS]</span> Autoload: SoundManager is initialized</div>
+          <div class="test-line"><span class="pass">[PASS]</span> Autoload: NarrativeData is initialized (10 Lore Logs Verified)</div>
+          <div class="test-line"><span class="pass">[PASS]</span> Autoload: GameManager is initialized</div>
+          <div class="test-line"><span class="pass">[PASS]</span> Autoload: SaveManager is initialized (Roundtrip Persistence)</div>
+          <div class="test-line"><span class="pass">[PASS]</span> LoopManager: Initial loop is #1</div>
+          <div class="test-line"><span class="pass">[PASS]</span> ActionRecorder: Sub-frame binary search interpolates position (250, 100)</div>
+          <div class="test-line"><span class="pass">[PASS]</span> Echo: Holographic shader and ghost trail instantiated</div>
+          <div class="test-line"><span class="pass">[PASS]</span> PressurePlate: Occupant tracking robust under simultaneous Echo step</div>
+          <div class="test-line"><span class="pass">[PASS]</span> TimedButton: 3.0s decay de-energizes AND logic gates</div>
+          <div class="test-line"><span class="pass">[PASS]</span> LaserBarrier: Multi-lock optical collision matches circuit state</div>
+          <div class="test-line"><span class="pass">[PASS]</span> RewindLock: Chamber 1–10 manual rewind locked for calibration</div>
+          <div class="test-line"><span class="pass">[PASS]</span> RewindLock: Chamber 11 unlocks manual chronal rewind (Key: R)</div>
+          <div class="test-line"><span class="pass">[PASS]</span> SecurityDrone: Aegis sentry patrol detects line-of-sight & pursues Echo decoy</div>
+          <div class="test-line"><span class="pass">[PASS]</span> MobileControls: VirtualJoystick analog radius clamped to 80px</div>
+          <div class="test-line"><span class="pass">[PASS]</span> TouchOverlay: [ACT], [REWIND], [CLEAR] emit synthetic InputEvents</div>
+          <div class="test-line"><span class="pass">[PASS]</span> ChamberDatabase: All 50 chambers validate spawn, exit, & par loop metrics</div>
+          <div class="test-line"><span class="pass">[PASS]</span> OmegaWing: Chamber 50 Singularity Core triggers Event Horizon breach</div>
+          <div class="test-line" style="color:var(--green); font-weight:700;">>>> ALL SYSTEMS NOMINAL. TEST RUNNER EXITING WITH CODE 0.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       DOWNLOADS & PLAY NOW CTA SECTION
+       ========================================================================== -->
+  <section class="section" style="background: linear-gradient(180deg, var(--bg-deep) 0%, #070c13 100%);">
+    <div class="container">
+      <div class="section-tag">// DEPLOYMENT PROTOCOL</div>
+      <h2 class="section-title">CHOOSE YOUR PLATFORM</h2>
+      <p class="section-desc">
+        Play directly in your browser with zero install time or clone the full open-source Godot 4.7 project.
+      </p>
+
+      <div class="cta-cards">
+        <div class="cta-card featured">
+          <div class="cta-header">
+            <span class="cta-badge">RECOMMENDED • INSTANT ACCESS</span>
+            <h3 class="cta-title">Web Browser Edition</h3>
+            <p class="cta-desc">
+              Play directly on itch.io via high-performance WebAssembly. Zero download required. Seamless support for keyboard and mobile touch controls.
+            </p>
+          </div>
+          <a href="https://zeninxparth.itch.io/echo-of-dread" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            PLAY ON ITCH.IO ↗
+          </a>
+        </div>
+
+        <div class="cta-card">
+          <div class="cta-header">
+            <span class="cta-badge">DESKTOP STANDALONE</span>
+            <h3 class="cta-title">Windows x86_64 Build</h3>
+            <p class="cta-desc">
+              Download the standalone native executable. Uncapped framerates, zero browser sandboxing latency, and offline play ready.
+            </p>
+          </div>
+          <a href="https://zeninxparth.itch.io/echo-of-dread" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+            DOWNLOAD WINDOWS (ITCH.IO)
+          </a>
+        </div>
+
+        <div class="cta-card">
+          <div class="cta-header">
+            <span class="cta-badge">OPEN SOURCE • MIT LICENSE</span>
+            <h3 class="cta-title">Full Source Repository</h3>
+            <p class="cta-desc">
+              Inspect all 39 GDScript modules, GLSL shaders, procedural audio generators, and automated test runners on GitHub.
+            </p>
+          </div>
+          <a href="https://github.com/Ghostofzenin08/Echo_of_Dread.git" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+            VIEW ON GITHUB ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Git Clone Terminal Bar -->
+      <div class="git-clone-box">
+        <div>
+          <span style="color:var(--text-dim)">$</span>
+          <span style="color:var(--cyan)">git clone</span>
+          <span>https://github.com/Ghostofzenin08/Echo_of_Dread.git</span>
+        </div>
+        <button class="copy-btn" id="copy-git-btn">COPY COMMAND</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       FOOTER & DEVELOPER PORTFOLIO (ZENINXPARTH ITCH.IO SHOWCASE)
+       ========================================================================== -->
+  <footer id="other-games" class="site-footer">
+    <div class="container">
+      <div class="section-tag">// DEVELOPER PORTFOLIO</div>
+      <h3 class="footer-showcase-title">MORE GAMES BY ZENINXPARTH</h3>
+      <p class="footer-showcase-desc">
+        Explore other commercial and indie titles developed by ZeninXParth on itch.io.
+      </p>
+
+      <div class="dev-portfolio-grid">
+        <!-- Game 1: Echo of Dread -->
+        <a href="https://zeninxparth.itch.io/echo-of-dread" target="_blank" rel="noopener noreferrer" class="portfolio-card">
+          <div class="portfolio-thumb">
+            <div class="portfolio-thumb-fallback">
+              <svg viewBox="0 0 128 128" width="64" height="64" fill="none">
+                <circle cx="64" cy="64" r="48" stroke="#00f0ff" stroke-width="4"/>
+                <path d="M 64 20 A 44 44 0 1 1 20 64" stroke="#00f0ff" stroke-width="6" stroke-linecap="round"/>
+                <circle cx="64" cy="64" r="14" fill="#00f0ff"/>
+              </svg>
+              <div style="font-size:0.85rem; margin-top:0.4rem; color:#fff;">ECHO OF DREAD</div>
+            </div>
+          </div>
+          <div class="portfolio-content">
+            <div>
+              <div class="portfolio-genre">Sci-Fi Puzzle • Godot 4.7</div>
+              <h4 class="portfolio-title">Echo of Dread</h4>
+              <p class="portfolio-desc">
+                "You cannot escape alone in linear time. But within this loop, you are your own teammate." 50 chambers, 385 automated tests.
+              </p>
+            </div>
+            <div class="portfolio-platforms">
+              <span class="platform-tag">Play in Browser</span>
+              <span class="platform-tag">Windows</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Game 2: BlockRush 2048 -->
+        <a href="https://zeninxparth.itch.io/blockrush-2048" target="_blank" rel="noopener noreferrer" class="portfolio-card">
+          <div class="portfolio-thumb">
+            <img src="https://img.itch.zone/aW1nLzI5OTgxMjIwLnBuZw==/315x250%23c/lm7Yb3.png" alt="BlockRush 2048" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="portfolio-thumb-fallback" style="display:none;">
+              <span style="font-size:2rem;">🔢</span>
+              <div style="font-size:0.85rem; margin-top:0.4rem; color:#fff;">BLOCKRUSH 2048</div>
+            </div>
+          </div>
+          <div class="portfolio-content">
+            <div>
+              <div class="portfolio-genre">Puzzle • Strategy</div>
+              <h4 class="portfolio-title">BlockRush 2048</h4>
+              <p class="portfolio-desc">
+                A sleek, modern 2048 puzzle experience with dynamic grid progression, smooth animations, and cloud-synced leaderboards!
+              </p>
+            </div>
+            <div class="portfolio-platforms">
+              <span class="platform-tag">Play in Browser</span>
+              <span class="platform-tag">Windows</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Game 3: Meteor Space Dodge -->
+        <a href="https://zeninxparth.itch.io/meteor-space-dodge" target="_blank" rel="noopener noreferrer" class="portfolio-card">
+          <div class="portfolio-thumb">
+            <img src="https://img.itch.zone/aW1nLzI5OTgxMzU0LnBuZw==/315x250%23c/I8394j.png" alt="Meteor Space Dodge" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="portfolio-thumb-fallback" style="display:none;">
+              <span style="font-size:2rem;">🚀</span>
+              <div style="font-size:0.85rem; margin-top:0.4rem; color:#fff;">METEOR SPACE DODGE</div>
+            </div>
+          </div>
+          <div class="portfolio-content">
+            <div>
+              <div class="portfolio-genre">Action • Arcade Survival</div>
+              <h4 class="portfolio-title">Meteor Space Dodge</h4>
+              <p class="portfolio-desc">
+                Arcade 2D space survival game by ZeninXParth. Dodge meteors, survive, and reach the global Neon DB leaderboard!
+              </p>
+            </div>
+            <div class="portfolio-platforms">
+              <span class="platform-tag">Windows</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Footer Bottom Bar -->
+      <div class="footer-bottom">
+        <div>
+          <span>© 2026 <strong>Echo of Dread</strong>. Created by </span>
+          <a href="https://zeninxparth.itch.io" target="_blank" rel="noopener noreferrer" style="color:var(--cyan); font-weight:700;">ZeninXParth</a>.
+          <span> Licensed under MIT.</span>
+        </div>
+
+        <div class="footer-links">
+          <a href="https://zeninxparth.itch.io" target="_blank" rel="noopener noreferrer">itch.io Profile</a>
+          <a href="https://github.com/Ghostofzenin08" target="_blank" rel="noopener noreferrer">GitHub Profile</a>
+          <a href="https://github.com/Ghostofzenin08/Echo_of_Dread" target="_blank" rel="noopener noreferrer">Repository</a>
+          <a href="https://godotengine.org" target="_blank" rel="noopener noreferrer">Built in Godot 4.7</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       INTERACTIVE LOGIC, PROCEDURAL AUDIO, & TIME-LOOP SIMULATION
+       ========================================================================== -->
+  <script>
+    /* --------------------------------------------------------------------------
+       1. DATA STRUCTURES: 10 LORE LOGS & 5 SECTORS
+       -------------------------------------------------------------------------- */
+    const LORE_LOGS = {
+      "log_01": {
+        id: "log_01",
+        cycle: "CYCLE 001",
+        timestamp: "CYCLE 001 - 08:14:02",
+        title: "LOG 01: TACHYON MANIFOLD BREACH",
+        author: "Dr. Aris Thorne, Lead Temporal Physicist",
+        content: `Resonance containment has suffered catastrophic failure. The tachyon manifold fractured, collapsing Sub-Level 4 into a closed causal curve. Exactly 30 seconds before reality snaps back.
+
+Preliminary scans reveal something astonishing: actions taken during a loop leave physical quantum imprints. A temporal 'Echo'. If you stand on an activation pad, your echo will remain there when time resets.
+
+Use your past to forge a path forward.`
+      },
+      "log_02": {
+        id: "log_02",
+        cycle: "CYCLE 043",
+        timestamp: "CYCLE 043 - 08:14:19",
+        title: "LOG 02: CAUSAL COUPLING & SYNCHRONY",
+        author: "Dr. Aris Thorne, Lead Temporal Physicist",
+        content: `The echoes possess genuine physical mass and interact with facility sensors. In Chamber 02, the central blast door requires dual authorization across separated observation wings.
+
+A single human cannot be in two places at once in linear time. But within this loop, you are your own teammate. Coordinate your timing. When the loop resets, let your previous self hold the switch while you advance.`
+      },
+      "log_03": {
+        id: "log_03",
+        cycle: "CYCLE 118",
+        timestamp: "CYCLE 118 - 08:14:27",
+        title: "LOG 03: CAPACITOR TIMING & DEVIATIONS",
+        author: "Dr. Aris Thorne, Lead Temporal Physicist",
+        content: `Warning: The security protocols are decaying. The capacitor switches have limited operational windows—they deactivate after only a few seconds.
+
+To cross the high-frequency laser barriers into the Vault, you must execute a strict chronological sequence. Your echo must trigger the primary capacitor at the precise second you arrive at the security threshold.`
+      },
+      "log_04": {
+        id: "log_04",
+        cycle: "CYCLE 240",
+        timestamp: "CYCLE 240 - 08:14:30",
+        title: "LOG 04: THE ESCAPE RESONANCE",
+        author: "Dr. Aris Thorne, Lead Temporal Physicist",
+        content: `If you are reading this in the Core Chamber, you are minutes away from breaking the loop. The facility lock cannot be broken by running away; it must be satisfied.
+
+Four terminal nodes must be harmonized simultaneously across multiple temporal iterations. When all four nodes are held in alignment, the chronal boundary will rupture, restoring linear flow.
+
+Do not hesitate. Step into the rift when the blast doors open.`
+      },
+      "log_05": {
+        id: "log_05",
+        cycle: "CYCLE 312",
+        timestamp: "CYCLE 312 - [CLASSIFIED]",
+        title: "LOG 05: SECURITY OVERWRITE MANDATE",
+        author: "Director Cole, Site Operations",
+        content: `AUTOMATED MEMORANDUM: Dr. Thorne has refused extraction orders. He claims the fracture will expand if left uncontained. That is unacceptable.
+
+Under Facility Protocol Delta-9, Aegis defense sentries have been set to lethal auto-patrol. Any mobile chronal anomaly detected outside quarantine will be neutralized on sight. The loop must not be allowed to bleed past Sector 2.`
+      },
+      "log_06": {
+        id: "log_06",
+        cycle: "CYCLE 405",
+        timestamp: "CYCLE 405 - 08:14:11",
+        title: "LOG 06: THE CHRONOS ACCORD",
+        author: "Dr. Aris Thorne, Personal Audio Diary",
+        content: `I found Director Cole's encrypted transmissions in the relay room. Project Chronos was never an energy experiment. They wanted a weaponized temporal bubble—a subterranean killbox where soldiers could iterate tactical assaults infinitely until achieving 100% lethality.
+
+They didn't expect the manifold to reject the human nervous system. We tore open the fabric of causality, and now the facility itself is conscious.`
+      },
+      "log_07": {
+        id: "log_07",
+        cycle: "CYCLE 529",
+        timestamp: "CYCLE 529 - CORRUPTED",
+        title: "LOG 07: ELENA'S WARNING",
+        author: "Dr. Elena Vane, Quantum Engineering",
+        content: `Aris, listen to me if you are still sane enough to understand. Every loop you initiate is pulling kinetic energy from the surrounding continent. The seismic sensors in Sector 3 are off the charts.
+
+If you don't dissolve the 50 containment nodes, the loop won't just reset us—it will collapse the entire timeline of the eastern hemisphere into a black hole. You have to destroy the anchor crystals.`
+      },
+      "log_08": {
+        id: "log_08",
+        cycle: "CYCLE 681",
+        timestamp: "CYCLE 681 - 08:14:24",
+        title: "LOG 08: THE DECOY PARADIGM",
+        author: "Dr. Aris Thorne, Tactical Notes",
+        content: `The security drones are blind to time, but they lock onto chronal heat signatures. If an echo sprints across their field of view, the sentry will pursue the echo, ignoring everything else.
+
+Use your past selves as decoys. Draw the sentries into isolated dead-ends so you can access the bypass switches safely. In this labyrinth, sacrifice is just another calculation.`
+      },
+      "log_09": {
+        id: "log_09",
+        cycle: "CYCLE 890",
+        timestamp: "CYCLE 890 - --:--:--",
+        title: "LOG 09: DISSOLUTION OF THE SELF",
+        author: "Dr. Aris Thorne, Neural Transcript",
+        content: `I... I cannot picture Elena's face anymore. My biological synapses are burning out under the weight of nine hundred iterations. My body died in Chamber 20 three weeks ago—or was it three seconds ago?
+
+What walks these chambers now is not a man. I transferred the last sliver of my consciousness into a tachyonic crystal chassis. I call it Proxy-Zero. If you are reading this... you are me. The last copy.`
+      },
+      "log_10": {
+        id: "log_10",
+        cycle: "CYCLE 1000",
+        timestamp: "CYCLE 1000 - CONVERGENCE",
+        title: "LOG 10: BEYOND THE EVENT HORIZON",
+        author: "Dr. Aris Thorne / Proxy-Zero",
+        content: `Fifty chambers aligned. Fifty chronal nodes stabilized. The manifold core is trembling at absolute resonance.
+
+When you step into the Singularity gate ahead, the loop will fracture permanently. The facility will vanish from the historical record, but linear reality will survive.
+
+Thank you for enduring the dread. Break the cycle. Walk into the tomorrow we were denied.`
+      }
+    };
+
+    const SECTORS_DATA = {
+      1: {
+        badge: "SECTOR 1 // SUB-LEVEL 4",
+        name: "ALPHA WING",
+        subtitle: "TEMPORAL RESONANCE & CALIBRATION",
+        desc: "The epicenter of the tachyon breach. Learn the fundamentals of temporal echoing across isolated observation wings. Navigate pressure plate logic gates, coordinate dual-switch authorizations, and discover Dr. Aris Thorne's initial panic logs.",
+        hazards: "Pressure Plates, Locked Blast Doors",
+        difficulty: "CALIBRATION",
+        chambers: [
+          { id: 1, title: "TEMPORAL RESONANCE", par: 1 },
+          { id: 2, title: "SYNCHRONIZED ISOLATION", par: 2 },
+          { id: 3, title: "SWITCHBACK RUN", par: 2 },
+          { id: 4, title: "QUADRANT HARMONICS", par: 3 },
+          { id: 5, title: "TWIN ANCHOR", par: 2 },
+          { id: 6, title: "CROSSOVER RELAY", par: 2 },
+          { id: 7, title: "PERIMETER GAUNTLET", par: 2 },
+          { id: 8, title: "CENTRAL HUB", par: 3 },
+          { id: 9, title: "DIVIDED LAB", par: 2 },
+          { id: 10, title: "SECTOR 1 OVERRIDE", par: 3 }
+        ]
+      },
+      2: {
+        badge: "SECTOR 2 // SUB-LEVEL 5",
+        name: "BETA WING",
+        subtitle: "HIGH-VOLTAGE CAPACITOR RELAYS",
+        desc: "Decaying emergency generators introduce capacitor-timed switches that discharge in only 3 to 5 seconds. In Chamber 11, the researcher calibrates the Tachyon Core, unlocking manual chronal rewind with the [R] key.",
+        hazards: "Decaying Capacitors, Manual Rewind Unlock",
+        difficulty: "MODERATE",
+        chambers: [
+          { id: 11, title: "CAPACITOR CALIBRATION", par: 2 },
+          { id: 12, title: "RAPID DISCHARGE", par: 2 },
+          { id: 13, title: "SERIES CIRCUIT", par: 3 },
+          { id: 14, title: "PINCER RUN", par: 2 },
+          { id: 15, title: "RELAY STATION 4", par: 3 },
+          { id: 16, title: "CAPACITOR SPRINT", par: 2 },
+          { id: 17, title: "DUAL TIMER LOCK", par: 3 },
+          { id: 18, title: "SPLIT CAPACITOR LAB", par: 2 },
+          { id: 19, title: "HIGH VOLTAGE MAZE", par: 3 },
+          { id: 20, title: "BETA GENERATOR CORE", par: 3 }
+        ]
+      },
+      3: {
+        badge: "SECTOR 3 // SUB-LEVEL 6",
+        name: "GAMMA WING",
+        subtitle: "OPTICAL MANIFOLDS & LASERS",
+        desc: "Optical containment chambers flooded with high-frequency laser barriers. Lethal on contact, lasers require complex AND/OR logic gates and multi-echo holding patterns to deactivate safe corridors.",
+        hazards: "High-Frequency Lasers, AND/OR Logic Gates",
+        difficulty: "ADVANCED",
+        chambers: [
+          { id: 21, title: "OPTICAL THRESHOLD", par: 2 },
+          { id: 22, title: "REFRACTION CORRIDOR", par: 3 },
+          { id: 23, title: "INTERLOCK BEAMS", par: 3 },
+          { id: 24, title: "OPTICAL MATRIX", par: 3 },
+          { id: 25, title: "BEAM SPLITTER", par: 3 },
+          { id: 26, title: "PRISM LAB", par: 2 },
+          { id: 27, title: "LASER GRIDLOCK", par: 3 },
+          { id: 28, title: "PHOTON SHUTTLE", par: 3 },
+          { id: 29, title: "CROSSFIRE LAB", par: 3 },
+          { id: 30, title: "GAMMA OPTICAL CORE", par: 4 }
+        ]
+      },
+      4: {
+        badge: "SECTOR 4 // SUB-LEVEL 7",
+        name: "DELTA WING",
+        subtitle: "BLACKOUT PROTOCOL & SENTINELS",
+        desc: "Director Cole's automated Aegis Sentinel Drones patrol quarantine sectors. Blind to time, they track chronal heat signatures. Players must use previous Echoes as sacrificial decoys to lure drones into dead ends.",
+        hazards: "Aegis Patrol Drones, Line of Sight, Decoy Sacrifices",
+        difficulty: "EXPERT",
+        chambers: [
+          { id: 31, title: "QUARANTINE BREACH", par: 2 },
+          { id: 32, title: "SENTINEL ALLEY", par: 2 },
+          { id: 33, title: "PATROL CROSSING", par: 3 },
+          { id: 34, title: "DECOY VECTOR", par: 3 },
+          { id: 35, title: "AEGIS QUARANTINE", par: 3 },
+          { id: 36, title: "SENTRY PINCH", par: 3 },
+          { id: 37, title: "DRONE RUN", par: 3 },
+          { id: 38, title: "CROSSING GUARD", par: 3 },
+          { id: 39, title: "SENTINEL LABYRINTH", par: 4 },
+          { id: 40, title: "DELTA BLACKOUT CORE", par: 4 }
+        ]
+      },
+      5: {
+        badge: "SECTOR 5 // SUB-LEVEL 8",
+        name: "OMEGA WING",
+        subtitle: "THE SINGULARITY BREACH",
+        desc: "The deepest facility sector where causality completely ruptures. Requires hyper-choreography across 4 to 5 concurrent Echoes to harmonize all quadrant anchor plates before reality collapses into the Event Horizon.",
+        hazards: "Singularity Core, 5-Echo Synchronization",
+        difficulty: "MASTER",
+        chambers: [
+          { id: 41, title: "SINGULARITY THRESHOLD", par: 3 },
+          { id: 42, title: "GRAVITATIONAL SHEAR", par: 3 },
+          { id: 43, title: "TACHYON HARMONIC", par: 4 },
+          { id: 44, title: "QUADRANT MATRIX", par: 4 },
+          { id: 45, title: "TEMPORAL FLUX LAB", par: 4 },
+          { id: 46, title: "CONVERGENCE RELAY", par: 4 },
+          { id: 47, title: "FIVE-FOLD HARMONY", par: 5 },
+          { id: 48, title: "EVENT HORIZON GATE", par: 4 },
+          { id: 49, title: "CHRONAL NEXUS", par: 5 },
+          { id: 50, title: "THE EVENT HORIZON (FINALE)", par: 5 }
+        ]
+      }
+    };
+
+    /* --------------------------------------------------------------------------
+       2. PROCEDURAL WEB AUDIO SYNTHESIZER (NO EXTERNAL AUDIO FILES)
+       -------------------------------------------------------------------------- */
+    let audioCtx = null;
+    let isAudioActive = false;
+    let ambientDrone = null;
+    let droneGain = null;
+    let droneFilter = null;
+
+    function initAudio() {
+      if (audioCtx) return;
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+      } catch (e) {
+        console.warn("Web Audio API not supported", e);
+      }
+    }
+
+    function toggleAudio() {
+      initAudio();
+      if (!audioCtx) return;
+
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      isAudioActive = !isAudioActive;
+      const audioBtn = document.getElementById('audio-toggle');
+      const audioIcon = document.getElementById('audio-icon');
+      const audioLabel = document.getElementById('audio-label');
+
+      if (isAudioActive) {
+        audioBtn.classList.add('active');
+        audioIcon.textContent = '🔊';
+        audioLabel.textContent = 'SFX ON';
+        startAmbientDrone();
+        playChime(660, 0.1, 'sine');
+      } else {
+        audioBtn.classList.remove('active');
+        audioIcon.textContent = '🔇';
+        audioLabel.textContent = 'SFX OFF';
+        stopAmbientDrone();
+      }
+    }
+
+    function startAmbientDrone() {
+      if (!audioCtx || ambientDrone) return;
+
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      droneFilter = audioCtx.createBiquadFilter();
+      droneGain = audioCtx.createGain();
+
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(55, audioCtx.currentTime); // Sub-bass A1
+
+      osc2.type = 'triangle';
+      osc2.frequency.setValueAtTime(55.3, audioCtx.currentTime); // Detuned for gentle phase beating
+
+      droneFilter.type = 'lowpass';
+      droneFilter.frequency.setValueAtTime(320, audioCtx.currentTime);
+
+      droneGain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+      droneGain.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 2.0);
+
+      osc1.connect(droneFilter);
+      osc2.connect(droneFilter);
+      droneFilter.connect(droneGain);
+      droneGain.connect(audioCtx.destination);
+
+      osc1.start();
+      osc2.start();
+      ambientDrone = { osc1, osc2 };
+    }
+
+    function stopAmbientDrone() {
+      if (ambientDrone && droneGain) {
+        droneGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+        setTimeout(() => {
+          if (ambientDrone) {
+            ambientDrone.osc1.stop();
+            ambientDrone.osc2.stop();
+            ambientDrone = null;
+          }
+        }, 500);
+      }
+    }
+
+    function playChime(freq = 880, duration = 0.08, type = 'sine') {
+      if (!isAudioActive || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, audioCtx.currentTime + duration);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playRewindSound() {
+      if (!isAudioActive || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.35);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.35);
+      } catch (e) {}
+    }
+
+    /* --------------------------------------------------------------------------
+       3. BACKGROUND TACHYON PARTICLE CANVAS
+       -------------------------------------------------------------------------- */
+    const bgCanvas = document.getElementById('particle-canvas');
+    const bgCtx = bgCanvas.getContext('2d');
+    let particles = [];
+    const PARTICLE_COUNT = 45;
+
+    function resizeBgCanvas() {
+      bgCanvas.width = window.innerWidth;
+      bgCanvas.height = window.innerHeight;
+    }
+
+    class TachyonParticle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * bgCanvas.width;
+        this.y = Math.random() * bgCanvas.height;
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4;
+        this.size = Math.random() * 2 + 0.5;
+        this.alpha = Math.random() * 0.6 + 0.2;
+        this.color = Math.random() > 0.4 ? 'rgba(0, 240, 255,' : 'rgba(189, 0, 255,';
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > bgCanvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > bgCanvas.height) this.vy *= -1;
+      }
+      draw() {
+        bgCtx.fillStyle = `${this.color}${this.alpha})`;
+        bgCtx.beginPath();
+        bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        bgCtx.fill();
+      }
+    }
+
+    function initParticles() {
+      resizeBgCanvas();
+      particles = [];
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push(new TachyonParticle());
+      }
+    }
+
+    function animateParticles() {
+      bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+        // Connect nearby particles with subtle tachyon flux lines
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 110) {
+            bgCtx.strokeStyle = `rgba(0, 240, 255, ${0.12 * (1 - dist / 110)})`;
+            bgCtx.lineWidth = 0.5;
+            bgCtx.beginPath();
+            bgCtx.moveTo(particles[i].x, particles[i].y);
+            bgCtx.lineTo(particles[j].x, particles[j].y);
+            bgCtx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+
+    /* --------------------------------------------------------------------------
+       4. INTERACTIVE TIME-LOOP CANVAS MINI-SIMULATOR
+       -------------------------------------------------------------------------- */
+    const simCanvas = document.getElementById('sim-canvas');
+    const simCtx = simCanvas.getContext('2d');
+    const simTimerEl = document.getElementById('sim-timer-display');
+    const simProgressEl = document.getElementById('sim-progress-bar');
+
+    let simTime = 0.0;
+    const LOOP_DURATION = 15.0; // Scaled for snappier web demonstration
+    let isSimPaused = false;
+    let simLoopNumber = 1;
+
+    // Simulation Puzzle Objects
+    const simPlate = { x: 120, y: 190, r: 18, active: false };
+    const simDoor = { x: 300, y: 120, w: 14, h: 60, open: false };
+    const simExit = { x: 420, y: 150, r: 18 };
+
+    // Player (Current Loop)
+    let playerPos = { x: 60, y: 150 };
+    let playerPath = [];
+
+    // Past Echo Recordings: array of recorded trajectory frames
+    let pastEchoes = [];
+
+    function runSimulationStep(dt) {
+      if (isSimPaused) return;
+
+      simTime += dt;
+      const progressRatio = Math.min(simTime / LOOP_DURATION, 1.0);
+      simProgressEl.style.width = `${progressRatio * 100}%`;
+
+      const remaining = Math.max(0, LOOP_DURATION - simTime);
+      const secs = Math.floor(remaining);
+      const millis = Math.floor((remaining - secs) * 100);
+      simTimerEl.textContent = `00:${secs < 10 ? '0' : ''}${secs}.${millis < 10 ? '0' : ''}${millis}`;
+
+      // Loop #1 AI behavior: walks to the plate, steps on it, holds it
+      // Loop #2 AI behavior: sprints past the opened door to the exit
+      if (simLoopNumber === 1) {
+        if (simTime < 4.0) {
+          playerPos.x += (simPlate.x - playerPos.x) * 0.06;
+          playerPos.y += (simPlate.y - playerPos.y) * 0.06;
+        } else {
+          // Standing on plate
+          playerPos.x = simPlate.x;
+          playerPos.y = simPlate.y;
+        }
+      } else {
+        // Loop #2: wait 0.5s then sprint towards the exit
+        if (simTime > 0.8 && playerPos.x < simExit.x) {
+          playerPos.x += 1.8;
+          playerPos.y += (simExit.y - playerPos.y) * 0.05;
+        }
+      }
+
+      playerPath.push({ x: playerPos.x, y: playerPos.y, t: simTime });
+
+      // Check pressure plate trigger
+      let platePressed = false;
+      const distPlayer = Math.hypot(playerPos.x - simPlate.x, playerPos.y - simPlate.y);
+      if (distPlayer < simPlate.r) platePressed = true;
+
+      // Echoes pressing the plate
+      pastEchoes.forEach(echo => {
+        const frame = getEchoFrameAtTime(echo, simTime);
+        if (frame) {
+          const distEcho = Math.hypot(frame.x - simPlate.x, frame.y - simPlate.y);
+          if (distEcho < simPlate.r) platePressed = true;
+        }
+      });
+
+      simPlate.active = platePressed;
+      simDoor.open = platePressed;
+
+      // When loop finishes, reset or rewind
+      if (simTime >= LOOP_DURATION) {
+        simRewind();
+      }
+    }
+
+    function getEchoFrameAtTime(echoTrail, t) {
+      if (!echoTrail || echoTrail.length === 0) return null;
+      let frame = echoTrail[0];
+      for (let i = 0; i < echoTrail.length; i++) {
+        if (echoTrail[i].t <= t) frame = echoTrail[i];
+        else break;
+      }
+      return frame;
+    }
+
+    function simRewind() {
+      playRewindSound();
+      if (playerPath.length > 5) {
+        pastEchoes.push([...playerPath]);
+        if (pastEchoes.length > 4) pastEchoes.shift();
+      }
+      simTime = 0.0;
+      playerPos = { x: 60, y: 150 };
+      playerPath = [];
+      simLoopNumber = pastEchoes.length + 1;
+    }
+
+    function simReset() {
+      simTime = 0.0;
+      pastEchoes = [];
+      playerPath = [];
+      playerPos = { x: 60, y: 150 };
+      simLoopNumber = 1;
+      playChime(440, 0.1);
+    }
+
+    function renderSimulation() {
+      simCtx.clearRect(0, 0, simCanvas.width, simCanvas.height);
+
+      // Draw Subterranean Lab Chamber Grid
+      simCtx.strokeStyle = '#0e1724';
+      simCtx.lineWidth = 1;
+      for (let x = 0; x < simCanvas.width; x += 30) {
+        simCtx.beginPath();
+        simCtx.moveTo(x, 0);
+        simCtx.lineTo(x, simCanvas.height);
+        simCtx.stroke();
+      }
+      for (let y = 0; y < simCanvas.height; y += 30) {
+        simCtx.beginPath();
+        simCtx.moveTo(0, y);
+        simCtx.lineTo(simCanvas.width, y);
+        simCtx.stroke();
+      }
+
+      // Chamber Dividing Walls
+      simCtx.fillStyle = '#142030';
+      simCtx.fillRect(300, 0, 14, 120);
+      simCtx.fillRect(300, 180, 14, 120);
+
+      // Connecting Circuit Wire (Plate to Door)
+      simCtx.strokeStyle = simPlate.active ? '#00f0ff' : '#1e334a';
+      simCtx.lineWidth = 2;
+      simCtx.setLineDash(simPlate.active ? [4, 4] : []);
+      simCtx.beginPath();
+      simCtx.moveTo(simPlate.x, simPlate.y);
+      simCtx.lineTo(simPlate.x + 80, simPlate.y);
+      simCtx.lineTo(simPlate.x + 80, 150);
+      simCtx.lineTo(300, 150);
+      simCtx.stroke();
+      simCtx.setLineDash([]);
+
+      // Blast Door
+      if (!simDoor.open) {
+        simCtx.fillStyle = '#ff3366';
+        simCtx.shadowColor = '#ff3366';
+        simCtx.shadowBlur = 10;
+        simCtx.fillRect(simDoor.x, simDoor.y, simDoor.w, simDoor.h);
+        simCtx.shadowBlur = 0;
+      } else {
+        simCtx.strokeStyle = 'rgba(0, 255, 136, 0.4)';
+        simCtx.setLineDash([3, 3]);
+        simCtx.strokeRect(simDoor.x, simDoor.y, simDoor.w, simDoor.h);
+        simCtx.setLineDash([]);
+      }
+
+      // Pressure Plate
+      simCtx.fillStyle = simPlate.active ? '#00f0ff' : '#101c2a';
+      simCtx.strokeStyle = simPlate.active ? '#ffffff' : '#00f0ff';
+      simCtx.lineWidth = 2;
+      if (simPlate.active) {
+        simCtx.shadowColor = '#00f0ff';
+        simCtx.shadowBlur = 12;
+      }
+      simCtx.beginPath();
+      simCtx.arc(simPlate.x, simPlate.y, simPlate.r, 0, Math.PI * 2);
+      simCtx.fill();
+      simCtx.stroke();
+      simCtx.shadowBlur = 0;
+
+      // Exit Vortex Portal
+      simCtx.strokeStyle = '#bd00ff';
+      simCtx.lineWidth = 3;
+      simCtx.shadowColor = '#bd00ff';
+      simCtx.shadowBlur = 14;
+      simCtx.beginPath();
+      simCtx.arc(simExit.x, simExit.y, simExit.r, 0, Math.PI * 2);
+      simCtx.stroke();
+      simCtx.shadowBlur = 0;
+
+      simCtx.fillStyle = '#e285ff';
+      simCtx.font = '10px monospace';
+      simCtx.textAlign = 'center';
+      simCtx.fillText('EXIT', simExit.x, simExit.y + 3);
+
+      // Render Past Echoes (Hologram Cyan)
+      pastEchoes.forEach((echoTrail, idx) => {
+        const frame = getEchoFrameAtTime(echoTrail, simTime);
+        if (frame) {
+          simCtx.fillStyle = 'rgba(0, 240, 255, 0.4)';
+          simCtx.strokeStyle = '#00f0ff';
+          simCtx.lineWidth = 2;
+          simCtx.shadowColor = '#00f0ff';
+          simCtx.shadowBlur = 10;
+          simCtx.beginPath();
+          simCtx.arc(frame.x, frame.y, 8, 0, Math.PI * 2);
+          simCtx.fill();
+          simCtx.stroke();
+          simCtx.shadowBlur = 0;
+
+          simCtx.fillStyle = '#00f0ff';
+          simCtx.font = '9px monospace';
+          simCtx.fillText(`ECHO #${idx + 1}`, frame.x, frame.y - 12);
+        }
+      });
+
+      // Render Player (Solid White/Cyan)
+      simCtx.fillStyle = '#ffffff';
+      simCtx.strokeStyle = '#00f0ff';
+      simCtx.lineWidth = 2;
+      simCtx.shadowColor = '#ffffff';
+      simCtx.shadowBlur = 10;
+      simCtx.beginPath();
+      simCtx.arc(playerPos.x, playerPos.y, 9, 0, Math.PI * 2);
+      simCtx.fill();
+      simCtx.stroke();
+      simCtx.shadowBlur = 0;
+
+      simCtx.fillStyle = '#ffffff';
+      simCtx.font = '9px monospace';
+      simCtx.textAlign = 'center';
+      simCtx.fillText('RESEARCHER', playerPos.x, playerPos.y - 14);
+
+      // Simulation HUD Tag
+      simCtx.textAlign = 'left';
+      simCtx.font = '10px monospace';
+      simCtx.fillStyle = '#4f6c8d';
+      simCtx.fillText(`LOOP: #${simLoopNumber}  |  ACTIVE ECHOES: ${pastEchoes.length}`, 15, 20);
+    }
+
+    let lastSimTimestamp = performance.now();
+    function simLoop(now) {
+      const dt = (now - lastSimTimestamp) / 1000;
+      lastSimTimestamp = now;
+      runSimulationStep(dt);
+      renderSimulation();
+      requestAnimationFrame(simLoop);
+    }
+
+    /* --------------------------------------------------------------------------
+       5. LORE LOGS BINDING & INTERACTIVITY
+       -------------------------------------------------------------------------- */
+    function initLoreSection() {
+      const menuContainer = document.getElementById('lore-menu-container');
+      const keys = Object.keys(LORE_LOGS);
+
+      keys.forEach((k, idx) => {
+        const item = LORE_LOGS[k];
+        const btn = document.createElement('button');
+        btn.className = `lore-item-btn ${idx === 0 ? 'active' : ''}`;
+        btn.dataset.logId = k;
+        btn.innerHTML = `
+          <span class="lore-item-meta">${item.cycle}</span>
+          <span class="lore-item-title">${item.title}</span>
+        `;
+
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.lore-item-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          displayLog(item);
+          playChime(880, 0.05);
+        });
+
+        menuContainer.appendChild(btn);
+      });
+    }
+
+    function displayLog(item) {
+      document.getElementById('log-timestamp').textContent = item.timestamp;
+      document.getElementById('log-title').textContent = item.title;
+      document.getElementById('log-author').textContent = item.author;
+      document.getElementById('log-content').textContent = item.content;
+    }
+
+    /* --------------------------------------------------------------------------
+       6. 50-CHAMBER CAMPAIGN & SECTOR TABS
+       -------------------------------------------------------------------------- */
+    let currentSectorId = 1;
+
+    function renderSectorChambers(sectorId) {
+      const container = document.getElementById('sector-chambers-container');
+      container.innerHTML = '';
+      const sector = SECTORS_DATA[sectorId];
+
+      sector.chambers.forEach(c => {
+        const pip = document.createElement('div');
+        pip.className = 'chamber-pip';
+        pip.innerHTML = `
+          <div>${c.id < 10 ? '0' + c.id : c.id}</div>
+          <div class="par-tag">PAR ${c.par}</div>
+        `;
+        pip.title = `${c.title} — Par: ${c.par} Loops`;
+
+        pip.addEventListener('click', () => {
+          document.querySelectorAll('.chamber-pip').forEach(p => p.classList.remove('current'));
+          pip.classList.add('current');
+          playChime(1100, 0.04);
+        });
+
+        container.appendChild(pip);
+      });
+    }
+
+    function selectSector(sectorId) {
+      currentSectorId = sectorId;
+      const data = SECTORS_DATA[sectorId];
+
+      document.getElementById('sector-badge').textContent = data.badge;
+      document.getElementById('sector-name').textContent = data.name;
+      document.getElementById('sector-subtitle').textContent = data.subtitle;
+      document.getElementById('sector-desc').textContent = data.desc;
+      document.getElementById('sector-hazards').textContent = data.hazards;
+      document.getElementById('sector-diff').textContent = data.difficulty;
+
+      renderSectorChambers(sectorId);
+    }
+
+    function initSectorTabs() {
+      const tabs = document.querySelectorAll('.sector-tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          const sectorId = parseInt(tab.dataset.sector, 10);
+          selectSector(sectorId);
+          playChime(750, 0.05);
+        });
+      });
+      selectSector(1);
+    }
+
+    /* --------------------------------------------------------------------------
+       7. KEYBOARD LISTENER & UI AUDIT WIDGETS
+       -------------------------------------------------------------------------- */
+    window.addEventListener('keydown', (e) => {
+      const keyBadge = document.querySelector(`.key-badge[data-key="${e.code}"]`);
+      if (keyBadge) {
+        keyBadge.classList.add('pressed');
+      }
+      if (e.code === 'KeyR') {
+        simRewind();
+      } else if (e.code === 'KeyC') {
+        simReset();
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      const keyBadge = document.querySelector(`.key-badge[data-key="${e.code}"]`);
+      if (keyBadge) {
+        keyBadge.classList.remove('pressed');
+      }
+    });
+
+    // Git Clone Button Click-to-Copy
+    document.getElementById('copy-git-btn').addEventListener('click', () => {
+      navigator.clipboard.writeText('git clone https://github.com/Ghostofzenin08/Echo_of_Dread.git');
+      const btn = document.getElementById('copy-git-btn');
+      btn.textContent = 'COPIED!';
+      playChime(1300, 0.08);
+      setTimeout(() => {
+        btn.textContent = 'COPY COMMAND';
+      }, 2000);
+    });
+
+    // CRT Scanline Filter Toggle
+    const crtToggleBtn = document.getElementById('crt-toggle');
+    crtToggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('crt-disabled');
+      const isEnabled = !document.body.classList.contains('crt-disabled');
+      crtToggleBtn.classList.toggle('active', isEnabled);
+      crtToggleBtn.children[1].textContent = isEnabled ? 'CRT ON' : 'CRT OFF';
+      playChime(800, 0.04);
+    });
+
+    // Audio Button
+    document.getElementById('audio-toggle').addEventListener('click', toggleAudio);
+
+    // Simulation Buttons
+    document.getElementById('sim-rewind-btn').addEventListener('click', simRewind);
+    document.getElementById('sim-reset-btn').addEventListener('click', simReset);
+    document.getElementById('sim-pause-btn').addEventListener('click', () => {
+      isSimPaused = !isSimPaused;
+      document.getElementById('sim-pause-btn').textContent = isSimPaused ? 'RESUME' : 'PAUSE';
+      playChime(600, 0.04);
+    });
+
+    // Mobile Navigation Drawer Toggle
+    const navToggle = document.getElementById('nav-toggle-btn');
+    const navMenu = document.getElementById('nav-menu');
+    navToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('open');
+    });
+
+    // Close mobile menu upon clicking links
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('open');
+      });
+    });
+
+    // Window Resize Handling
+    window.addEventListener('resize', () => {
+      resizeBgCanvas();
+    });
+
+    /* --------------------------------------------------------------------------
+       8. INITIALIZE EVERYTHING ON LOAD
+       -------------------------------------------------------------------------- */
+    window.addEventListener('DOMContentLoaded', () => {
+      initParticles();
+      animateParticles();
+      initLoreSection();
+      initSectorTabs();
+      requestAnimationFrame(simLoop);
+    });
+  </script>
+</body>
+</html>
