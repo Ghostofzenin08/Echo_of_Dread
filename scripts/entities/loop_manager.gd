@@ -7,6 +7,7 @@ signal echoes_cleared
 signal echo_count_changed(count: int)
 signal timeline_tracks_updated(tracks: Array)
 signal rewind_blocked(reason: String)
+signal loop_duration_changed(new_duration: float)
 
 @export var level_number: int = 1
 @export var loop_duration: float = 30.0
@@ -22,6 +23,7 @@ var current_recorder: ActionRecorder = null
 var player: Player = null
 var spawn_position: Vector2 = Vector2.ZERO
 var is_active: bool = true
+var _t_key_pressed: bool = false
 
 var echoes_container: Node2D = null
 
@@ -37,13 +39,14 @@ func _ready() -> void:
 func initialize(target_player: Player, initial_spawn: Vector2) -> void:
 	player = target_player
 	spawn_position = initial_spawn
-	if player.has_method("reset_state"):
-		player.reset_state(spawn_position)
-	else:
-		player.global_position = spawn_position
-	
-	if not player.interaction_performed.is_connected(_on_player_interaction):
-		player.interaction_performed.connect(_on_player_interaction)
+	if player:
+		if player.has_method("reset_state"):
+			player.reset_state(spawn_position)
+		else:
+			player.global_position = spawn_position
+		
+		if not player.interaction_performed.is_connected(_on_player_interaction):
+			player.interaction_performed.connect(_on_player_interaction)
 		
 	if GameManager:
 		if not GameManager.loop_reset_requested.is_connected(_on_manual_reset_requested):
@@ -56,10 +59,17 @@ func initialize(target_player: Player, initial_spawn: Vector2) -> void:
 	past_recordings.clear()
 	_clear_echo_nodes()
 	
+	# Apply early chamber fast loop duration (Chambers 1-5 only)
+	if level_number >= 1 and level_number <= 5 and SaveManager and SaveManager.is_fast_early_loops():
+		loop_duration = 15.0
+	else:
+		loop_duration = 30.0
+	
 	_reset_world_entities()
 	
 	current_recorder = ActionRecorder.new()
-	current_recorder.start_recording(player.global_position)
+	var start_pos: Vector2 = player.global_position if player else spawn_position
+	current_recorder.start_recording(start_pos)
 	is_active = true
 	time_updated.emit(0.0, loop_duration)
 	echo_count_changed.emit(0)
@@ -82,6 +92,25 @@ func is_manual_rewind_unlocked() -> bool:
 		return false
 	return true
 
+func set_loop_duration(new_duration: float) -> void:
+	if level_number >= 1 and level_number <= 5:
+		loop_duration = clampf(new_duration, 15.0, 30.0)
+	else:
+		loop_duration = 30.0
+	time_updated.emit(current_loop_time, loop_duration)
+	loop_duration_changed.emit(loop_duration)
+	if current_loop_time >= loop_duration:
+		reset_loop()
+
+func toggle_early_loop_duration() -> float:
+	if level_number < 1 or level_number > 5:
+		return 30.0
+	var new_target: float = 15.0 if is_equal_approx(loop_duration, 30.0) else 30.0
+	set_loop_duration(new_target)
+	if SaveManager:
+		SaveManager.set_fast_early_loops(is_equal_approx(new_target, 15.0))
+	return loop_duration
+
 func _on_manual_reset_requested() -> void:
 	if is_manual_rewind_unlocked():
 		reset_loop()
@@ -101,6 +130,15 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("clear_echoes"):
 		clear_all_echoes()
 		return
+		
+	# Hotkey [T] for early chamber fast loop duration (Chambers 1-5 only)
+	if level_number >= 1 and level_number <= 5:
+		if Input.is_key_pressed(KEY_T) and not _t_key_pressed:
+			_t_key_pressed = true
+			SoundManager.play_sfx("click")
+			toggle_early_loop_duration()
+		elif not Input.is_key_pressed(KEY_T):
+			_t_key_pressed = false
 		
 	current_loop_time += delta
 	time_updated.emit(current_loop_time, loop_duration)
