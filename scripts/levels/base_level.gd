@@ -35,8 +35,13 @@ func _ready() -> void:
 		
 	if game_hud:
 		game_hud.set_chamber_title(chamber_title)
+		if game_hud.has_method("set_rewind_available"):
+			game_hud.set_rewind_available(level_number > 10 and (SaveManager == null or SaveManager.is_rewind_unlocked()))
 		
 	if loop_manager and player:
+		loop_manager.level_number = level_number
+		if not loop_manager.rewind_blocked.is_connected(_on_rewind_blocked):
+			loop_manager.rewind_blocked.connect(_on_rewind_blocked)
 		loop_manager.time_updated.connect(_on_time_updated)
 		loop_manager.loop_reset.connect(_on_loop_reset)
 		loop_manager.echo_count_changed.connect(_on_echo_count_changed)
@@ -86,12 +91,22 @@ func _setup_post_processing() -> void:
 		post_process_layer.add_child(_shader_rect)
 
 func _setup_touch_controls() -> void:
-	if get_node_or_null("TouchControls") == null:
+	var touch_inst := get_node_or_null("TouchControls") as TouchControls
+	if touch_inst == null:
 		var touch_scene := load("res://scenes/ui/touch_controls.tscn") as PackedScene
 		if touch_scene:
-			var touch_inst := touch_scene.instantiate()
+			touch_inst = touch_scene.instantiate() as TouchControls
 			touch_inst.name = "TouchControls"
 			add_child(touch_inst)
+	if touch_inst and touch_inst.has_method("set_rewind_unlocked"):
+		var can_rewind := level_number > 10 and (SaveManager == null or SaveManager.is_rewind_unlocked())
+		touch_inst.set_rewind_unlocked(can_rewind)
+
+func _on_rewind_blocked(reason: String) -> void:
+	if game_hud and game_hud.has_method("show_rewind_locked_notice"):
+		game_hud.show_rewind_locked_notice(reason)
+	if camera and camera.has_method("add_trauma"):
+		camera.add_trauma(0.12)
 
 func _connect_interactable_trauma() -> void:
 	for child in find_children("*", "", true, false):
