@@ -105,18 +105,6 @@ ALL SYSTEMS NOMINAL. TEST RUNNER EXITING WITH CODE 0.
 
 ---
 
-## Building and Exporting
-
-1. Open the project in **Godot Engine 4.7.x**.
-2. Select **Project -> Export...**
-3. Select your target preset:
-   - **Web (`HTML5 / WebAssembly`)** — Ready for itch.io browser hosting
-   - **Android (`APK / AAB`)** — Ready for mobile testing and Google Play Store
-   - **Windows Desktop (`x86_64`)** — Standalone desktop release
-4. Click **Export Project** to produce release binaries.
-
----
-
 ## Technical Audit Reports
 
 For detailed engineering analysis, defect registers, and development roadmaps, see:
@@ -138,21 +126,3 @@ Copyright (c) 2026 Oldest_dream08.
 
 ---
 
-## Technical Audit Reports
-
-For detailed engineering analysis, defect registers, and development roadmaps, see:
-- [`PROJECT_AUDIT.md`](PROJECT_AUDIT.md) — Comprehensive technical inventory and system analysis
-- [`BUG_REPORT.md`](BUG_REPORT.md) — Complete bug register with reproduction steps and fixes
-- [`ARCHITECTURE.md`](ARCHITECTURE.md) — Topology, lifecycle, physics layers, and memory discipline
-- [`GAMEPLAY_AND_PUZZLE_ROADMAP.md`](GAMEPLAY_AND_PUZZLE_ROADMAP.md) — Chamber audit and puzzle expansion roadmap
-- [`UI_VISUAL_AUDIO_ROADMAP.md`](UI_VISUAL_AUDIO_ROADMAP.md) — Sensory polish and accessibility enhancements
-- [`PERFORMANCE_AND_BUILD_SIZE.md`](PERFORMANCE_AND_BUILD_SIZE.md) — Empirical size and performance measurements
-- [`COMMERCIAL_READINESS.md`](COMMERCIAL_READINESS.md) — Commercial potential, market fit, and milestone strategy
-- [`RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md) — Trackable release readiness checklist
-
----
-
-## License
-
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.  
-Copyright (c) 2026 Oldest_dream08.
