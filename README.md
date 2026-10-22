@@ -4,7 +4,7 @@
 [![Website](https://img.shields.io/badge/Website-Landing%20Page-00f0ff?logo=firefox-browser&logoColor=white)](https://ghostofzenin08.github.io/Echo_of_Dread/)
 [![Godot Engine](https://img.shields.io/badge/Godot-v4.7.2--stable-478cbf?logo=godotengine&logoColor=white)](https://godotengine.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Tests: 385 Passed](https://img.shields.io/badge/Tests-385%20Passed-success.svg)](scenes/test/test_runner.gd)
+[![Tests: 394 Passed](https://img.shields.io/badge/Tests-394%20Passed-success.svg)](scenes/test/test_runner.gd)
 
 **Echo of Dread** is a 2D top-down sci-fi time-loop puzzle game built using Godot Engine and GDScript.
 
@@ -24,6 +24,7 @@ Trapped within the subterranean Chronos Research Facility following a catastroph
 > **"You cannot escape alone in linear time. But within this loop, you are your own teammate."**
 
 - **The 30-Second Causal Curve:** Spacetime collapses every 30 seconds, rewinding the researcher to the chamber spawn point.
+- **Adaptive Chronal Pacing:** Early onboarding chambers (1–5) feature an optional 15-second fast loop toggle via HUD or `[T]` to accelerate early puzzle iterations before standard 30s loops in Chamber 6+ and manual rewind in Chamber 11+.
 - **Temporal Echoes:** When a loop resets, an Echo replays your previous run's exact trajectory, button presses, and pressure plate occupations. Up to 5 simultaneous echoes can collaborate on multi-stage logic gates.
 - **50 Hand-Crafted Chambers:** 5 sprawling sectors—Alpha, Beta, Gamma, Delta, and Omega Wing—scaling in difficulty and cognitive complexity.
 - **Dynamic Hazards:** Evade roaming security patrol drones, beat strict capacitor countdown timers, and bypass multi-lock laser barriers.
@@ -41,6 +42,7 @@ Trapped within the subterranean Chronos Research Facility following a catastroph
 | :--- | :---: | :---: | :---: | :--- |
 | **Move** | `W`, `A`, `S`, `D` | `Arrow Keys` | Virtual Joystick | Walk researcher in chamber |
 | **Interact** | `E` | `Space` / `Enter` | `[ACT]` Button | Toggle switch, press button, or read log |
+| **Early Loop Pacing** | `T` | — | `[15s / 30s]` Button | Toggle 15s fast / 30s standard loop duration *(Chambers 1–5)* |
 | **Rewind Loop** | `R` | — | `[REWIND]` Button | Immediately rewind loop & spawn new Echo *(Chamber 11+)* |
 | **Clear Echoes** | `C` | `Backspace` | `[CLEAR]` Button | Clear all past recordings & restart chamber at Loop #1 |
 | **Pause / Menu** | `Escape` | `P` | `[\|\|]` Button | Open Pause Menu or dismiss active lore modal |
@@ -77,7 +79,7 @@ Echo_of_Dread/
 
 ## Running the Automated Test Suite
 
-Echo of Dread includes an extensive automated test runner (`scenes/test/test_runner.tscn`) validating **385 unit and integration tests** without requiring a window manager.
+Echo of Dread includes an extensive automated test runner (`scenes/test/test_runner.tscn`) validating **394 unit and integration tests** without requiring a window manager.
 
 ### Run Headless Tests via Console:
 ```powershell
@@ -96,10 +98,11 @@ Echo of Dread includes an extensive automated test runner (`scenes/test/test_run
 [PASS] Recorder: t=1.5 linearly interpolates position (250, 100)
 [PASS] RewindLock: LoopManager locks manual rewind for Chamber 1
 [PASS] RewindLock: LoopManager unlocks manual rewind for Chamber 11
+[PASS] ChronalPacing: Chambers 1–5 support 15s/30s loop duration toggle
 [PASS] OmegaWing: Chamber 50 singularity door requires 4 corner plates
 ...
 ==================================================
-TESTS COMPLETED: 385 / 385 PASSED
+TESTS COMPLETED: 394 / 394 PASSED
 ==================================================
 ALL SYSTEMS NOMINAL. TEST RUNNER EXITING WITH CODE 0.
 ```
