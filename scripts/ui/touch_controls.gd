@@ -48,6 +48,11 @@ func _connect_buttons() -> void:
 	if pause_btn:
 		pause_btn.pressed.connect(_on_pause_pressed)
 
+func set_rewind_unlocked(unlocked: bool) -> void:
+	if loop_btn:
+		loop_btn.disabled = not unlocked
+		loop_btn.modulate = Color(1.0, 1.0, 1.0, 1.0) if unlocked else Color(0.4, 0.4, 0.4, 0.4)
+
 func _on_pause_pressed() -> void:
 	var ev_press := InputEventAction.new()
 	ev_press.action = "pause"
