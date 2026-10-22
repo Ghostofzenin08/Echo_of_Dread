@@ -56,6 +56,7 @@ func _ready() -> void:
 	test_engine_hardening_and_modal_pausing()
 	test_rewind_unlock_progression()
 	test_omega_wing_chambers_and_android_readiness()
+	test_early_chambers_fast_loop_option()
 	
 	print("==================================================")
 	print("TESTS COMPLETED: %d / %d PASSED" % [passed_tests, total_tests])
@@ -1433,6 +1434,50 @@ func test_omega_wing_chambers_and_android_readiness() -> void:
 	
 	# 7. Test Export Presets file
 	_assert_test(FileAccess.file_exists("res://export_presets.cfg"), "AndroidConfig: export_presets.cfg exists in project root")
+
+func test_early_chambers_fast_loop_option() -> void:
+	# 1. SaveManager setting persistence
+	SaveManager.set_fast_early_loops(false)
+	_assert_test(SaveManager.is_fast_early_loops() == false, "FastLoops: SaveManager defaults to 30s standard loops")
+	SaveManager.set_fast_early_loops(true)
+	_assert_test(SaveManager.is_fast_early_loops() == true, "FastLoops: SaveManager enables 15s fast loops")
+	
+	# 2. LoopManager initialization in Chamber 3 (Level 1-5)
+	var lm := LoopManager.new()
+	add_child(lm)
+	lm.level_number = 3
+	SaveManager.set_fast_early_loops(true)
+	lm.initialize(null, Vector2.ZERO)
+	_assert_test(is_equal_approx(lm.loop_duration, 15.0), "FastLoops: Chamber 3 initializes with 15s loop duration when enabled")
+	
+	# 3. Toggle early loop duration in Chamber 3
+	var new_dur := lm.toggle_early_loop_duration()
+	_assert_test(is_equal_approx(new_dur, 30.0) and is_equal_approx(lm.loop_duration, 30.0), "FastLoops: Toggling in Chamber 3 switches to 30.0s")
+	new_dur = lm.toggle_early_loop_duration()
+	_assert_test(is_equal_approx(new_dur, 15.0) and is_equal_approx(lm.loop_duration, 15.0), "FastLoops: Toggling again in Chamber 3 returns to 15.0s")
+	
+	# 4. Enforce 30s in Chamber 6+ regardless of preference
+	lm.level_number = 6
+	lm.initialize(null, Vector2.ZERO)
+	_assert_test(is_equal_approx(lm.loop_duration, 30.0), "FastLoops: Chamber 6 strictly enforces 30s loop duration")
+	new_dur = lm.toggle_early_loop_duration()
+	_assert_test(is_equal_approx(new_dur, 30.0) and is_equal_approx(lm.loop_duration, 30.0), "FastLoops: Toggling has no effect in Chamber 6+")
+	lm.queue_free()
+	
+	# 5. GameHUD duration toggle button visibility
+	var hud_scene := load("res://scenes/ui/game_hud.tscn") as PackedScene
+	var hud = hud_scene.instantiate()
+	add_child(hud)
+	
+	hud.set_level_number(2) # Chamber 2
+	_assert_test(hud.duration_toggle_btn != null and hud.duration_toggle_btn.visible == true, "FastLoops: GameHUD displays duration toggle button in Chamber 2")
+	
+	hud.set_level_number(7) # Chamber 7
+	_assert_test(hud.duration_toggle_btn != null and hud.duration_toggle_btn.visible == false, "FastLoops: GameHUD hides duration toggle button in Chamber 7")
+	
+	hud.queue_free()
+	SaveManager.set_fast_early_loops(false)
+
 
 
 
