@@ -23,12 +23,15 @@ var settings: Dictionary = {
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	if OS.has_feature("mobile") or OS.has_feature("touchscreen") or OS.has_feature("web_android") or OS.has_feature("web_ios"):
+	if OS.has_feature("mobile") or OS.has_feature("touchscreen") or OS.has_feature("web_android") or OS.has_feature("web_ios") or OS.has_feature("android") or OS.get_name() == "Android":
 		settings["touch_controls"] = true
 	load_data()
 
 func is_level_unlocked(level_idx: int) -> bool:
 	return level_idx <= unlocked_levels
+
+func is_rewind_unlocked() -> bool:
+	return unlocked_levels > 10
 
 func unlock_level(level_idx: int) -> void:
 	var max_level := GameManager.TOTAL_LEVELS if GameManager else 50
