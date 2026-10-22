@@ -1,0 +1,632 @@
+[gd_scene format=3 uid="uid://c7k0y4kam2x5q"]
+
+[ext_resource type="FontFile" path="res://how to play/PostNoBillsColombo-Light.ttf" id="1_font_title"]
+[ext_resource type="FontFile" path="res://how to play/GoogleSans-Regular.ttf" id="2_font_body"]
+[ext_resource type="Texture2D" path="res://how to play/Ellipse 10.png" id="3_circle"]
+[ext_resource type="Texture2D" path="res://how to play/Frame-3.png" id="4_arrow_left"]
+[ext_resource type="Texture2D" path="res://how to play/Rectangle 71.png" id="5_img_player"]
+[ext_resource type="Texture2D" path="res://how to play/Rectangle 70.png" id="6_img_timeloop"]
+[ext_resource type="Texture2D" path="res://how to play/Rectangle 68.png" id="7_img_echoes"]
+[ext_resource type="Texture2D" path="res://how to play/Rectangle 72.png" id="8_img_exit"]
+[ext_resource type="Texture2D" path="res://how to play/Rectangle 73.png" id="9_img_doors"]
+[ext_resource type="Texture2D" path="res://how to play/Rectangle 98.png" id="10_key_w"]
+[ext_resource type="Texture2D" path="res://how to play/Rectangle 99.png" id="11_key_a"]
+[ext_resource type="Texture2D" path="res://how to play/Rectangle 100.png" id="12_key_s"]
+[ext_resource type="Texture2D" path="res://how to play/Rectangle 101.png" id="13_key_d"]
+[ext_resource type="Texture2D" path="res://how to play/Rectangle 102.png" id="14_key_space"]
+[ext_resource type="Texture2D" path="res://how to play/Frame.png" id="15_arrow_up"]
+[ext_resource type="Texture2D" path="res://how to play/Frame-1.png" id="16_arrow_down"]
+[ext_resource type="Texture2D" path="res://how to play/Frame-2.png" id="17_arrow_right"]
+[ext_resource type="Texture2D" path="res://mobile-view/Group 56.png" id="18_joystick_img"]
+
+[sub_resource type="Gradient" id="Gradient_bg"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.00392157, 0.0627451, 0.141176, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bg"]
+gradient = SubResource("Gradient_bg")
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_clean"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_divider"]
+color = Color(1, 1, 1, 0.2)
+thickness = 2
+vertical = true
+
+[node name="HowToPlay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_bg")
+
+[node name="HeaderBox" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 40.0
+offset_right = 450.0
+offset_bottom = 110.0
+theme_override_constants/separation = 20
+alignment = 0
+
+[node name="BackButton" type="Button" parent="HeaderBox"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+focus_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_clean")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_clean")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_clean")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_clean")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_clean")
+
+[node name="CircleIcon" type="TextureRect" parent="HeaderBox/BackButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_circle")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ArrowIcon" type="TextureRect" parent="HeaderBox/BackButton/CircleIcon"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_arrow_left")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="HeaderBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("1_font_title")
+theme_override_font_sizes/font_size = 48
+text = "How to play"
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -225.0
+offset_right = 480.0
+offset_bottom = 330.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="Content" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 48
+
+[node name="Section1" type="VBoxContainer" parent="ScrollContainer/Content"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Heading" type="Label" parent="ScrollContainer/Content/Section1"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("1_font_title")
+theme_override_font_sizes/font_size = 32
+text = "THE 30-SECOND TIME LOOP"
+
+[node name="ImagesRow" type="HBoxContainer" parent="ScrollContainer/Content/Section1"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 0
+
+[node name="PlayerCol" type="VBoxContainer" parent="ScrollContainer/Content/Section1/ImagesRow"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Img" type="TextureRect" parent="ScrollContainer/Content/Section1/ImagesRow/PlayerCol"]
+custom_minimum_size = Vector2(266, 188)
+layout_mode = 2
+texture = ExtResource("5_img_player")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Lbl" type="Label" parent="ScrollContainer/Content/Section1/ImagesRow/PlayerCol"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.95, 0.9)
+theme_override_fonts/font = ExtResource("2_font_body")
+theme_override_font_sizes/font_size = 18
+text = "Player"
+horizontal_alignment = 1
+
+[node name="LoopCol" type="VBoxContainer" parent="ScrollContainer/Content/Section1/ImagesRow"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Img" type="TextureRect" parent="ScrollContainer/Content/Section1/ImagesRow/LoopCol"]
+custom_minimum_size = Vector2(583, 188)
+layout_mode = 2
+texture = ExtResource("6_img_timeloop")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Lbl" type="Label" parent="ScrollContainer/Content/Section1/ImagesRow/LoopCol"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.95, 0.9)
+theme_override_fonts/font = ExtResource("2_font_body")
+theme_override_font_sizes/font_size = 18
+text = "Time Loop Limit"
+horizontal_alignment = 1
+
+[node name="Desc" type="Label" parent="ScrollContainer/Content/Section1"]
+custom_minimum_size = Vector2(880, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.95, 0.85)
+theme_override_fonts/font = ExtResource("2_font_body")
+theme_override_font_sizes/font_size = 20
+text = "You are trapped inside Chronos Sub-Level 4. Every 30 seconds, spacetime collapses and resets to the starting point."
+autowrap_mode = 2
+
+[node name="Section2" type="VBoxContainer" parent="ScrollContainer/Content"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Heading" type="Label" parent="ScrollContainer/Content/Section2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("1_font_title")
+theme_override_font_sizes/font_size = 32
+text = "TEMPORAL ECHOES"
+
+[node name="Desc" type="Label" parent="ScrollContainer/Content/Section2"]
+custom_minimum_size = Vector2(880, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.95, 0.85)
+theme_override_fonts/font = ExtResource("2_font_body")
+theme_override_font_sizes/font_size = 20
+text = "When a loop resets, an Echo of your past self repeats your exact previous actions."
+autowrap_mode = 2
+
+[node name="CardsRow" type="HBoxContainer" parent="ScrollContainer/Content/Section2"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 0
+
+[node name="Card1" type="VBoxContainer" parent="ScrollContainer/Content/Section2/CardsRow"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Img" type="TextureRect" parent="ScrollContainer/Content/Section2/CardsRow/Card1"]
+custom_minimum_size = Vector2(295, 240)
+layout_mode = 2
+texture = ExtResource("7_img_echoes")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Lbl" type="Label" parent="ScrollContainer/Content/Section2/CardsRow/Card1"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.95, 0.9)
+theme_override_fonts/font = ExtResource("2_font_body")
+theme_override_font_sizes/font_size = 18
+text = "Player / Clone"
+horizontal_alignment = 1
+
+[node name="Card2" type="VBoxContainer" parent="ScrollContainer/Content/Section2/CardsRow"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Img" type="TextureRect" parent="ScrollContainer/Content/Section2/CardsRow/Card2"]
+custom_minimum_size = Vector2(295, 240)
+layout_mode = 2
+texture = ExtResource("8_img_exit")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Lbl" type="Label" parent="ScrollContainer/Content/Section2/CardsRow/Card2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.95, 0.9)
+theme_override_fonts/font = ExtResource("2_font_body")
+theme_override_font_sizes/font_size = 18
+text = "Exit point"
+horizontal_alignment = 1
+
+[node name="Card3" type="VBoxContainer" parent="ScrollContainer/Content/Section2/CardsRow"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Img" type="TextureRect" parent="ScrollContainer/Content/Section2/CardsRow/Card3"]
+custom_minimum_size = Vector2(295, 240)
+layout_mode = 2
+texture = ExtResource("9_img_doors")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Lbl" type="Label" parent="ScrollContainer/Content/Section2/CardsRow/Card3"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.95, 0.9)
+theme_override_fonts/font = ExtResource("2_font_body")
+theme_override_font_sizes/font_size = 18
+text = "Blast doors"
+horizontal_alignment = 1
+
+[node name="Section3" type="VBoxContainer" parent="ScrollContainer/Content"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Heading" type="Label" parent="ScrollContainer/Content/Section3"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("1_font_title")
+theme_override_font_sizes/font_size = 32
+text = "Controls"
+
+[node name="KeysCluster" type="HBoxContainer" parent="ScrollContainer/Content/Section3"]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="WASDBox" type="VBoxContainer" parent="ScrollContainer/Content/Section3/KeysCluster"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="WKey" type="Control" parent="ScrollContainer/Content/Section3/KeysCluster/WASDBox"]
+custom_minimum_size = Vector2(90, 88)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Bg" type="TextureRect" parent="ScrollContainer/Content/Section3/KeysCluster/WASDBox/WKey"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("10_key_w")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Lbl" type="Label" parent="ScrollContainer/Content/Section3/KeysCluster/WASDBox/WKey"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("1_font_title")
+theme_override_font_sizes/font_size = 28
+text = "W"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ASD_Row" type="HBoxContainer" parent="ScrollContainer/Content/Section3/KeysCluster/WASDBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="AKey" type="Control" parent="ScrollContainer/Content/Section3/KeysCluster/WASDBox/ASD_Row"]
+custom_minimum_size = Vector2(90, 88)
+layout_mode = 2
+
+[node name="Bg" type="TextureRect" parent="ScrollContainer/Content/Section3/KeysCluster/WASDBox/ASD_Row/AKey"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("11_key_a")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Lbl" type="Label" parent="ScrollContainer/Content/Section3/KeysCluster/WASDBox/ASD_Row/AKey"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("1_font_title")
+theme_override_font_sizes/font_size = 28
+text = "A"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SKey" type="Control" parent="ScrollContainer/Content/Section3/KeysCluster/WASDBox/ASD_Row"]
+custom_minimum_size = Vector2(90, 88)
+layout_mode = 2
+
+[node name="Bg" type="TextureRect" parent="ScrollContainer/Content/Section3/KeysCluster/WASDBox/ASD_Row/SKey"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("12_key_s")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Lbl" type="Label" parent="ScrollContainer/Content/Section3/KeysCluster/WASDBox/ASD_Row/SKey"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("1_font_title")
+theme_override_font_sizes/font_size = 28
+text = "S"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DKey" type="Control" parent="ScrollContainer/Content/Section3/KeysCluster/WASDBox/ASD_Row"]
+custom_minimum_size = Vector2(90, 88)
+layout_mode = 2
+
+[node name="Bg" type="TextureRect" parent="ScrollContainer/Content/Section3/KeysCluster/WASDBox/ASD_Row/DKey"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("13_key_d")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Lbl" type="Label" parent="ScrollContainer/Content/Section3/KeysCluster/WASDBox/ASD_Row/DKey"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("1_font_title")
+theme_override_font_sizes/font_size = 28
+text = "D"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VSep" type="VSeparator" parent="ScrollContainer/Content/Section3/KeysCluster"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_divider")
+
+[node name="ArrowsBox" type="VBoxContainer" parent="ScrollContainer/Content/Section3/KeysCluster"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="UpKey" type="Control" parent="ScrollContainer/Content/Section3/KeysCluster/ArrowsBox"]
+custom_minimum_size = Vector2(90, 88)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Bg" type="TextureRect" parent="ScrollContainer/Content/Section3/KeysCluster/ArrowsBox/UpKey"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("10_key_w")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="ScrollContainer/Content/Section3/KeysCluster/ArrowsBox/UpKey"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -18.0
+offset_top = -18.0
+offset_right = 18.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("15_arrow_up")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LDR_Row" type="HBoxContainer" parent="ScrollContainer/Content/Section3/KeysCluster/ArrowsBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="LeftKey" type="Control" parent="ScrollContainer/Content/Section3/KeysCluster/ArrowsBox/LDR_Row"]
+custom_minimum_size = Vector2(90, 88)
+layout_mode = 2
+
+[node name="Bg" type="TextureRect" parent="ScrollContainer/Content/Section3/KeysCluster/ArrowsBox/LDR_Row/LeftKey"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("11_key_a")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="ScrollContainer/Content/Section3/KeysCluster/ArrowsBox/LDR_Row/LeftKey"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -18.0
+offset_top = -18.0
+offset_right = 18.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_arrow_left")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DownKey" type="Control" parent="ScrollContainer/Content/Section3/KeysCluster/ArrowsBox/LDR_Row"]
+custom_minimum_size = Vector2(90, 88)
+layout_mode = 2
+
+[node name="Bg" type="TextureRect" parent="ScrollContainer/Content/Section3/KeysCluster/ArrowsBox/LDR_Row/DownKey"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("12_key_s")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="ScrollContainer/Content/Section3/KeysCluster/ArrowsBox/LDR_Row/DownKey"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -18.0
+offset_top = -18.0
+offset_right = 18.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("16_arrow_down")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RightKey" type="Control" parent="ScrollContainer/Content/Section3/KeysCluster/ArrowsBox/LDR_Row"]
+custom_minimum_size = Vector2(90, 88)
+layout_mode = 2
+
+[node name="Bg" type="TextureRect" parent="ScrollContainer/Content/Section3/KeysCluster/ArrowsBox/LDR_Row/RightKey"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("13_key_d")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Icon" type="TextureRect" parent="ScrollContainer/Content/Section3/KeysCluster/ArrowsBox/LDR_Row/RightKey"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -18.0
+offset_top = -18.0
+offset_right = 18.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("17_arrow_right")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VSep2" type="VSeparator" parent="ScrollContainer/Content/Section3/KeysCluster"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_divider")
+
+[node name="JoystickBox" type="VBoxContainer" parent="ScrollContainer/Content/Section3/KeysCluster"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="JoystickControl" type="Control" parent="ScrollContainer/Content/Section3/KeysCluster/JoystickBox"]
+custom_minimum_size = Vector2(170, 160)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="JoystickImage" type="TextureRect" parent="ScrollContainer/Content/Section3/KeysCluster/JoystickBox/JoystickControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("18_joystick_img")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Lbl" type="Label" parent="ScrollContainer/Content/Section3/KeysCluster/JoystickBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.95, 0.85)
+theme_override_fonts/font = ExtResource("2_font_body")
+theme_override_font_sizes/font_size = 18
+text = "Touch Joystick"
+horizontal_alignment = 1
+
+[node name="SpaceBox" type="VBoxContainer" parent="ScrollContainer/Content/Section3"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="SpaceKey" type="Control" parent="ScrollContainer/Content/Section3/SpaceBox"]
+custom_minimum_size = Vector2(880, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Bg" type="TextureRect" parent="ScrollContainer/Content/Section3/SpaceBox/SpaceKey"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("14_key_space")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Lbl" type="Label" parent="ScrollContainer/Content/Section3/SpaceBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.95, 0.85)
+theme_override_fonts/font = ExtResource("2_font_body")
+theme_override_font_sizes/font_size = 18
+text = "space to interact notes  •  or tap [ACT] on touch"
+horizontal_alignment = 1
+
+[node name="BottomPadding" type="Control" parent="ScrollContainer/Content"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2

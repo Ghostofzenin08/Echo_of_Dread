@@ -27,6 +27,35 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_setup_default_input_map()
 
+func is_mobile_device() -> bool:
+	if SaveManager and SaveManager.has_method("has_setting") and SaveManager.has_setting("touch_controls"):
+		return bool(SaveManager.get_setting("touch_controls", false))
+	if SaveManager and SaveManager.has_method("get_setting"):
+		var val = SaveManager.get_setting("touch_controls", null)
+		if val != null:
+			return bool(val)
+		
+	# Native mobile exports
+	if OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios"):
+		return true
+		
+	# Web browser on mobile
+	if OS.has_feature("web_android") or OS.has_feature("web_ios"):
+		return true
+		
+	# Web browser user-agent detection via JavaScriptBridge
+	if OS.has_feature("web"):
+		if ClassDB.class_exists("JavaScriptBridge"):
+			var js = ClassDB.instantiate("JavaScriptBridge")
+			if js and js.has_method("eval"):
+				var ua = js.eval("navigator.userAgent")
+				if ua != null:
+					var s := str(ua).to_lower()
+					if "mobi" in s or "android" in s or "iphone" in s or "ipad" in s:
+						return true
+						
+	return false
+
 func _setup_default_input_map() -> void:
 	_register_action("move_left", [KEY_A, KEY_LEFT])
 	_register_action("move_right", [KEY_D, KEY_RIGHT])

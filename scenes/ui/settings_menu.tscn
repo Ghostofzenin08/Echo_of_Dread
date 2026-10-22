@@ -1,6 +1,88 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=18 format=3 uid="uid://dfy4b10n2w8p1"]
 
 [ext_resource type="Script" path="res://scripts/ui/settings_menu.gd" id="1_settings"]
+[ext_resource type="FontFile" path="res://Setting/PostNoBillsColombo-Light.ttf" id="2_font"]
+[ext_resource type="Texture2D" path="res://Setting/Rectangle 73.png" id="3_track"]
+[ext_resource type="Texture2D" path="res://Setting/Rectangle 74.png" id="4_fill"]
+[ext_resource type="Texture2D" path="res://Setting/Rectangle 75.png" id="5_grabber"]
+[ext_resource type="Texture2D" path="res://Setting/Rectangle 80.png" id="6_check"]
+[ext_resource type="Texture2D" path="res://Setting/Ellipse 10.png" id="7_circle"]
+[ext_resource type="Texture2D" path="res://Setting/Frame-3.png" id="8_arrow"]
+[ext_resource type="Texture2D" path="res://mobile-view/Frame.png" id="9_help_icon"]
+[ext_resource type="PackedScene" path="res://scenes/ui/how_to_play.tscn" id="10_howtoplay"]
+
+[sub_resource type="Gradient" id="Gradient_bg"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.00392157, 0.0627451, 0.141176, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bg"]
+gradient = SubResource("Gradient_bg")
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_clean"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_slider_bg"]
+texture = ExtResource("3_track")
+texture_margin_left = 6.0
+texture_margin_top = 4.0
+texture_margin_right = 6.0
+texture_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_slider_fill"]
+texture = ExtResource("4_fill")
+texture_margin_left = 6.0
+texture_margin_top = 4.0
+texture_margin_right = 6.0
+texture_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_reset_btn"]
+bg_color = Color(1, 0.04, 0.086, 0.25)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 0.2)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_reset_btn_hover"]
+bg_color = Color(1, 0.04, 0.086, 0.45)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.3, 0.3, 0.8)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal_panel"]
+bg_color = Color(0.00392157, 0.0627451, 0.141176, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.75, 1, 0.6)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal_btn"]
+bg_color = Color(0.00784314, 0.101961, 0.223529, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.25)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="SettingsMenu" type="Control"]
 process_mode = 3
@@ -12,179 +94,265 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_settings")
 
-[node name="Backdrop" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.02, 0.04, 0.08, 0.88)
+texture = SubResource("GradientTexture2D_bg")
 
-[node name="Panel" type="PanelContainer" parent="Backdrop"]
-custom_minimum_size = Vector2(480, 480)
+[node name="MainPanel" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(780, 0)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -240.0
-offset_top = -240.0
-offset_right = 240.0
-offset_bottom = 240.0
+offset_left = -390.0
+offset_top = -290.0
+offset_right = 390.0
+offset_bottom = 290.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 22
+alignment = 1
 
-[node name="Margin" type="MarginContainer" parent="Backdrop/Panel"]
+[node name="HeaderBox" type="HBoxContainer" parent="MainPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 28
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 28
-theme_override_constants/margin_bottom = 24
+theme_override_constants/separation = 18
+alignment = 0
 
-[node name="VBox" type="VBoxContainer" parent="Backdrop/Panel/Margin"]
+[node name="BackButton" type="Button" parent="MainPanel/HeaderBox"]
+custom_minimum_size = Vector2(54, 54)
 layout_mode = 2
-theme_override_constants/separation = 12
+focus_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_clean")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_clean")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_clean")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_clean")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_clean")
 
-[node name="Title" type="Label" parent="Backdrop/Panel/Margin/VBox"]
+[node name="CircleIcon" type="TextureRect" parent="MainPanel/HeaderBox/BackButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("7_circle")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ArrowIcon" type="TextureRect" parent="MainPanel/HeaderBox/BackButton/CircleIcon"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("8_arrow")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Title" type="Label" parent="MainPanel/HeaderBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 46
+text = "Settings"
+vertical_alignment = 1
+
+[node name="HeaderSpacer" type="Control" parent="MainPanel/HeaderBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="HelpButton" type="Button" parent="MainPanel/HeaderBox"]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 2
+focus_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_clean")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_clean")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_clean")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_clean")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_clean")
+
+[node name="Icon" type="TextureRect" parent="MainPanel/HeaderBox/HelpButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("9_help_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MasterGroup" type="VBoxContainer" parent="MainPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Row" type="HBoxContainer" parent="MainPanel/MasterGroup"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainPanel/MasterGroup/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+text = "Master volume"
+
+[node name="MasterValue" type="Label" parent="MainPanel/MasterGroup/Row"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "100%"
+
+[node name="MasterSlider" type="HSlider" parent="MainPanel/MasterGroup"]
+custom_minimum_size = Vector2(780, 36)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_icons/grabber = ExtResource("5_grabber")
+theme_override_icons/grabber_highlight = ExtResource("5_grabber")
+theme_override_styles/slider = SubResource("StyleBoxTexture_slider_bg")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_slider_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_slider_fill")
+value = 100.0
+
+[node name="SFXGroup" type="VBoxContainer" parent="MainPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Row" type="HBoxContainer" parent="MainPanel/SFXGroup"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainPanel/SFXGroup/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+text = "SFX volume"
+
+[node name="SFXValue" type="Label" parent="MainPanel/SFXGroup/Row"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "100%"
+
+[node name="SFXSlider" type="HSlider" parent="MainPanel/SFXGroup"]
+custom_minimum_size = Vector2(780, 36)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_icons/grabber = ExtResource("5_grabber")
+theme_override_icons/grabber_highlight = ExtResource("5_grabber")
+theme_override_styles/slider = SubResource("StyleBoxTexture_slider_bg")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_slider_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_slider_fill")
+value = 100.0
+
+[node name="MusicGroup" type="VBoxContainer" parent="MainPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Row" type="HBoxContainer" parent="MainPanel/MusicGroup"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainPanel/MusicGroup/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+text = "Music"
+
+[node name="MusicValue" type="Label" parent="MainPanel/MusicGroup/Row"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "100%"
+
+[node name="MusicSlider" type="HSlider" parent="MainPanel/MusicGroup"]
+custom_minimum_size = Vector2(780, 36)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_icons/grabber = ExtResource("5_grabber")
+theme_override_icons/grabber_highlight = ExtResource("5_grabber")
+theme_override_styles/slider = SubResource("StyleBoxTexture_slider_bg")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_slider_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_slider_fill")
+value = 100.0
+
+[node name="TogglesRow" type="HBoxContainer" parent="MainPanel"]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 0
+
+[node name="ScreenShakeToggle" type="CheckBox" parent="MainPanel/TogglesRow"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 22
-text = "SYSTEM CONFIGURATION"
-horizontal_alignment = 1
-
-[node name="HSeparator1" type="HSeparator" parent="Backdrop/Panel/Margin/VBox"]
-layout_mode = 2
-
-[node name="AudioHeader" type="Label" parent="Backdrop/Panel/Margin/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6, 0.8, 1, 1)
-theme_override_font_sizes/font_size = 14
-text = "AUDIO RECEPTORS"
-
-[node name="AudioGroup" type="VBoxContainer" parent="Backdrop/Panel/Margin/VBox"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="MasterRow" type="HBoxContainer" parent="Backdrop/Panel/Margin/VBox/AudioGroup"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Backdrop/Panel/Margin/VBox/AudioGroup/MasterRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 13
-text = "Master Volume"
-
-[node name="MasterSlider" type="HSlider" parent="Backdrop/Panel/Margin/VBox/AudioGroup/MasterRow"]
-custom_minimum_size = Vector2(180, 0)
-layout_mode = 2
-size_flags_vertical = 4
-value = 100.0
-
-[node name="MasterValue" type="Label" parent="Backdrop/Panel/Margin/VBox/AudioGroup/MasterRow"]
-custom_minimum_size = Vector2(45, 0)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 13
-text = "100%"
-horizontal_alignment = 2
-
-[node name="SFXRow" type="HBoxContainer" parent="Backdrop/Panel/Margin/VBox/AudioGroup"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Backdrop/Panel/Margin/VBox/AudioGroup/SFXRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 13
-text = "SFX Volume"
-
-[node name="SFXSlider" type="HSlider" parent="Backdrop/Panel/Margin/VBox/AudioGroup/SFXRow"]
-custom_minimum_size = Vector2(180, 0)
-layout_mode = 2
-size_flags_vertical = 4
-value = 100.0
-
-[node name="SFXValue" type="Label" parent="Backdrop/Panel/Margin/VBox/AudioGroup/SFXRow"]
-custom_minimum_size = Vector2(45, 0)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 13
-text = "100%"
-horizontal_alignment = 2
-
-[node name="MusicRow" type="HBoxContainer" parent="Backdrop/Panel/Margin/VBox/AudioGroup"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Backdrop/Panel/Margin/VBox/AudioGroup/MusicRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 13
-text = "Music / Ambience"
-
-[node name="MusicSlider" type="HSlider" parent="Backdrop/Panel/Margin/VBox/AudioGroup/MusicRow"]
-custom_minimum_size = Vector2(180, 0)
-layout_mode = 2
-size_flags_vertical = 4
-value = 100.0
-
-[node name="MusicValue" type="Label" parent="Backdrop/Panel/Margin/VBox/AudioGroup/MusicRow"]
-custom_minimum_size = Vector2(45, 0)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 13
-text = "100%"
-horizontal_alignment = 2
-
-[node name="HSeparator2" type="HSeparator" parent="Backdrop/Panel/Margin/VBox"]
-layout_mode = 2
-
-[node name="VisualHeader" type="Label" parent="Backdrop/Panel/Margin/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.6, 0.8, 1, 1)
-theme_override_font_sizes/font_size = 14
-text = "OPTICAL MATRIX"
-
-[node name="VisualGroup" type="VBoxContainer" parent="Backdrop/Panel/Margin/VBox"]
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="ScreenShakeToggle" type="CheckBox" parent="Backdrop/Panel/Margin/VBox/VisualGroup"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 13
+theme_override_icons/checked = ExtResource("6_check")
+theme_override_icons/unchecked = ExtResource("6_check")
 button_pressed = true
-text = "Tactile Screen Shake"
+text = "  Tactile screen shake"
 
-[node name="CRTShaderToggle" type="CheckBox" parent="Backdrop/Panel/Margin/VBox/VisualGroup"]
+[node name="CRTShaderToggle" type="CheckBox" parent="MainPanel/TogglesRow"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+theme_override_icons/checked = ExtResource("6_check")
+theme_override_icons/unchecked = ExtResource("6_check")
 button_pressed = true
-text = "CRT / Temporal Rewind Shaders"
+text = "  Temporal rewind shaders"
 
-[node name="TouchControlsToggle" type="CheckBox" parent="Backdrop/Panel/Margin/VBox/VisualGroup"]
+[node name="TouchControlsToggle" type="CheckBox" parent="MainPanel/TogglesRow"]
+visible = false
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
-text = "Touch Controls (Mobile / On-Screen)"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "  Touch Controls"
 
-[node name="HSeparator3" type="HSeparator" parent="Backdrop/Panel/Margin/VBox"]
+[node name="ResetRow" type="HBoxContainer" parent="MainPanel"]
 layout_mode = 2
+alignment = 0
 
-[node name="ButtonGroup" type="VBoxContainer" parent="Backdrop/Panel/Margin/VBox"]
+[node name="ResetButton" type="Button" parent="MainPanel/ResetRow"]
+custom_minimum_size = Vector2(190, 50)
 layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="ResetButton" type="Button" parent="Backdrop/Panel/Margin/VBox/ButtonGroup"]
-custom_minimum_size = Vector2(0, 36)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
-theme_override_font_sizes/font_size = 14
-text = "RESET ALL PROGRESS"
-
-[node name="BackButton" type="Button" parent="Backdrop/Panel/Margin/VBox/ButtonGroup"]
-custom_minimum_size = Vector2(0, 36)
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-text = "BACK"
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 0.4, 0.4, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_reset_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_reset_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_reset_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_clean")
+text = "Reset"
 
 [node name="ConfirmModal" type="ColorRect" parent="."]
 visible = false
@@ -194,64 +362,82 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.01, 0.02, 0.05, 0.85)
+color = Color(0.005, 0.015, 0.03, 0.85)
 
 [node name="DialogPanel" type="PanelContainer" parent="ConfirmModal"]
-custom_minimum_size = Vector2(400, 200)
+custom_minimum_size = Vector2(460, 240)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -100.0
-offset_right = 200.0
-offset_bottom = 100.0
+offset_left = -230.0
+offset_top = -120.0
+offset_right = 230.0
+offset_bottom = 120.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal_panel")
 
 [node name="Margin" type="MarginContainer" parent="ConfirmModal/DialogPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 24
 
 [node name="VBox" type="VBoxContainer" parent="ConfirmModal/DialogPanel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 14
+theme_override_constants/separation = 16
 alignment = 1
 
-[node name="ConfirmTitle" type="Label" parent="ConfirmModal/DialogPanel/Margin/VBox"]
+[node name="Title" type="Label" parent="ConfirmModal/DialogPanel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.35, 0.35, 1)
-theme_override_font_sizes/font_size = 16
-text = "CONFIRM DATA PURGE"
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 26
+text = "RESET ALL PROGRESS?"
 horizontal_alignment = 1
 
-[node name="ConfirmMessage" type="Label" parent="ConfirmModal/DialogPanel/Margin/VBox"]
+[node name="Message" type="Label" parent="ConfirmModal/DialogPanel/Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.85, 0.9, 1)
-theme_override_font_sizes/font_size = 12
-text = "Warning: This will delete all chamber progression, best loop records, and discovered Dr. Thorne lore logs. This action cannot be reversed."
+theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 0.85)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "This will permanently erase all Chamber clear records, stars, and time loop stats."
 horizontal_alignment = 1
 autowrap_mode = 2
 
 [node name="BtnRow" type="HBoxContainer" parent="ConfirmModal/DialogPanel/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 20
 alignment = 1
 
 [node name="CancelResetButton" type="Button" parent="ConfirmModal/DialogPanel/Margin/VBox/BtnRow"]
-custom_minimum_size = Vector2(130, 34)
+custom_minimum_size = Vector2(160, 44)
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
+mouse_default_cursor_shape = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_modal_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_modal_btn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_modal_btn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_clean")
 text = "CANCEL"
 
 [node name="ConfirmResetButton" type="Button" parent="ConfirmModal/DialogPanel/Margin/VBox/BtnRow"]
-custom_minimum_size = Vector2(130, 34)
+custom_minimum_size = Vector2(160, 44)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
-theme_override_font_sizes/font_size = 13
-text = "CONFIRM PURGE"
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.3, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_modal_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_modal_btn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_modal_btn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_clean")
+text = "CONFIRM RESET"
+
+[node name="GuideModal" parent="." instance=ExtResource("10_howtoplay")]
+visible = false

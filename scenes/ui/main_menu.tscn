@@ -1,7 +1,62 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=15 format=3 uid="uid://c6vx1l4q1y5b8"]
 
 [ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_menu"]
 [ext_resource type="PackedScene" path="res://scenes/ui/settings_menu.tscn" id="2_settings"]
+[ext_resource type="FontFile" path="res://main-menu/PostNoBillsColombo-Light.ttf" id="3_font"]
+[ext_resource type="Texture2D" path="res://main-menu/Rectangle 57.png" id="4_rect57"]
+[ext_resource type="Texture2D" path="res://main-menu/Group 40.png" id="5_group40"]
+[ext_resource type="Texture2D" path="res://main-menu/Group 28.png" id="6_group28"]
+[ext_resource type="Texture2D" path="res://main-menu/Rectangle 48.png" id="7_rect48"]
+[ext_resource type="Texture2D" path="res://main-menu/Rectangle 50.png" id="8_rect50"]
+[ext_resource type="PackedScene" path="res://scenes/ui/how_to_play.tscn" id="9_howtoplay"]
+[ext_resource type="Texture2D" path="res://mobile-view/Group 47.png" id="10_mob_play"]
+[ext_resource type="Texture2D" path="res://mobile-view/Group 55.png" id="11_mob_settings"]
+[ext_resource type="Texture2D" path="res://mobile-view/Group 54.png" id="12_mob_chamber"]
+[ext_resource type="Texture2D" path="res://mobile-view/Frame.png" id="13_mob_help"]
+
+[sub_resource type="Gradient" id="Gradient_bg"]
+offsets = PackedFloat32Array(0, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.00392157, 0.0627451, 0.141176, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bg"]
+gradient = SubResource("Gradient_bg")
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn_normal"]
+texture = ExtResource("4_rect57")
+texture_margin_left = 16.0
+texture_margin_top = 12.0
+texture_margin_right = 16.0
+texture_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+bg_color = Color(0.00784314, 0.101961, 0.223529, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.78, 1, 0.85)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0.7, 1, 0.25)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_pressed"]
+bg_color = Color(0.00392157, 0.04, 0.105, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.9, 1, 0.95)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_btn_focus"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -12,152 +67,602 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_menu")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.05, 0.07, 0.12, 1)
+texture = SubResource("GradientTexture2D_bg")
+
+[node name="Decorations" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LeftBracket" type="TextureRect" parent="Decorations"]
+modulate = Color(1, 1, 1, 0.6)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 0.0
+offset_top = -139.0
+offset_right = 70.0
+offset_bottom = 139.0
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_group40")
+stretch_mode = 3
+
+[node name="RightBracket" type="TextureRect" parent="Decorations"]
+modulate = Color(1, 1, 1, 0.6)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -70.0
+offset_top = -139.0
+offset_right = 0.0
+offset_bottom = 139.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_group40")
+flip_h = true
+stretch_mode = 3
+
+[node name="TopCenter" type="HBoxContainer" parent="Decorations"]
+modulate = Color(1, 1, 1, 0.5)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -138.0
+offset_top = -30.0
+offset_right = 138.0
+offset_bottom = 38.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Rect48" type="TextureRect" parent="Decorations/TopCenter"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_rect48")
+stretch_mode = 3
+
+[node name="Rect50" type="TextureRect" parent="Decorations/TopCenter"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("8_rect50")
+stretch_mode = 3
+
+[node name="BottomCenter" type="HBoxContainer" parent="Decorations"]
+modulate = Color(1, 1, 1, 0.5)
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -138.0
+offset_top = -38.0
+offset_right = 138.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Rect48" type="TextureRect" parent="Decorations/BottomCenter"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_rect48")
+stretch_mode = 3
+
+[node name="Rect50" type="TextureRect" parent="Decorations/BottomCenter"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("8_rect50")
+stretch_mode = 3
+
+[node name="TopLeftFrame" type="Control" parent="Decorations"]
+modulate = Color(1, 1, 1, 0.5)
+layout_mode = 1
+anchors_preset = 0
+offset_left = 18.0
+offset_top = 0.0
+offset_right = 160.0
+offset_bottom = 140.0
+mouse_filter = 2
+
+[node name="CornerH" type="TextureRect" parent="Decorations/TopLeftFrame"]
+layout_mode = 0
+offset_left = 68.0
+offset_top = 0.0
+offset_right = 208.0
+offset_bottom = 68.0
+mouse_filter = 2
+texture = ExtResource("7_rect48")
+stretch_mode = 3
+
+[node name="CornerV" type="TextureRect" parent="Decorations/TopLeftFrame"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 58.0
+offset_right = 69.0
+offset_bottom = 186.0
+mouse_filter = 2
+texture = ExtResource("8_rect50")
+stretch_mode = 3
+
+[node name="TopRightFrame" type="Control" parent="Decorations"]
+modulate = Color(1, 1, 1, 0.5)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -226.0
+offset_top = 0.0
+offset_right = -18.0
+offset_bottom = 140.0
+grow_horizontal = 0
+mouse_filter = 2
+
+[node name="CornerH" type="TextureRect" parent="Decorations/TopRightFrame"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 140.0
+offset_bottom = 68.0
+mouse_filter = 2
+texture = ExtResource("7_rect48")
+stretch_mode = 3
+
+[node name="CornerV" type="TextureRect" parent="Decorations/TopRightFrame"]
+layout_mode = 0
+offset_left = 139.0
+offset_top = 58.0
+offset_right = 208.0
+offset_bottom = 186.0
+mouse_filter = 2
+texture = ExtResource("8_rect50")
+stretch_mode = 3
+
+[node name="BottomLeftFrame" type="Control" parent="Decorations"]
+modulate = Color(1, 1, 1, 0.5)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = -186.0
+offset_right = 226.0
+offset_bottom = 0.0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="CornerH" type="TextureRect" parent="Decorations/BottomLeftFrame"]
+layout_mode = 0
+offset_left = 68.0
+offset_top = 118.0
+offset_right = 208.0
+offset_bottom = 186.0
+mouse_filter = 2
+texture = ExtResource("7_rect48")
+stretch_mode = 3
+
+[node name="CornerV" type="TextureRect" parent="Decorations/BottomLeftFrame"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 69.0
+offset_bottom = 128.0
+mouse_filter = 2
+texture = ExtResource("8_rect50")
+stretch_mode = 3
+
+[node name="BottomRightFrame" type="Control" parent="Decorations"]
+modulate = Color(1, 1, 1, 0.5)
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -226.0
+offset_top = -186.0
+offset_right = -18.0
+offset_bottom = 0.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="CornerH" type="TextureRect" parent="Decorations/BottomRightFrame"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 118.0
+offset_right = 140.0
+offset_bottom = 186.0
+mouse_filter = 2
+texture = ExtResource("7_rect48")
+stretch_mode = 3
+
+[node name="CornerV" type="TextureRect" parent="Decorations/BottomRightFrame"]
+layout_mode = 0
+offset_left = 139.0
+offset_top = 0.0
+offset_right = 208.0
+offset_bottom = 128.0
+mouse_filter = 2
+texture = ExtResource("8_rect50")
+stretch_mode = 3
+
+[node name="ShardTL" type="TextureRect" parent="Decorations"]
+modulate = Color(1, 1, 1, 0.7)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.16
+anchor_top = 0.18
+anchor_right = 0.16
+anchor_bottom = 0.18
+offset_left = -66.0
+offset_top = -70.0
+offset_right = 66.0
+offset_bottom = 71.0
+pivot_offset = Vector2(66, 70)
+rotation = 1.265
+mouse_filter = 2
+texture = ExtResource("6_group28")
+stretch_mode = 3
+
+[node name="ShardBL" type="TextureRect" parent="Decorations"]
+modulate = Color(1, 1, 1, 0.65)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.17
+anchor_top = 0.78
+anchor_right = 0.17
+anchor_bottom = 0.78
+offset_left = -66.0
+offset_top = -70.0
+offset_right = 66.0
+offset_bottom = 71.0
+pivot_offset = Vector2(66, 70)
+rotation = -0.438
+mouse_filter = 2
+texture = ExtResource("6_group28")
+stretch_mode = 3
+
+[node name="ShardTR" type="TextureRect" parent="Decorations"]
+modulate = Color(1, 1, 1, 0.65)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.83
+anchor_top = 0.18
+anchor_right = 0.83
+anchor_bottom = 0.18
+offset_left = -66.0
+offset_top = -70.0
+offset_right = 66.0
+offset_bottom = 71.0
+pivot_offset = Vector2(66, 70)
+rotation = 0.118
+mouse_filter = 2
+texture = ExtResource("6_group28")
+stretch_mode = 3
+
+[node name="ShardMR" type="TextureRect" parent="Decorations"]
+modulate = Color(1, 1, 1, 0.65)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.82
+anchor_top = 0.44
+anchor_right = 0.82
+anchor_bottom = 0.44
+offset_left = -66.0
+offset_top = -70.0
+offset_right = 66.0
+offset_bottom = 71.0
+pivot_offset = Vector2(66, 70)
+rotation = 0.354
+mouse_filter = 2
+texture = ExtResource("6_group28")
+stretch_mode = 3
+
+[node name="ShardBR" type="TextureRect" parent="Decorations"]
+modulate = Color(1, 1, 1, 0.7)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.84
+anchor_top = 0.80
+anchor_right = 0.84
+anchor_bottom = 0.80
+offset_left = -66.0
+offset_top = -70.0
+offset_right = 66.0
+offset_bottom = 71.0
+pivot_offset = Vector2(66, 70)
+rotation = 0.922
+mouse_filter = 2
+texture = ExtResource("6_group28")
+stretch_mode = 3
 
 [node name="HeaderBox" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -350.0
-offset_top = 80.0
-offset_right = 350.0
-offset_bottom = 200.0
+offset_left = -400.0
+offset_top = 45.0
+offset_right = 400.0
+offset_bottom = 160.0
 grow_horizontal = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 alignment = 1
 
 [node name="Title" type="Label" parent="HeaderBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 46
-text = "ECHO OF DREAD"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.7, 1, 0.3)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 64
+text = "Echo of Dread"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Subtitle" type="Label" parent="HeaderBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.55, 0.7, 0.9, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.55, 0.75, 0.95, 0.8)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 17
 text = "CHRONOS RESEARCH FACILITY — 30-SECOND CAUSALITY LOOP"
 horizontal_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-custom_minimum_size = Vector2(280, 0)
+custom_minimum_size = Vector2(356, 0)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -140.0
-offset_top = 0.0
-offset_right = 140.0
-offset_bottom = 200.0
+offset_left = -178.0
+offset_top = -100.0
+offset_right = 178.0
+offset_bottom = 240.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 14
+theme_override_constants/separation = 12
 alignment = 1
 
 [node name="StartButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(356, 52)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "START EXPERIMENT"
+pivot_offset = Vector2(178, 26)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.4, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_btn_focus")
+text = "Play"
 
 [node name="LevelSelectButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(356, 52)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "CHAMBER SELECT"
+pivot_offset = Vector2(178, 26)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.4, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_btn_focus")
+text = "Select Chambers"
 
 [node name="SettingsButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(356, 52)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "SETTINGS"
+pivot_offset = Vector2(178, 26)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.4, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_btn_focus")
+text = "Settings"
 
 [node name="HowToPlayButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(356, 52)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "HOW TO PLAY"
+pivot_offset = Vector2(178, 26)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.4, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_btn_focus")
+text = "How to play"
 
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(356, 52)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-text = "EXIT"
+pivot_offset = Vector2(178, 26)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.4, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_btn_focus")
+text = "Quit"
 
-[node name="GuideModal" type="PanelContainer" parent="."]
+[node name="MobileLayout" type="Control" parent="."]
 visible = false
-custom_minimum_size = Vector2(560, 420)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MobileHelpButton" type="Button" parent="MobileLayout"]
+custom_minimum_size = Vector2(44, 44)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -72.0
+offset_top = 28.0
+offset_right = -28.0
+offset_bottom = 72.0
+grow_horizontal = 0
+focus_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_btn_focus")
+
+[node name="Icon" type="TextureRect" parent="MobileLayout/MobileHelpButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("13_mob_help")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MobileCenter" type="VBoxContainer" parent="MobileLayout"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -280.0
-offset_top = -210.0
-offset_right = 280.0
-offset_bottom = 210.0
+offset_left = -300.0
+offset_top = -140.0
+offset_right = 300.0
+offset_bottom = 160.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 40
+alignment = 1
 
-[node name="Margin" type="MarginContainer" parent="GuideModal"]
+[node name="MobileTitle" type="Label" parent="MobileLayout/MobileCenter"]
 layout_mode = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 20
-
-[node name="VBox" type="VBoxContainer" parent="GuideModal/Margin"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="Title" type="Label" parent="GuideModal/Margin/VBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 20
-text = "PROTOCOL BRIEFING"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 72
+text = "Echo of Dread"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="GuideModal/Margin/VBox"]
+[node name="ButtonsRow" type="HBoxContainer" parent="MobileLayout/MobileCenter"]
 layout_mode = 2
+theme_override_constants/separation = 36
+alignment = 1
 
-[node name="GuideText" type="RichTextLabel" parent="GuideModal/Margin/VBox"]
+[node name="MobileSettingsButton" type="Button" parent="MobileLayout/MobileCenter/ButtonsRow"]
+custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_font_sizes/normal_font_size = 14
-bbcode_enabled = true
-text = "[color=#00e5ff][b]THE 30-SECOND TIME LOOP:[/b][/color]
-You are trapped inside Chronos Sub-Level 4. Every 30 seconds, spacetime collapses and resets to the starting point.
+size_flags_vertical = 4
+focus_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_btn_focus")
 
-[color=#00e5ff][b]TEMPORAL ECHOES:[/b][/color]
-When a loop resets, an [color=#a0e0ff]Echo[/color] of your past self repeats your exact previous actions.
-• Stand on a pressure plate in Loop 1.
-• When the loop resets, your Echo holds the plate while you move freely!
-• Coordinate past and present actions to unlock heavy blast doors and bypass laser grids.
+[node name="Icon" type="TextureRect" parent="MobileLayout/MobileCenter/ButtonsRow/MobileSettingsButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("11_mob_settings")
+expand_mode = 1
+stretch_mode = 5
 
-[color=#00e5ff][b]CONTROLS:[/b][/color]
-• [color=#ffdd55][WASD / Arrow Keys][/color] - Move Researcher
-• [color=#ffdd55][E / Space][/color] - Interact with Terminals & Levers
-• [color=#ffdd55][R][/color] - Rewind Loop immediately & spawn new Echo
-• [color=#ffdd55][C / Backspace][/color] - Clear all Echoes & restart Chamber
-• [color=#ffdd55][ESC][/color] - Pause Menu / Dismiss Log"
-
-[node name="CloseButton" type="Button" parent="GuideModal/Margin/VBox"]
-custom_minimum_size = Vector2(140, 36)
+[node name="MobilePlayButton" type="Button" parent="MobileLayout/MobileCenter/ButtonsRow"]
+custom_minimum_size = Vector2(116, 116)
 layout_mode = 2
-size_flags_horizontal = 4
-text = "RETURN"
+size_flags_vertical = 4
+focus_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_btn_focus")
+
+[node name="Icon" type="TextureRect" parent="MobileLayout/MobileCenter/ButtonsRow/MobilePlayButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("10_mob_play")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MobileChamberButton" type="Button" parent="MobileLayout/MobileCenter/ButtonsRow"]
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_btn_focus")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_btn_focus")
+
+[node name="Icon" type="TextureRect" parent="MobileLayout/MobileCenter/ButtonsRow/MobileChamberButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("12_mob_chamber")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="GuideModal" parent="." instance=ExtResource("9_howtoplay")]
+visible = false
 
 [node name="SettingsMenu" parent="." instance=ExtResource("2_settings")]
 visible = false

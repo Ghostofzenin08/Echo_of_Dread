@@ -40,7 +40,8 @@ func _physics_process(delta: float) -> void:
 		velocity = velocity.move_toward(input_vector * move_speed, acceleration * delta)
 		facing_direction = input_vector
 		if visual_root:
-			visual_root.rotation = facing_direction.angle() + PI * 0.5
+			var target_angle := facing_direction.angle() + PI * 0.5
+			visual_root.rotation = rotate_toward(visual_root.rotation, target_angle, 14.0 * delta)
 	else:
 		velocity = velocity.move_toward(Vector2.ZERO, friction * delta)
 		

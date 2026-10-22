@@ -115,6 +115,9 @@ func set_setting(key: String, value: Variant) -> void:
 	save_data()
 	settings_changed.emit()
 
+func has_setting(key: String) -> bool:
+	return settings.has(key)
+
 func get_setting(key: String, default_value: Variant = null) -> Variant:
 	return settings.get(key, default_value)
 

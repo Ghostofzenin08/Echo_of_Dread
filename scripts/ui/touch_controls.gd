@@ -65,10 +65,12 @@ func _on_pause_pressed() -> void:
 	Input.parse_input_event(ev_release)
 
 func _update_visibility_from_settings() -> void:
-	if SaveManager:
+	if GameManager and GameManager.has_method("is_mobile_device"):
+		_is_enabled = GameManager.is_mobile_device()
+	elif SaveManager and SaveManager.has_method("get_setting"):
 		_is_enabled = bool(SaveManager.get_setting("touch_controls", false))
 	else:
-		_is_enabled = OS.has_feature("mobile") or OS.has_feature("touchscreen")
+		_is_enabled = OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios")
 		
 	_sync_visibility()
 

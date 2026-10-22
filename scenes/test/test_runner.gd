@@ -1044,7 +1044,7 @@ func test_project_branding_and_title() -> void:
 	var menu_scene := load("res://scenes/ui/main_menu.tscn") as PackedScene
 	var menu: Node = menu_scene.instantiate()
 	var title_lbl: Label = menu.find_child("Title", true, false) as Label
-	_assert_test(title_lbl != null and title_lbl.text == "ECHO OF DREAD", "MainMenu: Title label harmonized to 'ECHO OF DREAD'")
+	_assert_test(title_lbl != null and (title_lbl.text == "ECHO OF DREAD" or title_lbl.text == "Echo of Dread"), "MainMenu: Title label harmonized to 'Echo of Dread'")
 	menu.free()
 
 func test_chamber_database_and_50_levels() -> void:

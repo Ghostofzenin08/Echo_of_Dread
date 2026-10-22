@@ -1,7 +1,60 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/touch_controls.gd" id="1_touch"]
 [ext_resource type="Script" path="res://scripts/ui/virtual_joystick.gd" id="2_joystick"]
+[ext_resource type="FontFile" path="res://assets/fonts/PostNoBillsColombo-Light.ttf" id="3_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_act"]
+bg_color = Color(0.00784314, 0.101961, 0.223529, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.9, 1, 0.9)
+corner_radius_top_left = 44
+corner_radius_top_right = 44
+corner_radius_bottom_right = 44
+corner_radius_bottom_left = 44
+shadow_color = Color(0, 0.8, 1, 0.3)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_loop"]
+bg_color = Color(0.00784314, 0.101961, 0.223529, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.8, 0.25, 0.9)
+corner_radius_top_left = 36
+corner_radius_top_right = 36
+corner_radius_bottom_right = 36
+corner_radius_bottom_left = 36
+shadow_color = Color(1, 0.75, 0.2, 0.25)
+shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_clr"]
+bg_color = Color(0.00784314, 0.101961, 0.223529, 0.75)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9, 0.45, 0.45, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pause"]
+bg_color = Color(0.00784314, 0.101961, 0.223529, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.4)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 
 [node name="TouchControls" type="CanvasLayer"]
 layer = 15
@@ -61,7 +114,11 @@ alignment = 2
 custom_minimum_size = Vector2(60, 36)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.45, 0.45, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_clr")
+theme_override_styles/hover = SubResource("StyleBoxFlat_clr")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_clr")
 text = "CLR"
 
 [node name="MainRow" type="HBoxContainer" parent="RootControl/BottomRight/VBox"]
@@ -73,14 +130,22 @@ alignment = 2
 custom_minimum_size = Vector2(72, 72)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.8, 0.25, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_loop")
+theme_override_styles/hover = SubResource("StyleBoxFlat_loop")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_loop")
 text = "LOOP"
 
 [node name="InteractBtn" type="Button" parent="RootControl/BottomRight/VBox/MainRow"]
 custom_minimum_size = Vector2(88, 88)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.95, 1, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_act")
+theme_override_styles/hover = SubResource("StyleBoxFlat_act")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_act")
 text = "ACT"
 
 [node name="TopRight" type="MarginContainer" parent="RootControl"]
@@ -99,5 +164,9 @@ theme_override_constants/margin_right = 16
 custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_pause")
+theme_override_styles/hover = SubResource("StyleBoxFlat_pause")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_pause")
 text = "||"

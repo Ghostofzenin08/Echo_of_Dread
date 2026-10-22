@@ -229,7 +229,7 @@ func play_sfx(sound_name: String, pitch_scale: float = 1.0, volume_db: float = 0
 		_build_sound_library()
 	if not _sounds.has(sound_name):
 		return
-	var stream: AudioStreamWAV = _sounds[sound_name]
+	var stream: AudioStream = _sounds[sound_name]
 	var player := _get_available_player()
 	player.stream = stream
 	
@@ -254,7 +254,7 @@ func play_sfx_at_position(sound_name: String, world_pos: Vector2, pitch_scale: f
 		_build_sound_library()
 	if not _sounds.has(sound_name):
 		return
-	var stream: AudioStreamWAV = _sounds[sound_name]
+	var stream: AudioStream = _sounds[sound_name]
 	var player_2d := _get_available_spatial_player()
 	player_2d.stream = stream
 	player_2d.global_position = world_pos
@@ -273,8 +273,16 @@ func play_sfx_at_position(sound_name: String, world_pos: Vector2, pitch_scale: f
 		player_2d.bus = &"SFX" if _bus_exists("SFX") else &"Master"
 	player_2d.play()
 
+const CLICK_SFX_PATH = "res://assets/audio/click.wav"
+const MIXKIT_CLICK_PATH = "res://mixkit-modern-technology-select-3124.wav"
+
 func _build_sound_library() -> void:
-	_sounds["click"] = _generate_tone(880.0, 0.06, "square", 0.3)
+	if ResourceLoader.exists(CLICK_SFX_PATH):
+		_sounds["click"] = load(CLICK_SFX_PATH)
+	elif ResourceLoader.exists(MIXKIT_CLICK_PATH):
+		_sounds["click"] = load(MIXKIT_CLICK_PATH)
+	else:
+		_sounds["click"] = _generate_tone(440.0, 0.04, "sine", 0.12, 330.0)
 	_sounds["switch_on"] = _generate_tone(660.0, 0.09, "sine", 0.4, 880.0)
 	_sounds["switch_off"] = _generate_tone(880.0, 0.09, "sine", 0.4, 440.0)
 	_sounds["plate_press"] = _generate_tone(150.0, 0.14, "triangle", 0.5, 90.0)

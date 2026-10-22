@@ -22,6 +22,8 @@ signal reset_completed
 
 @onready var reset_button: Button = find_child("ResetButton", true, false) as Button
 @onready var back_button: Button = find_child("BackButton", true, false) as Button
+@onready var help_button: Button = find_child("HelpButton", true, false) as Button
+@onready var guide_modal: Control = get_node_or_null("GuideModal")
 
 @onready var confirm_modal: Control = find_child("ConfirmModal", true, false) as Control
 @onready var confirm_reset_btn: Button = find_child("ConfirmResetButton", true, false) as Button
@@ -56,14 +58,45 @@ func _ensure_node_refs() -> void:
 		confirm_reset_btn = find_child("ConfirmResetButton", true, false) as Button
 	if cancel_reset_btn == null:
 		cancel_reset_btn = find_child("CancelResetButton", true, false) as Button
+	if help_button == null:
+		help_button = find_child("HelpButton", true, false) as Button
+	if guide_modal == null:
+		guide_modal = get_node_or_null("GuideModal")
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_ensure_node_refs()
 	_bind_controls()
+	_setup_hover_effects()
 	load_current_settings()
 	if confirm_modal:
 		confirm_modal.visible = false
+	if help_button:
+		help_button.pressed.connect(_on_help_pressed)
+	if guide_modal:
+		var guide_back := guide_modal.find_child("BackButton", true, false) as Button
+		if guide_back:
+			guide_back.pressed.connect(func():
+				SoundManager.play_sfx("click")
+				guide_modal.visible = false
+			)
+		guide_modal.visible = false
+
+func _setup_hover_effects() -> void:
+	var buttons := [back_button, reset_button, confirm_reset_btn, cancel_reset_btn]
+	for btn in buttons:
+		if is_instance_valid(btn):
+			btn.pivot_offset = btn.size * 0.5
+			btn.resized.connect(func(): if is_instance_valid(btn): btn.pivot_offset = btn.size * 0.5)
+			btn.mouse_entered.connect(func(): _animate_button_hover(btn, true))
+			btn.mouse_exited.connect(func(): _animate_button_hover(btn, false))
+
+func _animate_button_hover(btn: Button, is_hovered: bool) -> void:
+	if not is_instance_valid(btn):
+		return
+	var tw := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	var target_scale := Vector2(1.04, 1.04) if is_hovered else Vector2.ONE
+	tw.tween_property(btn, "scale", target_scale, 0.15)
 
 func _bind_controls() -> void:
 	_ensure_node_refs()
@@ -188,12 +221,24 @@ func close_menu() -> void:
 	SoundManager.play_sfx("click")
 	if confirm_modal:
 		confirm_modal.visible = false
+	if guide_modal:
+		guide_modal.visible = false
 	visible = false
 	closed.emit()
+
+func _on_help_pressed() -> void:
+	SoundManager.play_sfx("click")
+	if guide_modal:
+		guide_modal.visible = true
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
+	if guide_modal and guide_modal.visible:
+		if event.is_action_pressed("pause") or event.is_action_pressed("ui_cancel") or event.is_action_pressed("interact"):
+			guide_modal.visible = false
+			get_viewport().set_input_as_handled()
+			return
 	if event.is_action_pressed("pause"):
 		if confirm_modal and confirm_modal.visible:
 			cancel_reset()
