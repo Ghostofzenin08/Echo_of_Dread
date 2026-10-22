@@ -6,7 +6,9 @@ signal loop_reset(new_loop_number: int)
 signal echoes_cleared
 signal echo_count_changed(count: int)
 signal timeline_tracks_updated(tracks: Array)
+signal rewind_blocked(reason: String)
 
+@export var level_number: int = 1
 @export var loop_duration: float = 30.0
 @export var max_echoes: int = 5
 @export var echo_scene: PackedScene = null
@@ -44,8 +46,8 @@ func initialize(target_player: Player, initial_spawn: Vector2) -> void:
 		player.interaction_performed.connect(_on_player_interaction)
 		
 	if GameManager:
-		if not GameManager.loop_reset_requested.is_connected(reset_loop):
-			GameManager.loop_reset_requested.connect(reset_loop)
+		if not GameManager.loop_reset_requested.is_connected(_on_manual_reset_requested):
+			GameManager.loop_reset_requested.connect(_on_manual_reset_requested)
 		if not GameManager.echoes_cleared_requested.is_connected(clear_all_echoes):
 			GameManager.echoes_cleared_requested.connect(clear_all_echoes)
 	
@@ -73,13 +75,27 @@ func _reset_world_entities() -> void:
 		if is_instance_valid(node) and node.has_method("reset_state"):
 			node.reset_state()
 
+func is_manual_rewind_unlocked() -> bool:
+	if level_number <= 10:
+		return false
+	if SaveManager and not SaveManager.is_rewind_unlocked():
+		return false
+	return true
+
+func _on_manual_reset_requested() -> void:
+	if is_manual_rewind_unlocked():
+		reset_loop()
+	else:
+		SoundManager.play_sfx("click")
+		rewind_blocked.emit("MANUAL REWIND LOCKED — Unlocks after Chamber 10")
+
 func _physics_process(delta: float) -> void:
 	if not is_active or GameManager.is_paused or GameManager.is_narrative_open:
 		return
 		
 	# Check manual hotkeys
 	if Input.is_action_just_pressed("reset_loop"):
-		reset_loop()
+		_on_manual_reset_requested()
 		return
 		
 	if Input.is_action_just_pressed("clear_echoes"):
