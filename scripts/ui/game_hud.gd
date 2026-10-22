@@ -63,6 +63,28 @@ func set_chamber_title(title: String) -> void:
 	if chamber_label:
 		chamber_label.text = title
 
+func set_rewind_available(available: bool) -> void:
+	var label := get_node_or_null("BottomBar/Margin/ControlsLabel") as Label
+	if label:
+		if available:
+			label.text = "[WASD / Arrows] Move   |   [E / Space] Interact   |   [R] Rewind Loop   |   [C] Clear Echoes & Reset   |   [ESC] Pause"
+		else:
+			label.text = "[WASD / Arrows] Move   |   [E / Space] Interact   |   [R] Locked (Sector 1)   |   [C] Clear Echoes & Reset   |   [ESC] Pause"
+
+func show_rewind_locked_notice(msg: String) -> void:
+	var label := get_node_or_null("BottomBar/Margin/ControlsLabel") as Label
+	if label:
+		var orig_text := label.text
+		label.text = "⚠ " + msg.to_upper()
+		label.modulate = Color(1.0, 0.35, 0.35)
+		var t := create_tween()
+		t.tween_interval(2.0)
+		t.tween_property(label, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.3)
+		t.finished.connect(func():
+			if is_instance_valid(label):
+				label.text = orig_text
+		)
+
 func update_time(current_time: float, max_duration: float) -> void:
 	var remaining: float = maxf(0.0, max_duration - current_time)
 	if timer_label:
