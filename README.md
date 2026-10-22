@@ -1,6 +1,7 @@
 # Echo of Dread
 
 [![Play on itch.io](https://img.shields.io/badge/Play%20on-itch.io-FA5C5C?logo=itch.io&logoColor=white)](https://zeninxparth.itch.io/echo-of-dread)
+[![Website](https://img.shields.io/badge/Website-Landing%20Page-00f0ff?logo=firefox-browser&logoColor=white)](https://ghostofzenin08.github.io/Echo_of_Dread/)
 [![Godot Engine](https://img.shields.io/badge/Godot-v4.7.2--stable-478cbf?logo=godotengine&logoColor=white)](https://godotengine.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Tests: 385 Passed](https://img.shields.io/badge/Tests-385%20Passed-success.svg)](scenes/test/test_runner.gd)
@@ -11,10 +12,10 @@ Trapped within the subterranean Chronos Research Facility following a catastroph
 
 ---
 
-### 🎮 Play Now in Browser
+### 🎮 Play Now in Browser & Official Website
 
-Echo of Dread is playable directly in your web browser (Desktop & Mobile):  
-👉 **[https://zeninxparth.itch.io/echo-of-dread](https://zeninxparth.itch.io/echo-of-dread)**
+- 🌐 **Official Landing Webpage & Simulation:** [https://ghostofzenin08.github.io/Echo_of_Dread/](https://ghostofzenin08.github.io/Echo_of_Dread/)
+- 🕹️ **Play on itch.io (Desktop & Mobile):** [https://zeninxparth.itch.io/echo-of-dread](https://zeninxparth.itch.io/echo-of-dread)
 
 ---
 
