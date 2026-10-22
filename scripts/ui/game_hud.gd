@@ -63,11 +63,90 @@ func set_chamber_title(title: String) -> void:
 	if chamber_label:
 		chamber_label.text = title
 
+var current_level_number: int = 1
+var duration_toggle_btn: Button = null
+
+func set_level_number(lvl: int) -> void:
+	current_level_number = lvl
+	_update_duration_toggle_ui()
+	var rewind_unlocked := lvl > 10 and (SaveManager == null or SaveManager.is_rewind_unlocked())
+	set_rewind_available(rewind_unlocked)
+
+func _ensure_duration_toggle_button() -> void:
+	if duration_toggle_btn != null:
+		return
+	var container := get_node_or_null("TopBar/Margin/HBox") as HBoxContainer
+	if container:
+		duration_toggle_btn = Button.new()
+		duration_toggle_btn.name = "DurationToggleBtn"
+		duration_toggle_btn.custom_minimum_size = Vector2(100, 32)
+		duration_toggle_btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		duration_toggle_btn.focus_mode = Control.FOCUS_NONE
+		duration_toggle_btn.add_theme_font_size_override("font_size", 13)
+		duration_toggle_btn.tooltip_text = "Toggle loop duration between 15s (Fast) and 30s (Standard). Available in Chambers 1-5 only."
+		duration_toggle_btn.pressed.connect(_on_duration_toggle_pressed)
+		var timer_container := get_node_or_null("TopBar/Margin/HBox/TimerContainer")
+		if timer_container:
+			var idx := timer_container.get_index()
+			container.add_child(duration_toggle_btn)
+			container.move_child(duration_toggle_btn, idx + 1)
+		else:
+			container.add_child(duration_toggle_btn)
+
+func _update_duration_toggle_ui() -> void:
+	_ensure_duration_toggle_button()
+	if not duration_toggle_btn:
+		return
+		
+	if current_level_number >= 1 and current_level_number <= 5:
+		duration_toggle_btn.visible = true
+		var is_fast: bool = SaveManager.is_fast_early_loops() if SaveManager else false
+		if is_fast:
+			duration_toggle_btn.text = "⚡ 15s LOOP"
+			duration_toggle_btn.modulate = Color(0.2, 0.95, 1.0)
+		else:
+			duration_toggle_btn.text = "⏱ 30s LOOP"
+			duration_toggle_btn.modulate = Color(0.85, 0.85, 0.9)
+	else:
+		duration_toggle_btn.visible = false
+
+func _on_duration_toggle_pressed() -> void:
+	if current_level_number < 1 or current_level_number > 5:
+		return
+	SoundManager.play_sfx("click")
+	var new_fast: bool = not (SaveManager.is_fast_early_loops() if SaveManager else false)
+	if SaveManager:
+		SaveManager.set_fast_early_loops(new_fast)
+		
+	var lm = get_tree().get_first_node_in_group("loop_manager") as LoopManager
+	if lm:
+		lm.set_loop_duration(15.0 if new_fast else 30.0)
+		
+	_update_duration_toggle_ui()
+	var mode_text := "15 SECONDS (FAST PACING)" if new_fast else "30 SECONDS (STANDARD)"
+	show_temporary_notice("CHAMBER LOOP PACING: " + mode_text)
+
+func show_temporary_notice(msg: String) -> void:
+	var label := get_node_or_null("BottomBar/Margin/ControlsLabel") as Label
+	if label:
+		var orig_text := label.text
+		label.text = "✦ " + msg.to_upper()
+		label.modulate = Color(0.2, 0.95, 1.0)
+		var t := create_tween()
+		t.tween_interval(2.5)
+		t.tween_property(label, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.3)
+		t.finished.connect(func():
+			if is_instance_valid(label):
+				label.text = orig_text
+		)
+
 func set_rewind_available(available: bool) -> void:
 	var label := get_node_or_null("BottomBar/Margin/ControlsLabel") as Label
 	if label:
 		if available:
 			label.text = "[WASD / Arrows] Move   |   [E / Space] Interact   |   [R] Rewind Loop   |   [C] Clear Echoes & Reset   |   [ESC] Pause"
+		elif current_level_number <= 5:
+			label.text = "[WASD / Arrows] Move   |   [E / Space] Interact   |   [T / ⚡] 15s/30s Loop   |   [C] Clear Echoes & Reset   |   [ESC] Pause"
 		else:
 			label.text = "[WASD / Arrows] Move   |   [E / Space] Interact   |   [R] Locked (Sector 1)   |   [C] Clear Echoes & Reset   |   [ESC] Pause"
 
