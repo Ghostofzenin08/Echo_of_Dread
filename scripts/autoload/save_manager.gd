@@ -18,7 +18,8 @@ var settings: Dictionary = {
 	"music_volume": 1.0,
 	"screen_shake": true,
 	"crt_shader": true,
-	"touch_controls": false
+	"touch_controls": false,
+	"fast_early_loops": false
 }
 
 func _ready() -> void:
@@ -32,6 +33,14 @@ func is_level_unlocked(level_idx: int) -> bool:
 
 func is_rewind_unlocked() -> bool:
 	return unlocked_levels > 10
+
+func is_fast_early_loops() -> bool:
+	return bool(settings.get("fast_early_loops", false))
+
+func set_fast_early_loops(enabled: bool) -> void:
+	settings["fast_early_loops"] = enabled
+	save_data()
+	settings_changed.emit()
 
 func unlock_level(level_idx: int) -> void:
 	var max_level := GameManager.TOTAL_LEVELS if GameManager else 50
@@ -186,7 +195,8 @@ func reset_settings() -> void:
 		"music_volume": 1.0,
 		"screen_shake": true,
 		"crt_shader": true,
-		"touch_controls": OS.has_feature("mobile") or OS.has_feature("touchscreen") or OS.has_feature("web_android") or OS.has_feature("web_ios")
+		"touch_controls": OS.has_feature("mobile") or OS.has_feature("touchscreen") or OS.has_feature("web_android") or OS.has_feature("web_ios"),
+		"fast_early_loops": false
 	}
 	settings_changed.emit()
 
