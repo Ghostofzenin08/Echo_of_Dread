@@ -54,6 +54,8 @@ func _ready() -> void:
 	test_chamber_clear_modal()
 	test_chamber_runner_sector_palette()
 	test_engine_hardening_and_modal_pausing()
+	test_rewind_unlock_progression()
+	test_omega_wing_chambers_and_android_readiness()
 	
 	print("==================================================")
 	print("TESTS COMPLETED: %d / %d PASSED" % [passed_tests, total_tests])
@@ -1340,6 +1342,98 @@ func test_engine_hardening_and_modal_pausing() -> void:
 	add_child(victory)
 	_assert_test(victory.process_mode == Node.PROCESS_MODE_ALWAYS, "Hardening: VictoryScreen runs in PROCESS_MODE_ALWAYS")
 	victory.queue_free()
+
+func test_rewind_unlock_progression() -> void:
+	# 1. SaveManager rewind unlocked status
+	SaveManager.unlocked_levels = 1
+	_assert_test(SaveManager.is_rewind_unlocked() == false, "RewindLock: SaveManager locks rewind at Chamber 1")
+	SaveManager.unlocked_levels = 10
+	_assert_test(SaveManager.is_rewind_unlocked() == false, "RewindLock: SaveManager locks rewind at Chamber 10")
+	SaveManager.unlocked_levels = 11
+	_assert_test(SaveManager.is_rewind_unlocked() == true, "RewindLock: SaveManager unlocks rewind at Chamber 11")
+	
+	# 2. LoopManager manual rewind lock for levels 1-10
+	var lm := LoopManager.new()
+	add_child(lm)
+	
+	lm.level_number = 1
+	_assert_test(lm.is_manual_rewind_unlocked() == false, "RewindLock: LoopManager locks manual rewind for Chamber 1")
+	
+	lm.level_number = 10
+	_assert_test(lm.is_manual_rewind_unlocked() == false, "RewindLock: LoopManager locks manual rewind for Chamber 10")
+	
+	lm.level_number = 11
+	_assert_test(lm.is_manual_rewind_unlocked() == true, "RewindLock: LoopManager unlocks manual rewind for Chamber 11")
+	
+	# 3. Test blocked manual rewind signal
+	lm.level_number = 5
+	var blocked_emitted := [false]
+	lm.rewind_blocked.connect(func(_reason: String): blocked_emitted[0] = true)
+	var initial_loop := lm.current_loop_number
+	lm._on_manual_reset_requested()
+	_assert_test(blocked_emitted[0] == true, "RewindLock: Manual reset request emits rewind_blocked in Chamber 5")
+	_assert_test(lm.current_loop_number == initial_loop, "RewindLock: Blocked manual reset does not increment loop number")
+	
+	# 4. Programmatic reset_loop() still works even in Chamber 5 (for timer/hazard resets)
+	lm.reset_loop()
+	_assert_test(lm.current_loop_number == initial_loop + 1, "RewindLock: Programmatic hazard reset continues to function in Chamber 5")
+	
+	# 5. TouchControls set_rewind_unlocked
+	var touch_scene := load("res://scenes/ui/touch_controls.tscn") as PackedScene
+	var touch = touch_scene.instantiate()
+	add_child(touch)
+	touch.set_rewind_unlocked(false)
+	_assert_test(touch.loop_btn.disabled == true, "RewindLock: TouchControls loop_btn disabled when rewind locked")
+	touch.set_rewind_unlocked(true)
+	_assert_test(touch.loop_btn.disabled == false, "RewindLock: TouchControls loop_btn enabled when rewind unlocked")
+	touch.queue_free()
+	
+	lm.queue_free()
+	SaveManager.load_data()
+
+func test_omega_wing_chambers_and_android_readiness() -> void:
+	var ChamberDatabaseClass = load("res://scripts/world/chamber_database.gd")
+	
+	# 1. Test Chamber 41 (Dual chamber lock, 2 doors, 4 plates, 2 drones)
+	var c41: Dictionary = ChamberDatabaseClass.get_chamber(41)
+	_assert_test(c41.doors.size() == 2, "OmegaWing: Chamber 41 has dual progression doors")
+	_assert_test(c41.plates.size() == 4, "OmegaWing: Chamber 41 has 4 pressure plates")
+	_assert_test(c41.drones.size() == 2, "OmegaWing: Chamber 41 has 2 patrol drones")
+	
+	# 2. Test Chamber 43 (Paradox Engine: 5 inputs to door)
+	var c43: Dictionary = ChamberDatabaseClass.get_chamber(43)
+	_assert_test(c43.doors[0].req_count == 5, "OmegaWing: Chamber 43 requires 5 inputs to paradox core")
+	_assert_test(c43.plates.size() == 4 and c43.timed_buttons.size() == 1, "OmegaWing: Chamber 43 combines 4 plates and 1 core button")
+	
+	# 3. Test Chamber 44 (Harmonizer: 4 timed buttons)
+	var c44: Dictionary = ChamberDatabaseClass.get_chamber(44)
+	_assert_test(c44.timed_buttons.size() == 4, "OmegaWing: Chamber 44 requires 4 timed buttons")
+	_assert_test(c44.doors[0].req_count == 4, "OmegaWing: Chamber 44 door requires all 4 harmonic inputs")
+	
+	# 4. Test Chamber 49 (Thorne's Last Stand: 3 elite drones)
+	var c49: Dictionary = ChamberDatabaseClass.get_chamber(49)
+	_assert_test(c49.drones.size() == 3, "OmegaWing: Chamber 49 deploys 3 elite defense drones")
+	_assert_test(c49.doors[0].req_count == 4, "OmegaWing: Chamber 49 door requires 4 plates")
+	_assert_test(c49.timed_buttons.size() == 1 and c49.lasers.size() == 1, "OmegaWing: Chamber 49 features laser chokehold gate")
+	
+	# 5. Test Chamber 50 (Singularity Finale)
+	var c50: Dictionary = ChamberDatabaseClass.get_chamber(50)
+	_assert_test(c50.doors[0].req_count == 4, "OmegaWing: Chamber 50 singularity door requires 4 corner plates")
+	_assert_test(c50.timed_buttons.size() == 2 and c50.lasers.size() == 2, "OmegaWing: Chamber 50 has dual containment laser gates")
+	_assert_test(c50.terminals.size() == 1 and c50.terminals[0].log_id == "log_10", "OmegaWing: Chamber 50 houses terminal log_10")
+	_assert_test(c50.exit_pos == Vector2(640, 360), "OmegaWing: Chamber 50 exit positioned at the Singularity core")
+	
+	# 6. Test Android Settings
+	var orient = ProjectSettings.get_setting("display/window/handheld/orientation")
+	_assert_test(orient == "sensor_landscape", "AndroidConfig: Display orientation is sensor_landscape")
+	var emulate_touch = ProjectSettings.get_setting("input_devices/pointing/emulate_touch_from_mouse")
+	_assert_test(emulate_touch == true, "AndroidConfig: Touch emulation from mouse is enabled")
+	var emulate_mouse = ProjectSettings.get_setting("input_devices/pointing/emulate_mouse_from_touch")
+	_assert_test(emulate_mouse == true, "AndroidConfig: Mouse emulation from touch is enabled")
+	
+	# 7. Test Export Presets file
+	_assert_test(FileAccess.file_exists("res://export_presets.cfg"), "AndroidConfig: export_presets.cfg exists in project root")
+
 
 
 
