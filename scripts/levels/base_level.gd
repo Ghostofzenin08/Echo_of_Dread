@@ -35,13 +35,17 @@ func _ready() -> void:
 		
 	if game_hud:
 		game_hud.set_chamber_title(chamber_title)
-		if game_hud.has_method("set_rewind_available"):
+		if game_hud.has_method("set_level_number"):
+			game_hud.set_level_number(level_number)
+		elif game_hud.has_method("set_rewind_available"):
 			game_hud.set_rewind_available(level_number > 10 and (SaveManager == null or SaveManager.is_rewind_unlocked()))
 		
 	if loop_manager and player:
 		loop_manager.level_number = level_number
 		if not loop_manager.rewind_blocked.is_connected(_on_rewind_blocked):
 			loop_manager.rewind_blocked.connect(_on_rewind_blocked)
+		if loop_manager.has_signal("loop_duration_changed") and not loop_manager.loop_duration_changed.is_connected(_on_loop_duration_changed):
+			loop_manager.loop_duration_changed.connect(_on_loop_duration_changed)
 		loop_manager.time_updated.connect(_on_time_updated)
 		loop_manager.loop_reset.connect(_on_loop_reset)
 		loop_manager.echo_count_changed.connect(_on_echo_count_changed)
@@ -181,3 +185,7 @@ func _on_echo_count_changed(count: int) -> void:
 func _on_timeline_tracks_updated(tracks: Array) -> void:
 	if game_hud:
 		game_hud.set_timeline_tracks(tracks)
+
+func _on_loop_duration_changed(_new_dur: float) -> void:
+	if game_hud and game_hud.has_method("_update_duration_toggle_ui"):
+		game_hud._update_duration_toggle_ui()
