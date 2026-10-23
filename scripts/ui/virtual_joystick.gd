@@ -112,9 +112,9 @@ func _process(delta: float) -> void:
 			_stick_pos = _center_pos
 		queue_redraw()
 
-func _update_stick(pos: Vector2, snap: bool = false) -> void:
+func _update_stick(pos: Vector2, snap: bool = true) -> void:
 	_target_pos = pos
-	if snap:
+	if snap or not is_inside_tree():
 		var diff := pos - _center_pos
 		var dist := diff.length()
 		if dist > max_distance:
