@@ -1145,14 +1145,14 @@ func test_level_select_sector_tabs() -> void:
 	var ls = ls_scene.instantiate()
 	add_child(ls)
 	
-	_assert_test(ls.sector_container != null, "LevelSelect: Sector tabs container present")
-	_assert_test(ls.sector_container.get_child_count() == 5, "LevelSelect: 5 Sector tabs created")
-	_assert_test(ls.grid_container.get_child_count() == 10, "LevelSelect: 10 chamber buttons created for active sector")
+	_assert_test(ls.prev_button != null and ls.next_button != null, "LevelSelect: Carousel navigation buttons present")
+	_assert_test(ls.TOTAL_SLIDES == 25, "LevelSelect: 25 Carousel slides cover 50 chambers")
+	_assert_test(ls.btn_left != null and ls.btn_right != null, "LevelSelect: Dual chamber cards present")
 	
-	# Switch to Sector 3 (Gamma)
-	ls.current_sector = 3
-	ls._update_sector_view()
-	_assert_test(ls.grid_container.get_child_count() == 10, "LevelSelect: Sector 3 populates 10 chamber buttons")
+	# Slide 1 populates levels 1 and 2
+	ls.current_slide = 1
+	ls._update_view()
+	_assert_test(ls.lbl_level_left.text == "Level 1" and ls.lbl_level_right.text == "Level 2", "LevelSelect: Slide 1 populates Level 1 and Level 2")
 	
 	ls.queue_free()
 
