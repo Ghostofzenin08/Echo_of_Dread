@@ -7,9 +7,9 @@ extends Control
 
 const ChamberDatabaseClass = preload("res://scripts/world/chamber_database.gd")
 
-@onready var title_label: Label = $TitleBox/Title
-@onready var slide_info_label: Label = $TitleBox/SlideInfoLabel
-@onready var star_count_label: Label = $TitleBox/StarCountLabel
+@onready var title_label: Label = get_node_or_null("Title")
+@onready var slide_info_label: Label = get_node_or_null("SlideFooter")
+@onready var star_count_label: Label = get_node_or_null("StarCountLabel")
 @onready var back_button: Button = $BackButton
 @onready var prev_button: TextureButton = $PrevButton
 @onready var next_button: TextureButton = $NextButton
