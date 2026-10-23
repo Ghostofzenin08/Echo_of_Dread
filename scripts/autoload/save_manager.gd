@@ -12,6 +12,7 @@ var unlocked_levels: int = 1
 var best_loop_counts: Dictionary = {}  # { level_index (int): best_loops (int) }
 var best_times: Dictionary = {}        # { level_index (int): best_time_sec (float) }
 var discovered_lore: Array[String] = []
+var unlocked_hints: Array[int] = []
 var settings: Dictionary = {
 	"master_volume": 1.0,
 	"sfx_volume": 1.0,
@@ -19,7 +20,9 @@ var settings: Dictionary = {
 	"screen_shake": true,
 	"crt_shader": true,
 	"touch_controls": false,
-	"fast_early_loops": false
+	"fast_early_loops": false,
+	"movement_sensitivity": 1.0,
+	"joystick_radius_scale": 1.0
 }
 
 func _ready() -> void:
@@ -110,6 +113,15 @@ func record_lore_discovered(log_id: String) -> void:
 func is_lore_discovered(log_id: String) -> bool:
 	return discovered_lore.has(log_id)
 
+func is_hint_unlocked(chamber_idx: int) -> bool:
+	return unlocked_hints.has(chamber_idx)
+
+func unlock_hint(chamber_idx: int) -> void:
+	if not unlocked_hints.has(chamber_idx):
+		unlocked_hints.append(chamber_idx)
+		save_data()
+		progress_updated.emit()
+
 func set_setting(key: String, value: Variant) -> void:
 	settings[key] = value
 	save_data()
@@ -128,6 +140,7 @@ func save_data() -> bool:
 		"best_loop_counts": best_loop_counts,
 		"best_times": best_times,
 		"discovered_lore": discovered_lore,
+		"unlocked_hints": unlocked_hints,
 		"settings": settings
 	}
 	
@@ -184,6 +197,11 @@ func load_data() -> bool:
 		discovered_lore.clear()
 		for lid in data["discovered_lore"]:
 			discovered_lore.append(str(lid))
+
+	if data.has("unlocked_hints") and data["unlocked_hints"] is Array:
+		unlocked_hints.clear()
+		for h in data["unlocked_hints"]:
+			unlocked_hints.append(int(h))
 			
 	if data.has("settings") and data["settings"] is Dictionary:
 		for k in data["settings"]:
@@ -199,7 +217,9 @@ func reset_settings() -> void:
 		"screen_shake": true,
 		"crt_shader": true,
 		"touch_controls": OS.has_feature("mobile") or OS.has_feature("touchscreen") or OS.has_feature("web_android") or OS.has_feature("web_ios"),
-		"fast_early_loops": false
+		"fast_early_loops": false,
+		"movement_sensitivity": 1.0,
+		"joystick_radius_scale": 1.0
 	}
 	settings_changed.emit()
 
@@ -208,6 +228,7 @@ func reset_all_progress() -> void:
 	best_loop_counts.clear()
 	best_times.clear()
 	discovered_lore.clear()
+	unlocked_hints.clear()
 	reset_settings()
 	save_data()
 	progress_updated.emit()

@@ -112,12 +112,12 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -390.0
-offset_top = -290.0
+offset_top = -315.0
 offset_right = 390.0
-offset_bottom = 290.0
+offset_bottom = 315.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 22
+theme_override_constants/separation = 12
 alignment = 1
 
 [node name="HeaderBox" type="HBoxContainer" parent="MainPanel"]
@@ -299,6 +299,78 @@ theme_override_icons/grabber_highlight = ExtResource("5_grabber")
 theme_override_styles/slider = SubResource("StyleBoxTexture_slider_bg")
 theme_override_styles/grabber_area = SubResource("StyleBoxTexture_slider_fill")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_slider_fill")
+value = 100.0
+
+[node name="SensitivityGroup" type="VBoxContainer" parent="MainPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Row" type="HBoxContainer" parent="MainPanel/SensitivityGroup"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainPanel/SensitivityGroup/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "Player movement sensitivity"
+
+[node name="SensitivityValue" type="Label" parent="MainPanel/SensitivityGroup/Row"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "100%"
+
+[node name="SensitivitySlider" type="HSlider" parent="MainPanel/SensitivityGroup"]
+custom_minimum_size = Vector2(780, 32)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_icons/grabber = ExtResource("5_grabber")
+theme_override_icons/grabber_highlight = ExtResource("5_grabber")
+theme_override_styles/slider = SubResource("StyleBoxTexture_slider_bg")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_slider_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_slider_fill")
+min_value = 50.0
+max_value = 200.0
+step = 5.0
+value = 100.0
+
+[node name="JoystickRadiusGroup" type="VBoxContainer" parent="MainPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Row" type="HBoxContainer" parent="MainPanel/JoystickRadiusGroup"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainPanel/JoystickRadiusGroup/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "Touch joystick radius / size"
+
+[node name="JoystickRadiusValue" type="Label" parent="MainPanel/JoystickRadiusGroup/Row"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "100%"
+
+[node name="JoystickRadiusSlider" type="HSlider" parent="MainPanel/JoystickRadiusGroup"]
+custom_minimum_size = Vector2(780, 32)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_icons/grabber = ExtResource("5_grabber")
+theme_override_icons/grabber_highlight = ExtResource("5_grabber")
+theme_override_styles/slider = SubResource("StyleBoxTexture_slider_bg")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_slider_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_slider_fill")
+min_value = 70.0
+max_value = 150.0
+step = 5.0
 value = 100.0
 
 [node name="TogglesRow" type="HBoxContainer" parent="MainPanel"]

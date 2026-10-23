@@ -6,15 +6,23 @@ extends Control
 
 signal direction_changed(direction: Vector2)
 
-@export var deadzone: float = 8.0
-@export var max_distance: float = 65.0
-@export var ring_radius: float = 60.0
-@export var thumb_radius: float = 26.0
+const BASE_DEADZONE: float = 10.0
+const BASE_MAX_DISTANCE: float = 90.0
+const BASE_RING_RADIUS: float = 85.0
+const BASE_THUMB_RADIUS: float = 34.0
+
+@export var deadzone: float = 10.0
+@export var max_distance: float = 90.0
+@export var ring_radius: float = 85.0
+@export var thumb_radius: float = 34.0
 @export var smoothing_speed: float = 32.0
 
 @export var base_color: Color = Color(0.01, 0.06, 0.14, 0.65)
 @export var ring_color: Color = Color(0.2, 0.85, 1.0, 0.75)
 @export var thumb_color: Color = Color(0.18, 0.75, 1.0, 0.85)
+
+var radius_scale: float = 1.0
+var sensitivity: float = 1.0
 
 var _touch_id: int = -1
 var _center_pos: Vector2 = Vector2.ZERO
@@ -32,9 +40,27 @@ var _pressed_actions: Dictionary = {
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	custom_minimum_size = Vector2(160, 160)
-	_update_center()
+	apply_settings()
+	if SaveManager and not SaveManager.settings_changed.is_connected(apply_settings):
+		SaveManager.settings_changed.connect(apply_settings)
 	resized.connect(_on_resized)
+
+func apply_settings() -> void:
+	if SaveManager:
+		radius_scale = clampf(float(SaveManager.get_setting("joystick_radius_scale", 1.0)), 0.6, 2.0)
+		sensitivity = clampf(float(SaveManager.get_setting("movement_sensitivity", 1.0)), 0.5, 2.0)
+	else:
+		radius_scale = 1.0
+		sensitivity = 1.0
+		
+	deadzone = BASE_DEADZONE * radius_scale
+	max_distance = BASE_MAX_DISTANCE * radius_scale
+	ring_radius = BASE_RING_RADIUS * radius_scale
+	thumb_radius = BASE_THUMB_RADIUS * radius_scale
+	
+	var min_dim := (max_distance + thumb_radius) * 2.0 + 16.0
+	custom_minimum_size = Vector2(min_dim, min_dim)
+	_update_center()
 
 func _on_resized() -> void:
 	_update_center()
@@ -128,7 +154,7 @@ func _recalculate_output() -> void:
 	if cur_dist < deadzone:
 		_output_vector = Vector2.ZERO
 	else:
-		var norm_dist := (cur_dist - deadzone) / (max_distance - deadzone)
+		var norm_dist := ((cur_dist - deadzone) / (max_distance - deadzone)) * sensitivity
 		_output_vector = cur_diff.normalized() * clampf(norm_dist, 0.0, 1.0)
 		
 	direction_changed.emit(_output_vector)

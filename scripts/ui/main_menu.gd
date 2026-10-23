@@ -11,7 +11,7 @@ extends Control
 @onready var settings_menu: Control = $SettingsMenu
 
 @onready var desktop_decorations: Control = get_node_or_null("Decorations")
-@onready var desktop_title: Control = get_node_or_null("TitleContainer")
+@onready var header_box: Control = get_node_or_null("HeaderBox")
 @onready var desktop_vbox: Control = get_node_or_null("VBoxContainer")
 
 @onready var mobile_layout: Control = get_node_or_null("MobileLayout")
@@ -80,13 +80,13 @@ func _check_and_apply_layout() -> void:
 	var is_mobile: bool = GameManager.is_mobile_device() if GameManager else (OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios"))
 	if mobile_layout:
 		mobile_layout.visible = is_mobile
+	if header_box:
+		header_box.visible = true
 	if is_mobile:
 		if desktop_decorations: desktop_decorations.visible = false
-		if desktop_title: desktop_title.visible = false
 		if desktop_vbox: desktop_vbox.visible = false
 	else:
 		if desktop_decorations: desktop_decorations.visible = true
-		if desktop_title: desktop_title.visible = true
 		if desktop_vbox: desktop_vbox.visible = true
 
 func _setup_button_effects() -> void:

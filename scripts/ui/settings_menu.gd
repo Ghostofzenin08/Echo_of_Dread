@@ -16,6 +16,11 @@ signal reset_completed
 @onready var music_slider: HSlider = find_child("MusicSlider", true, false) as HSlider
 @onready var music_val_label: Label = find_child("MusicValue", true, false) as Label
 
+@onready var sensitivity_slider: HSlider = find_child("SensitivitySlider", true, false) as HSlider
+@onready var sensitivity_val_label: Label = find_child("SensitivityValue", true, false) as Label
+@onready var joystick_radius_slider: HSlider = find_child("JoystickRadiusSlider", true, false) as HSlider
+@onready var joystick_radius_val_label: Label = find_child("JoystickRadiusValue", true, false) as Label
+
 @onready var screen_shake_toggle: CheckBox = find_child("ScreenShakeToggle", true, false) as CheckBox
 @onready var crt_shader_toggle: CheckBox = find_child("CRTShaderToggle", true, false) as CheckBox
 @onready var touch_controls_toggle: CheckBox = find_child("TouchControlsToggle", true, false) as CheckBox
@@ -42,6 +47,14 @@ func _ensure_node_refs() -> void:
 		music_slider = find_child("MusicSlider", true, false) as HSlider
 	if music_val_label == null:
 		music_val_label = find_child("MusicValue", true, false) as Label
+	if sensitivity_slider == null:
+		sensitivity_slider = find_child("SensitivitySlider", true, false) as HSlider
+	if sensitivity_val_label == null:
+		sensitivity_val_label = find_child("SensitivityValue", true, false) as Label
+	if joystick_radius_slider == null:
+		joystick_radius_slider = find_child("JoystickRadiusSlider", true, false) as HSlider
+	if joystick_radius_val_label == null:
+		joystick_radius_val_label = find_child("JoystickRadiusValue", true, false) as Label
 	if screen_shake_toggle == null:
 		screen_shake_toggle = find_child("ScreenShakeToggle", true, false) as CheckBox
 	if crt_shader_toggle == null:
@@ -106,6 +119,10 @@ func _bind_controls() -> void:
 		sfx_slider.value_changed.connect(_on_sfx_slider_changed)
 	if music_slider and not music_slider.value_changed.is_connected(_on_music_slider_changed):
 		music_slider.value_changed.connect(_on_music_slider_changed)
+	if sensitivity_slider and not sensitivity_slider.value_changed.is_connected(_on_sensitivity_slider_changed):
+		sensitivity_slider.value_changed.connect(_on_sensitivity_slider_changed)
+	if joystick_radius_slider and not joystick_radius_slider.value_changed.is_connected(_on_joystick_radius_slider_changed):
+		joystick_radius_slider.value_changed.connect(_on_joystick_radius_slider_changed)
 		
 	if screen_shake_toggle and not screen_shake_toggle.toggled.is_connected(_on_screen_shake_toggled):
 		screen_shake_toggle.toggled.connect(_on_screen_shake_toggled)
@@ -130,6 +147,8 @@ func load_current_settings() -> void:
 	var master_pct := int(roundf(float(SaveManager.get_setting("master_volume", 1.0)) * 100.0))
 	var sfx_pct := int(roundf(float(SaveManager.get_setting("sfx_volume", 1.0)) * 100.0))
 	var music_pct := int(roundf(float(SaveManager.get_setting("music_volume", 1.0)) * 100.0))
+	var sensitivity_pct := int(roundf(float(SaveManager.get_setting("movement_sensitivity", 1.0)) * 100.0))
+	var radius_pct := int(roundf(float(SaveManager.get_setting("joystick_radius_scale", 1.0)) * 100.0))
 	var shake := bool(SaveManager.get_setting("screen_shake", true))
 	var crt := bool(SaveManager.get_setting("crt_shader", true))
 	var touch := bool(SaveManager.get_setting("touch_controls", false))
@@ -148,6 +167,16 @@ func load_current_settings() -> void:
 		music_slider.set_value_no_signal(music_pct)
 	if music_val_label:
 		music_val_label.text = "%d%%" % music_pct
+		
+	if sensitivity_slider:
+		sensitivity_slider.set_value_no_signal(sensitivity_pct)
+	if sensitivity_val_label:
+		sensitivity_val_label.text = "%d%%" % sensitivity_pct
+		
+	if joystick_radius_slider:
+		joystick_radius_slider.set_value_no_signal(radius_pct)
+	if joystick_radius_val_label:
+		joystick_radius_val_label.text = "%d%%" % radius_pct
 		
 	if screen_shake_toggle:
 		screen_shake_toggle.set_pressed_no_signal(shake)
@@ -176,6 +205,20 @@ func _on_music_slider_changed(value: float) -> void:
 		music_val_label.text = "%d%%" % int(value)
 	if SaveManager:
 		SaveManager.set_setting("music_volume", linear)
+
+func _on_sensitivity_slider_changed(value: float) -> void:
+	var linear := clampf(value / 100.0, 0.5, 2.0)
+	if sensitivity_val_label:
+		sensitivity_val_label.text = "%d%%" % int(value)
+	if SaveManager:
+		SaveManager.set_setting("movement_sensitivity", linear)
+
+func _on_joystick_radius_slider_changed(value: float) -> void:
+	var linear := clampf(value / 100.0, 0.7, 1.5)
+	if joystick_radius_val_label:
+		joystick_radius_val_label.text = "%d%%" % int(value)
+	if SaveManager:
+		SaveManager.set_setting("joystick_radius_scale", linear)
 
 func _on_screen_shake_toggled(toggled_on: bool) -> void:
 	if SaveManager:

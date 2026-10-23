@@ -57,6 +57,8 @@ func _ready() -> void:
 	test_rewind_unlock_progression()
 	test_omega_wing_chambers_and_android_readiness()
 	test_early_chambers_fast_loop_option()
+	test_ad_manager_and_monetization_system()
+	test_joystick_radius_and_sensitivity_settings()
 	
 	print("==================================================")
 	print("TESTS COMPLETED: %d / %d PASSED" % [passed_tests, total_tests])
@@ -1477,6 +1479,80 @@ func test_early_chambers_fast_loop_option() -> void:
 	
 	hud.queue_free()
 	SaveManager.set_fast_early_loops(false)
+
+func test_ad_manager_and_monetization_system() -> void:
+	print("\n--- Running AdManager & Monetization System Tests ---")
+	
+	# 1. Autoload Presence
+	_assert_test(AdManager != null, "Monetization: AdManager autoload singleton is registered and valid")
+	
+	# 2. Chamber Hint Retrieval
+	var hint1: String = AdManager.get_chamber_hint(1)
+	_assert_test(hint1.length() > 10 and hint1.contains("Echo 1"), "Monetization: Chamber 1 provides valid tactical hint text")
+	
+	var hint50: String = AdManager.get_chamber_hint(50)
+	_assert_test(hint50.contains("Omega Singularity"), "Monetization: Chamber 50 provides Singularity hint")
+	
+	# 3. SaveManager Hint Tracking & Rewarded Simulation
+	SaveManager.unlocked_hints.clear()
+	_assert_test(SaveManager.is_hint_unlocked(1) == false, "Monetization: Chamber 1 hint initially locked")
+	
+	AdManager.show_rewarded("hint_1")
+	_assert_test(SaveManager.is_hint_unlocked(1) == true, "Monetization: show_rewarded('hint_1') unlocks chamber 1 hint in SaveManager")
+	
+	# 4. Paced Interstitial Cooldown & Pacing
+	AdManager.is_ad_free = false
+	AdManager.last_interstitial_time = -999.0
+	var first_ad_shown := AdManager.show_interstitial()
+	_assert_test(first_ad_shown == true, "Monetization: First interstitial triggers successfully")
+	
+	var rapid_second_ad := AdManager.show_interstitial()
+	_assert_test(rapid_second_ad == false, "Monetization: Immediate second interstitial blocked by 180s cooldown guard")
+	
+	# 5. Ad-Free Bypass
+	AdManager.last_interstitial_time = -999.0
+	AdManager.is_ad_free = true
+	var ad_free_call := AdManager.show_interstitial()
+	_assert_test(ad_free_call == false, "Monetization: is_ad_free=true permanently blocks unprompted interstitials")
+	AdManager.is_ad_free = false
+
+func test_joystick_radius_and_sensitivity_settings() -> void:
+	# 1. Verify SaveManager default settings
+	_assert_test(SaveManager.has_setting("movement_sensitivity"), "Settings: SaveManager has movement_sensitivity")
+	_assert_test(SaveManager.has_setting("joystick_radius_scale"), "Settings: SaveManager has joystick_radius_scale")
+	
+	# 2. Verify VirtualJoystick increased default radius (> 60px)
+	const MobileVirtualJoystickClass = preload("res://scripts/ui/virtual_joystick.gd")
+	var vj = MobileVirtualJoystickClass.new()
+	add_child(vj)
+	_assert_test(vj.ring_radius >= 80.0, "VirtualJoystick: Default ring_radius is increased to at least 80px (actual: %.1f)" % vj.ring_radius)
+	_assert_test(vj.max_distance >= 85.0, "VirtualJoystick: Default max_distance is increased to at least 85px (actual: %.1f)" % vj.max_distance)
+	
+	# 3. Dynamic radius adjustment via SaveManager
+	SaveManager.set_setting("joystick_radius_scale", 1.2)
+	_assert_test(vj.ring_radius > 85.0, "VirtualJoystick: Radius expands when joystick_radius_scale is increased")
+	
+	SaveManager.set_setting("joystick_radius_scale", 0.8)
+	_assert_test(vj.ring_radius < 85.0, "VirtualJoystick: Radius decreases when joystick_radius_scale is decreased")
+	
+	# 4. SettingsMenu UI controls present
+	var sm_scene := load("res://scenes/ui/settings_menu.tscn") as PackedScene
+	_assert_test(sm_scene != null, "SettingsMenu: Scene loads successfully")
+	var sm = sm_scene.instantiate()
+	add_child(sm)
+	
+	_assert_test(sm.find_child("SensitivitySlider", true, false) != null, "SettingsMenu: SensitivitySlider is present in UI")
+	_assert_test(sm.find_child("JoystickRadiusSlider", true, false) != null, "SettingsMenu: JoystickRadiusSlider is present in UI")
+	_assert_test(sm.find_child("SensitivityValue", true, false) != null, "SettingsMenu: SensitivityValue label is present in UI")
+	_assert_test(sm.find_child("JoystickRadiusValue", true, false) != null, "SettingsMenu: JoystickRadiusValue label is present in UI")
+	
+	# Reset settings to default
+	SaveManager.set_setting("joystick_radius_scale", 1.0)
+	SaveManager.set_setting("movement_sensitivity", 1.0)
+	
+	sm.queue_free()
+	vj.queue_free()
+
 
 
 

@@ -74,15 +74,15 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -200.0
-offset_right = 200.0
+offset_top = -270.0
+offset_right = 270.0
 grow_vertical = 0
 mouse_filter = 2
 theme_override_constants/margin_left = 24
 theme_override_constants/margin_bottom = 24
 
 [node name="Joystick" type="Control" parent="RootControl/BottomLeft"]
-custom_minimum_size = Vector2(160, 160)
+custom_minimum_size = Vector2(210, 210)
 layout_mode = 2
 script = ExtResource("2_joystick")
 

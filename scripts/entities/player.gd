@@ -36,8 +36,12 @@ func _physics_process(delta: float) -> void:
 	if input_vector.length_squared() > 1.0:
 		input_vector = input_vector.normalized()
 		
+	var sensitivity: float = float(SaveManager.get_setting("movement_sensitivity", 1.0)) if SaveManager else 1.0
+	var speed_multiplier := clampf(sensitivity, 0.5, 2.0)
+	var target_speed := move_speed * speed_multiplier
+	
 	if input_vector != Vector2.ZERO:
-		velocity = velocity.move_toward(input_vector * move_speed, acceleration * delta)
+		velocity = velocity.move_toward(input_vector * target_speed, acceleration * speed_multiplier * delta)
 		facing_direction = input_vector
 		if visual_root:
 			var target_angle := facing_direction.angle() + PI * 0.5

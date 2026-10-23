@@ -131,6 +131,9 @@ func complete_level(loop_count: int = 1, elapsed_time: float = 0.0, show_modal: 
 		advance_to_next_level()
 
 func advance_to_next_level() -> void:
+	if AdManager and AdManager.has_method("on_chamber_cleared"):
+		AdManager.on_chamber_cleared()
+
 	if current_level_index < TOTAL_LEVELS:
 		load_level(current_level_index + 1)
 	else:

@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="1_pause"]
 [ext_resource type="PackedScene" path="res://scenes/ui/settings_menu.tscn" id="2_settings"]
 [ext_resource type="FontFile" path="res://main-menu/PostNoBillsColombo-Light.ttf" id="3_font"]
+[ext_resource type="FontFile" path="res://how to play/GoogleSans-Regular.ttf" id="4_font_body"]
 
 [sub_resource type="Gradient" id="Gradient_overlay"]
 offsets = PackedFloat32Array(0, 1)
@@ -26,6 +27,18 @@ corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 shadow_color = Color(0, 0.6, 1, 0.2)
 shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hint_box"]
+bg_color = Color(0.00784314, 0.101961, 0.223529, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.85, 1, 0.7)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_btn"]
 
@@ -127,6 +140,52 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_btn")
 text = "Restart"
 
 [node name="Sep2" type="HSeparator" parent="Panel/VBox"]
+custom_minimum_size = Vector2(280, 2)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/separator = SubResource("StyleBoxLine_separator")
+
+[node name="HintButton" type="Button" parent="Panel/VBox"]
+custom_minimum_size = Vector2(280, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+focus_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
+theme_override_colors/font_hover_color = Color(0.6, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxEmpty_btn")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_btn")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_btn")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_btn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_btn")
+text = "Chrono Hint"
+
+[node name="HintContainer" type="PanelContainer" parent="Panel/VBox"]
+visible = false
+custom_minimum_size = Vector2(380, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_hint_box")
+
+[node name="Margin" type="MarginContainer" parent="Panel/VBox/HintContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
+
+[node name="HintLabel" type="Label" parent="Panel/VBox/HintContainer/Margin"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.95, 1, 0.95)
+theme_override_fonts/font = ExtResource("4_font_body")
+theme_override_font_sizes/font_size = 14
+text = "Hint transmission..."
+autowrap_mode = 3
+horizontal_alignment = 1
+
+[node name="SepHint" type="HSeparator" parent="Panel/VBox"]
 custom_minimum_size = Vector2(280, 2)
 layout_mode = 2
 size_flags_horizontal = 4

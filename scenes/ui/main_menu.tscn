@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://c6vx1l4q1y5b8"]
+[gd_scene load_steps=17 format=3 uid="uid://c6vx1l4q1y5b8"]
 
 [ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_menu"]
 [ext_resource type="PackedScene" path="res://scenes/ui/settings_menu.tscn" id="2_settings"]
@@ -13,6 +13,8 @@
 [ext_resource type="Texture2D" path="res://mobile-view/Group 55.png" id="11_mob_settings"]
 [ext_resource type="Texture2D" path="res://mobile-view/Group 54.png" id="12_mob_chamber"]
 [ext_resource type="Texture2D" path="res://mobile-view/Frame.png" id="13_mob_help"]
+[ext_resource type="Texture2D" path="res://main-menu/Group 65.png" id="14_group65"]
+[ext_resource type="Texture2D" path="res://main-menu/Group 66.png" id="15_group66"]
 
 [sub_resource type="Gradient" id="Gradient_bg"]
 offsets = PackedFloat32Array(0, 1)
@@ -85,318 +87,140 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="LeftBracket" type="TextureRect" parent="Decorations"]
-modulate = Color(1, 1, 1, 0.6)
+[node name="LeftConstellation" type="TextureRect" parent="Decorations"]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_left = 0.0
-offset_top = -139.0
-offset_right = 70.0
-offset_bottom = 139.0
+offset_left = 15.0
+offset_top = -155.0
+offset_right = 305.0
+offset_bottom = 335.0
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("5_group40")
-stretch_mode = 3
+texture = ExtResource("15_group66")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="RightBracket" type="TextureRect" parent="Decorations"]
-modulate = Color(1, 1, 1, 0.6)
+[node name="RightConstellation" type="TextureRect" parent="Decorations"]
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -70.0
-offset_top = -139.0
-offset_right = 0.0
-offset_bottom = 139.0
+offset_left = -305.0
+offset_top = -180.0
+offset_right = -15.0
+offset_bottom = 310.0
 grow_horizontal = 0
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("5_group40")
-flip_h = true
-stretch_mode = 3
+texture = ExtResource("14_group65")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="TopCenter" type="HBoxContainer" parent="Decorations"]
-modulate = Color(1, 1, 1, 0.5)
+[node name="ShardTitleL" type="TextureRect" parent="Decorations"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -138.0
-offset_top = -30.0
-offset_right = 138.0
-offset_bottom = 38.0
+offset_left = -345.0
+offset_top = 50.0
+offset_right = -255.0
+offset_bottom = 140.0
 grow_horizontal = 2
+rotation = 0.92
+pivot_offset = Vector2(45, 45)
 mouse_filter = 2
-theme_override_constants/separation = 8
-alignment = 1
+texture = ExtResource("6_group28")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="Rect48" type="TextureRect" parent="Decorations/TopCenter"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_rect48")
-stretch_mode = 3
-
-[node name="Rect50" type="TextureRect" parent="Decorations/TopCenter"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("8_rect50")
-stretch_mode = 3
-
-[node name="BottomCenter" type="HBoxContainer" parent="Decorations"]
-modulate = Color(1, 1, 1, 0.5)
+[node name="ShardTitleR" type="TextureRect" parent="Decorations"]
 layout_mode = 1
-anchors_preset = 7
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -138.0
-offset_top = -38.0
-offset_right = 138.0
-offset_bottom = 30.0
+offset_left = 255.0
+offset_top = 45.0
+offset_right = 345.0
+offset_bottom = 135.0
 grow_horizontal = 2
-grow_vertical = 0
-mouse_filter = 2
-theme_override_constants/separation = 8
-alignment = 1
-
-[node name="Rect48" type="TextureRect" parent="Decorations/BottomCenter"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("7_rect48")
-stretch_mode = 3
-
-[node name="Rect50" type="TextureRect" parent="Decorations/BottomCenter"]
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("8_rect50")
-stretch_mode = 3
-
-[node name="TopLeftFrame" type="Control" parent="Decorations"]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 1
-anchors_preset = 0
-offset_left = 18.0
-offset_top = 0.0
-offset_right = 160.0
-offset_bottom = 140.0
-mouse_filter = 2
-
-[node name="CornerH" type="TextureRect" parent="Decorations/TopLeftFrame"]
-layout_mode = 0
-offset_left = 68.0
-offset_top = 0.0
-offset_right = 208.0
-offset_bottom = 68.0
-mouse_filter = 2
-texture = ExtResource("7_rect48")
-stretch_mode = 3
-
-[node name="CornerV" type="TextureRect" parent="Decorations/TopLeftFrame"]
-layout_mode = 0
-offset_left = 0.0
-offset_top = 58.0
-offset_right = 69.0
-offset_bottom = 186.0
-mouse_filter = 2
-texture = ExtResource("8_rect50")
-stretch_mode = 3
-
-[node name="TopRightFrame" type="Control" parent="Decorations"]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -226.0
-offset_top = 0.0
-offset_right = -18.0
-offset_bottom = 140.0
-grow_horizontal = 0
-mouse_filter = 2
-
-[node name="CornerH" type="TextureRect" parent="Decorations/TopRightFrame"]
-layout_mode = 0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 140.0
-offset_bottom = 68.0
-mouse_filter = 2
-texture = ExtResource("7_rect48")
-stretch_mode = 3
-
-[node name="CornerV" type="TextureRect" parent="Decorations/TopRightFrame"]
-layout_mode = 0
-offset_left = 139.0
-offset_top = 58.0
-offset_right = 208.0
-offset_bottom = 186.0
-mouse_filter = 2
-texture = ExtResource("8_rect50")
-stretch_mode = 3
-
-[node name="BottomLeftFrame" type="Control" parent="Decorations"]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 18.0
-offset_top = -186.0
-offset_right = 226.0
-offset_bottom = 0.0
-grow_vertical = 0
-mouse_filter = 2
-
-[node name="CornerH" type="TextureRect" parent="Decorations/BottomLeftFrame"]
-layout_mode = 0
-offset_left = 68.0
-offset_top = 118.0
-offset_right = 208.0
-offset_bottom = 186.0
-mouse_filter = 2
-texture = ExtResource("7_rect48")
-stretch_mode = 3
-
-[node name="CornerV" type="TextureRect" parent="Decorations/BottomLeftFrame"]
-layout_mode = 0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 69.0
-offset_bottom = 128.0
-mouse_filter = 2
-texture = ExtResource("8_rect50")
-stretch_mode = 3
-
-[node name="BottomRightFrame" type="Control" parent="Decorations"]
-modulate = Color(1, 1, 1, 0.5)
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -226.0
-offset_top = -186.0
-offset_right = -18.0
-offset_bottom = 0.0
-grow_horizontal = 0
-grow_vertical = 0
-mouse_filter = 2
-
-[node name="CornerH" type="TextureRect" parent="Decorations/BottomRightFrame"]
-layout_mode = 0
-offset_left = 0.0
-offset_top = 118.0
-offset_right = 140.0
-offset_bottom = 186.0
-mouse_filter = 2
-texture = ExtResource("7_rect48")
-stretch_mode = 3
-
-[node name="CornerV" type="TextureRect" parent="Decorations/BottomRightFrame"]
-layout_mode = 0
-offset_left = 139.0
-offset_top = 0.0
-offset_right = 208.0
-offset_bottom = 128.0
-mouse_filter = 2
-texture = ExtResource("8_rect50")
-stretch_mode = 3
-
-[node name="ShardTL" type="TextureRect" parent="Decorations"]
-modulate = Color(1, 1, 1, 0.7)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.16
-anchor_top = 0.18
-anchor_right = 0.16
-anchor_bottom = 0.18
-offset_left = -66.0
-offset_top = -70.0
-offset_right = 66.0
-offset_bottom = 71.0
-pivot_offset = Vector2(66, 70)
-rotation = 1.265
+rotation = -0.35
+pivot_offset = Vector2(45, 45)
 mouse_filter = 2
 texture = ExtResource("6_group28")
-stretch_mode = 3
+expand_mode = 1
+stretch_mode = 5
 
-[node name="ShardBL" type="TextureRect" parent="Decorations"]
-modulate = Color(1, 1, 1, 0.65)
+[node name="ShardTopL1" type="TextureRect" parent="Decorations"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.17
-anchor_top = 0.78
-anchor_right = 0.17
-anchor_bottom = 0.78
-offset_left = -66.0
-offset_top = -70.0
-offset_right = 66.0
-offset_bottom = 71.0
-pivot_offset = Vector2(66, 70)
-rotation = -0.438
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -190.0
+offset_top = 10.0
+offset_right = -142.0
+offset_bottom = 58.0
+grow_horizontal = 2
+rotation = 0.35
+pivot_offset = Vector2(24, 24)
 mouse_filter = 2
 texture = ExtResource("6_group28")
-stretch_mode = 3
+expand_mode = 1
+stretch_mode = 5
 
-[node name="ShardTR" type="TextureRect" parent="Decorations"]
-modulate = Color(1, 1, 1, 0.65)
+[node name="ShardTopL2" type="TextureRect" parent="Decorations"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.83
-anchor_top = 0.18
-anchor_right = 0.83
-anchor_bottom = 0.18
-offset_left = -66.0
-offset_top = -70.0
-offset_right = 66.0
-offset_bottom = 71.0
-pivot_offset = Vector2(66, 70)
-rotation = 0.118
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -175.0
+offset_top = -25.0
+offset_right = -145.0
+offset_bottom = 5.0
+grow_horizontal = 2
+rotation = 0.12
+pivot_offset = Vector2(15, 15)
 mouse_filter = 2
 texture = ExtResource("6_group28")
-stretch_mode = 3
+expand_mode = 1
+stretch_mode = 5
 
-[node name="ShardMR" type="TextureRect" parent="Decorations"]
-modulate = Color(1, 1, 1, 0.65)
+[node name="ShardTopR1" type="TextureRect" parent="Decorations"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.82
-anchor_top = 0.44
-anchor_right = 0.82
-anchor_bottom = 0.44
-offset_left = -66.0
-offset_top = -70.0
-offset_right = 66.0
-offset_bottom = 71.0
-pivot_offset = Vector2(66, 70)
-rotation = 0.354
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 150.0
+offset_top = 15.0
+offset_right = 198.0
+offset_bottom = 63.0
+grow_horizontal = 2
+rotation = -0.25
+pivot_offset = Vector2(24, 24)
 mouse_filter = 2
 texture = ExtResource("6_group28")
-stretch_mode = 3
+expand_mode = 1
+stretch_mode = 5
 
-[node name="ShardBR" type="TextureRect" parent="Decorations"]
-modulate = Color(1, 1, 1, 0.7)
+[node name="ShardTopR2" type="TextureRect" parent="Decorations"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.84
-anchor_top = 0.80
-anchor_right = 0.84
-anchor_bottom = 0.80
-offset_left = -66.0
-offset_top = -70.0
-offset_right = 66.0
-offset_bottom = 71.0
-pivot_offset = Vector2(66, 70)
-rotation = 0.922
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 160.0
+offset_top = -25.0
+offset_right = 190.0
+offset_bottom = 5.0
+grow_horizontal = 2
+rotation = 0.15
+pivot_offset = Vector2(15, 15)
 mouse_filter = 2
 texture = ExtResource("6_group28")
-stretch_mode = 3
+expand_mode = 1
+stretch_mode = 5
 
 [node name="HeaderBox" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -404,11 +228,10 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -400.0
-offset_top = 45.0
+offset_top = 55.0
 offset_right = 400.0
-offset_bottom = 160.0
+offset_bottom = 165.0
 grow_horizontal = 2
-theme_override_constants/separation = 4
 alignment = 1
 
 [node name="Title" type="Label" parent="HeaderBox"]
@@ -418,18 +241,10 @@ theme_override_colors/font_shadow_color = Color(0, 0.7, 1, 0.3)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 2
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 84
 text = "Echo of Dread"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="Subtitle" type="Label" parent="HeaderBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.55, 0.75, 0.95, 0.8)
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 17
-text = "CHRONOS RESEARCH FACILITY — 30-SECOND CAUSALITY LOOP"
-horizontal_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 custom_minimum_size = Vector2(356, 0)
@@ -440,22 +255,22 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -178.0
-offset_top = -100.0
+offset_top = -105.0
 offset_right = 178.0
-offset_bottom = 240.0
+offset_bottom = 275.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 16
 alignment = 1
 
 [node name="StartButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(356, 52)
+custom_minimum_size = Vector2(356, 56)
 layout_mode = 2
-pivot_offset = Vector2(178, 26)
+pivot_offset = Vector2(178, 28)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.4, 0.9, 1, 1)
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
@@ -463,13 +278,13 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_btn_focus")
 text = "Play"
 
 [node name="LevelSelectButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(356, 52)
+custom_minimum_size = Vector2(356, 56)
 layout_mode = 2
-pivot_offset = Vector2(178, 26)
+pivot_offset = Vector2(178, 28)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.4, 0.9, 1, 1)
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
@@ -477,13 +292,13 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_btn_focus")
 text = "Select Chambers"
 
 [node name="SettingsButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(356, 52)
+custom_minimum_size = Vector2(356, 56)
 layout_mode = 2
-pivot_offset = Vector2(178, 26)
+pivot_offset = Vector2(178, 28)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.4, 0.9, 1, 1)
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
@@ -491,13 +306,13 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_btn_focus")
 text = "Settings"
 
 [node name="HowToPlayButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(356, 52)
+custom_minimum_size = Vector2(356, 56)
 layout_mode = 2
-pivot_offset = Vector2(178, 26)
+pivot_offset = Vector2(178, 28)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.4, 0.9, 1, 1)
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
@@ -505,13 +320,13 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_btn_focus")
 text = "How to play"
 
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(356, 52)
+custom_minimum_size = Vector2(356, 56)
 layout_mode = 2
-pivot_offset = Vector2(178, 26)
+pivot_offset = Vector2(178, 28)
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.4, 0.9, 1, 1)
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
@@ -567,22 +382,12 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -300.0
-offset_top = -140.0
+offset_top = -20.0
 offset_right = 300.0
-offset_bottom = 160.0
+offset_bottom = 140.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 40
 alignment = 1
-
-[node name="MobileTitle" type="Label" parent="MobileLayout/MobileCenter"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 72
-text = "Echo of Dread"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="ButtonsRow" type="HBoxContainer" parent="MobileLayout/MobileCenter"]
 layout_mode = 2
