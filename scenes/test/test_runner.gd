@@ -1583,7 +1583,7 @@ func test_loading_screens_figma_specs() -> void:
 	# 5. Smart spinning animation simulation
 	ls._active_spinner = ls.spinner_start
 	ls._is_animating = true
-	var rot_before := ls.spinner_start.rotation
+	var rot_before: float = ls.spinner_start.rotation
 	ls._process(0.1)
 	_assert_test(ls.spinner_start.rotation > rot_before, "LoadingScreen: Smart spinning animation continuously updates rotation")
 	_assert_test(ls.spinner_start.scale.x > 0.9 and ls.spinner_start.scale.x < 1.1, "LoadingScreen: Smart quantum scale pulse active")
