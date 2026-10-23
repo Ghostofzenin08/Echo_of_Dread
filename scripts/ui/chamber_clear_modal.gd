@@ -28,10 +28,12 @@ signal sector_select_requested
 
 var current_chamber_idx: int = 1
 var earned_stars: int = 0
+var _button_tweens: Dictionary = {}
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_bind_buttons()
+	_setup_button_hover_effects()
 	visible = false
 
 func _bind_buttons() -> void:
@@ -41,6 +43,33 @@ func _bind_buttons() -> void:
 		retry_button.pressed.connect(_on_retry_pressed)
 	if select_button and not select_button.pressed.is_connected(_on_select_pressed):
 		select_button.pressed.connect(_on_select_pressed)
+
+func _setup_button_hover_effects() -> void:
+	var btns: Array[Button] = [next_button, retry_button, select_button]
+	for btn in btns:
+		if not is_instance_valid(btn):
+			continue
+		btn.pivot_offset = btn.size * 0.5
+		btn.resized.connect(func():
+			if is_instance_valid(btn):
+				btn.pivot_offset = btn.size * 0.5
+		)
+		btn.mouse_entered.connect(_on_btn_hover.bind(btn, true))
+		btn.mouse_exited.connect(_on_btn_hover.bind(btn, false))
+		btn.focus_entered.connect(_on_btn_hover.bind(btn, true))
+		btn.focus_exited.connect(_on_btn_hover.bind(btn, false))
+
+func _on_btn_hover(btn: Button, is_hovered: bool) -> void:
+	if not is_instance_valid(btn):
+		return
+	if _button_tweens.has(btn) and is_instance_valid(_button_tweens[btn]):
+		_button_tweens[btn].kill()
+	var tween := create_tween().set_parallel(true).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_button_tweens[btn] = tween
+	var target_scale := Vector2(1.025, 1.025) if is_hovered else Vector2(1.0, 1.0)
+	var target_modulate := Color(1.12, 1.12, 1.12, 1.0) if is_hovered else Color(1.0, 1.0, 1.0, 1.0)
+	tween.tween_property(btn, "scale", target_scale, 0.15)
+	tween.tween_property(btn, "modulate", target_modulate, 0.15)
 
 func display_results(chamber_num: int, loop_count: int, time_sec: float, par_loops: int, is_new_record: bool = false, lore_log_id: String = "") -> void:
 	current_chamber_idx = chamber_num
@@ -87,30 +116,54 @@ func display_results(chamber_num: int, loop_count: int, time_sec: float, par_loo
 	if total_stars_label:
 		total_stars_label.text = "TOTAL CHRONAL STARS: %d / 150" % total_stars
 		
+	var is_mobile := false
+	if GameManager and GameManager.has_method("is_mobile_device"):
+		is_mobile = GameManager.is_mobile_device()
+	else:
+		is_mobile = OS.has_feature("mobile") or OS.has_feature("android") or OS.has_feature("ios")
+		
 	if next_button:
 		if chamber_num >= 50:
-			next_button.text = "CONFRONT CORE [ENTER]"
+			next_button.text = "CONFRONT CORE" if is_mobile else "CONFRONT CORE [ENTER]"
 		else:
-			next_button.text = "NEXT CHAMBER [ENTER]"
+			next_button.text = "NEXT CHAMBER" if is_mobile else "NEXT CHAMBER [ENTER]"
+	if retry_button:
+		retry_button.text = "RETRY CHAMBER" if is_mobile else "RETRY CHAMBER [R]"
+	if select_button:
+		select_button.text = "SECTOR MAP" if is_mobile else "SECTOR MAP [ESC]"
 			
 	visible = true
 	_animate_stars_sequence()
 
+func _punch_star_scale(star_lbl: Label, star_color: Color) -> void:
+	if not is_instance_valid(star_lbl):
+		return
+	star_lbl.text = "★"
+	star_lbl.modulate = star_color
+	star_lbl.pivot_offset = star_lbl.size * 0.5
+	var tw := create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_property(star_lbl, "scale", Vector2(1.4, 1.4), 0.08).from(Vector2(0.5, 0.5))
+	tw.tween_property(star_lbl, "scale", Vector2(1.0, 1.0), 0.16)
+
 func _animate_stars_sequence() -> void:
 	# Reset stars
-	if star1_label: star1_label.text = "☆"
-	if star2_label: star2_label.text = "☆"
-	if star3_label: star3_label.text = "☆"
-	if rank_label: rank_label.text = "CALCULATING TEMPORAL EFFICIENCY..."
+	for s in [star1_label, star2_label, star3_label]:
+		if s:
+			s.text = "☆"
+			s.modulate = Color(0.4, 0.5, 0.6, 0.6)
+			s.scale = Vector2.ONE
+			s.pivot_offset = s.size * 0.5
+			
+	if rank_label:
+		rank_label.text = "CALCULATING TEMPORAL EFFICIENCY..."
+		rank_label.modulate = Color(0.6, 0.8, 0.95, 0.8)
 	
 	# Sequentially pop in stars
 	var tween := create_tween()
 	
 	# Star 1
 	tween.tween_callback(func():
-		if star1_label:
-			star1_label.text = "★"
-			star1_label.modulate = Color(1.0, 0.85, 0.25)
+		_punch_star_scale(star1_label, Color(1.0, 0.85, 0.25))
 		SoundManager.play_sfx("star_ding", 1.0)
 	)
 	tween.tween_interval(0.28)
@@ -118,9 +171,7 @@ func _animate_stars_sequence() -> void:
 	# Star 2
 	if earned_stars >= 2:
 		tween.tween_callback(func():
-			if star2_label:
-				star2_label.text = "★"
-				star2_label.modulate = Color(1.0, 0.85, 0.25)
+			_punch_star_scale(star2_label, Color(1.0, 0.85, 0.25))
 			SoundManager.play_sfx("star_ding", 1.2)
 		)
 		tween.tween_interval(0.28)
@@ -128,9 +179,7 @@ func _animate_stars_sequence() -> void:
 	# Star 3
 	if earned_stars >= 3:
 		tween.tween_callback(func():
-			if star3_label:
-				star3_label.text = "★"
-				star3_label.modulate = Color(1.0, 0.9, 0.3)
+			_punch_star_scale(star3_label, Color(1.0, 0.9, 0.3))
 			SoundManager.play_sfx("star_3_fanfare", 1.0)
 		)
 		tween.tween_interval(0.2)

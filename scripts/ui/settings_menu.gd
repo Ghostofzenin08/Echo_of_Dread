@@ -33,8 +33,11 @@ signal reset_completed
 @onready var confirm_modal: Control = find_child("ConfirmModal", true, false) as Control
 @onready var confirm_reset_btn: Button = find_child("ConfirmResetButton", true, false) as Button
 @onready var cancel_reset_btn: Button = find_child("CancelResetButton", true, false) as Button
+@onready var scroll_container: ScrollContainer = find_child("ScrollContainer", true, false) as ScrollContainer
 
 func _ensure_node_refs() -> void:
+	if scroll_container == null:
+		scroll_container = find_child("ScrollContainer", true, false) as ScrollContainer
 	if master_slider == null:
 		master_slider = find_child("MasterSlider", true, false) as HSlider
 	if master_val_label == null:
@@ -256,6 +259,8 @@ func cancel_reset() -> void:
 func open_menu() -> void:
 	_bind_controls()
 	load_current_settings()
+	if scroll_container:
+		scroll_container.scroll_vertical = 0
 	if confirm_modal:
 		confirm_modal.visible = false
 	visible = true

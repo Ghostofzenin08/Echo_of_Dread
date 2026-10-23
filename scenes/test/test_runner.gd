@@ -59,6 +59,8 @@ func _ready() -> void:
 	test_early_chambers_fast_loop_option()
 	test_ad_manager_and_monetization_system()
 	test_joystick_radius_and_sensitivity_settings()
+	test_loading_screens_figma_specs()
+	test_chamber_clear_modal_theme()
 	
 	print("==================================================")
 	print("TESTS COMPLETED: %d / %d PASSED" % [passed_tests, total_tests])
@@ -1552,6 +1554,67 @@ func test_joystick_radius_and_sensitivity_settings() -> void:
 	
 	sm.queue_free()
 	vj.queue_free()
+
+func test_loading_screens_figma_specs() -> void:
+	print("\n--- Running Loading Screen Figma Specs Tests ---")
+	var ls_scene := load("res://scenes/ui/loading_screen.tscn") as PackedScene
+	_assert_test(ls_scene != null, "LoadingScreen: Scene loads successfully")
+	var ls = ls_scene.instantiate() as LoadingScreen
+	add_child(ls)
+	
+	# 1. Structural Verification for All 3 Views
+	_assert_test(ls.web_levels_view != null, "LoadingScreen: WebLevelsView (Node 244:157) exists")
+	_assert_test(ls.web_start_view != null, "LoadingScreen: WebStartView (Node 244:409) exists")
+	_assert_test(ls.mobile_view != null, "LoadingScreen: MobileView (Node 244:367) exists")
+	
+	# 2. Chamber preview resource check
+	var preview_rect = ls.web_levels_view.find_child("ChamberPreview", true, false) as TextureRect
+	_assert_test(preview_rect != null and preview_rect.texture != null, "LoadingScreen: ChamberPreview has valid texture (Rectangle 68.png)")
+	
+	# 3. Initializing label check
+	var init_label = ls.web_levels_view.find_child("InitializingLabel", true, false) as Label
+	_assert_test(init_label != null and init_label.text == "Initializing", "LoadingScreen: 'Initializing' text label is present with exact casing")
+	
+	# 4. Spinners present in each view
+	_assert_test(ls.spinner_levels != null, "LoadingScreen: Levels view has spinner shard")
+	_assert_test(ls.spinner_start != null, "LoadingScreen: Start view has center spinner shard")
+	_assert_test(ls.spinner_mobile != null, "LoadingScreen: Mobile view has center spinner shard")
+	
+	# 5. Smart spinning animation simulation
+	ls._active_spinner = ls.spinner_start
+	ls._is_animating = true
+	var rot_before := ls.spinner_start.rotation
+	ls._process(0.1)
+	_assert_test(ls.spinner_start.rotation > rot_before, "LoadingScreen: Smart spinning animation continuously updates rotation")
+	_assert_test(ls.spinner_start.scale.x > 0.9 and ls.spinner_start.scale.x < 1.1, "LoadingScreen: Smart quantum scale pulse active")
+	
+	ls.queue_free()
+
+func test_chamber_clear_modal_theme() -> void:
+	print("\n--- Running Chamber Clear Modal Theme Tests ---")
+	var modal_scene := load("res://scenes/ui/chamber_clear_modal.tscn") as PackedScene
+	_assert_test(modal_scene != null, "ChamberClearModal: Scene loads successfully")
+	var modal = modal_scene.instantiate() as ChamberClearModal
+	add_child(modal)
+	
+	# Verify Nodes and Typography
+	var custom_font = load("res://main-menu/PostNoBillsColombo-Light.ttf") as FontFile
+	_assert_test(custom_font != null, "ChamberClearModal: Post No Bills Colombo Light font exists")
+	
+	_assert_test(modal.title_label != null, "ChamberClearModal: TitleLabel is present")
+	_assert_test(modal.sector_badge != null, "ChamberClearModal: SectorBadge is present")
+	_assert_test(modal.star1_label != null and modal.star2_label != null and modal.star3_label != null, "ChamberClearModal: All 3 star labels present")
+	_assert_test(modal.next_button != null and modal.retry_button != null and modal.select_button != null, "ChamberClearModal: Action buttons present")
+	
+	# Test Display Results
+	modal.display_results(1, 1, 12.4, 2, true, "log_01")
+	_assert_test(modal.title_label.text == "CHAMBER 01 SECURED", "ChamberClearModal: Title formatted correctly")
+	_assert_test(modal.sector_badge.text == "SECTOR 1: ALPHA WING", "ChamberClearModal: Sector badge formatted correctly")
+	_assert_test(modal.record_badge.visible == true, "ChamberClearModal: Record badge shown when new record")
+	_assert_test(modal.lore_badge.visible == true, "ChamberClearModal: Lore badge shown when transmission decoded")
+	
+	modal.queue_free()
+
 
 
 

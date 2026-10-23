@@ -15,6 +15,7 @@ const TOTAL_LEVELS: int = 50
 var current_level_index: int = 1
 var is_narrative_open: bool = false
 var is_paused: bool = false
+var loading_screen: LoadingScreen = null
 
 const LEVEL_SCENE_PATHS: Dictionary = {
 	1: "res://scenes/levels/level_01.tscn",
@@ -26,6 +27,13 @@ const LEVEL_SCENE_PATHS: Dictionary = {
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_setup_default_input_map()
+	_setup_loading_screen.call_deferred()
+
+func _setup_loading_screen() -> void:
+	var loader_scene := load("res://scenes/ui/loading_screen.tscn") as PackedScene
+	if loader_scene:
+		loading_screen = loader_scene.instantiate() as LoadingScreen
+		add_child(loading_screen)
 
 func is_mobile_device() -> bool:
 	if SaveManager and SaveManager.has_method("has_setting") and SaveManager.has_setting("touch_controls"):
@@ -78,9 +86,9 @@ func _register_action(action_name: String, key_codes: Array) -> void:
 			InputMap.action_add_event(action_name, event)
 
 func start_game() -> void:
-	load_level(1)
+	load_level(1, true)
 
-func load_level(level_idx: int) -> void:
+func load_level(level_idx: int, is_game_start: bool = false) -> void:
 	is_paused = false
 	is_narrative_open = false
 	get_tree().paused = false
@@ -88,11 +96,29 @@ func load_level(level_idx: int) -> void:
 	var scene_path: String = LEVEL_SCENE_PATHS.get(current_level_index, "")
 	if scene_path.is_empty() or not ResourceLoader.exists(scene_path):
 		scene_path = "res://scenes/levels/chamber_runner.tscn"
-	var err := get_tree().change_scene_to_file(scene_path)
-	if err == OK:
-		_emit_level_started_deferred.call_deferred(current_level_index)
+		
+	var is_mob := is_mobile_device()
+	var loader_type: LoadingScreen.LoaderType = LoadingScreen.LoaderType.MOBILE_ALL
+	if not is_mob:
+		if is_game_start:
+			loader_type = LoadingScreen.LoaderType.WEB_DESKTOP_START
+		else:
+			loader_type = LoadingScreen.LoaderType.WEB_DESKTOP_LEVELS
+			
+	if loading_screen and is_instance_valid(loading_screen):
+		loading_screen.start_transition(loader_type, func():
+			var err := get_tree().change_scene_to_file(scene_path)
+			if err == OK:
+				_emit_level_started_deferred.call_deferred(current_level_index)
+			else:
+				printerr("GameManager: Failed to load scene: %s (Error %d)" % [scene_path, err])
+		)
 	else:
-		printerr("GameManager: Failed to load scene: %s (Error %d)" % [scene_path, err])
+		var err := get_tree().change_scene_to_file(scene_path)
+		if err == OK:
+			_emit_level_started_deferred.call_deferred(current_level_index)
+		else:
+			printerr("GameManager: Failed to load scene: %s (Error %d)" % [scene_path, err])
 
 func _emit_level_started_deferred(idx: int) -> void:
 	level_started.emit(idx)

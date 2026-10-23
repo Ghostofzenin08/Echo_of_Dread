@@ -1,6 +1,65 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=9 format=3 uid="uid://c7t4f6w2m9v3x"]
 
 [ext_resource type="Script" path="res://scripts/ui/chamber_clear_modal.gd" id="1_modal"]
+[ext_resource type="FontFile" path="res://main-menu/PostNoBillsColombo-Light.ttf" id="2_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal_panel"]
+bg_color = Color(0.00392157, 0.054902, 0.12549, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.75, 1, 0.55)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0.6, 1, 0.22)
+shadow_size = 20
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_divider"]
+color = Color(0.2, 0.75, 1, 0.25)
+thickness = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
+bg_color = Color(0.00784314, 0.0862745, 0.188235, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.18)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+bg_color = Color(0.0117647, 0.121569, 0.258824, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.85, 1, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0.7, 1, 0.3)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_pressed"]
+bg_color = Color(0.00392157, 0.04, 0.105, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0, 0.95, 1, 0.95)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
 
 [node name="ChamberClearModal" type="Control"]
 process_mode = 3
@@ -19,7 +78,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.03, 0.05, 0.08, 0.88)
+color = Color(0.005, 0.02, 0.05, 0.85)
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
@@ -30,133 +89,186 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Panel" type="PanelContainer" parent="CenterContainer"]
-custom_minimum_size = Vector2(500, 420)
+custom_minimum_size = Vector2(540, 480)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_modal_panel")
 
 [node name="Margin" type="MarginContainer" parent="CenterContainer/Panel"]
 layout_mode = 2
-theme_override_constants/margin_left = 28
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 28
-theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 26
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 26
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 12
 
 [node name="SectorBadge" type="Label" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.5, 0.75, 0.9, 0.85)
-theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.55, 0.78, 0.95, 0.85)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
 text = "SECTOR 1: ALPHA WING"
 horizontal_alignment = 1
 
 [node name="TitleLabel" type="Label" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.92, 1, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_colors/font_shadow_color = Color(0, 0.7, 1, 0.35)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 34
 text = "CHAMBER 01 SECURED"
 horizontal_alignment = 1
 
 [node name="HSeparator1" type="HSeparator" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_divider")
 
 [node name="StarsBox" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 28
+theme_override_constants/separation = 32
 alignment = 1
 
 [node name="Star1" type="Label" parent="CenterContainer/Panel/Margin/VBox/StarsBox"]
+custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
-theme_override_font_sizes/font_size = 46
+theme_override_colors/font_color = Color(1, 0.82, 0.22, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.7, 0, 0.4)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 52
 text = "★"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Star2" type="Label" parent="CenterContainer/Panel/Margin/VBox/StarsBox"]
+custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
-theme_override_font_sizes/font_size = 46
+theme_override_colors/font_color = Color(1, 0.82, 0.22, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.7, 0, 0.4)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 52
 text = "★"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Star3" type="Label" parent="CenterContainer/Panel/Margin/VBox/StarsBox"]
+custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.85, 0.25, 1)
-theme_override_font_sizes/font_size = 46
+theme_override_colors/font_color = Color(1, 0.82, 0.22, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.7, 0, 0.4)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 52
 text = "★"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="RankLabel" type="Label" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.9, 0.4, 1)
-theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(1, 0.88, 0.35, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
 text = "★ ★ ★  CHRONAL TRANSCENDENCE"
 horizontal_alignment = 1
 
 [node name="MetricsBox" type="HBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 32
+theme_override_constants/separation = 36
 alignment = 1
 
 [node name="LoopSummary" type="Label" parent="CenterContainer/Panel/Margin/VBox/MetricsBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
 text = "LOOPS: 1  (PAR: 2)"
 
 [node name="TimeSummary" type="Label" parent="CenterContainer/Panel/Margin/VBox/MetricsBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
 text = "DRIFT: 14.2s"
 
 [node name="RecordBadge" type="Label" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.8, 0.2, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(1, 0.82, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
 text = "[ NEW CHRONAL RECORD! ]"
 horizontal_alignment = 1
 
 [node name="LoreBadge" type="Label" parent="CenterContainer/Panel/Margin/VBox"]
 visible = false
 layout_mode = 2
-theme_override_colors/font_color = Color(0.3, 1, 0.6, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.3, 1, 0.65, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
 text = "[ TRANSMISSION DECODED ]"
 horizontal_alignment = 1
 
 [node name="TotalStarsLabel" type="Label" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.4, 0.85, 1, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.3, 0.88, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
 text = "TOTAL CHRONAL STARS: 3 / 150"
 horizontal_alignment = 1
 
 [node name="HSeparator2" type="HSeparator" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_divider")
 
 [node name="ButtonsVBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 
 [node name="NextButton" type="Button" parent="CenterContainer/Panel/Margin/VBox/ButtonsVBox"]
-custom_minimum_size = Vector2(0, 38)
+custom_minimum_size = Vector2(0, 46)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 1, 0.6, 1)
-theme_override_font_sizes/font_size = 14
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.3, 1, 0.7, 1)
+theme_override_colors/font_hover_color = Color(0.6, 1, 0.85, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "NEXT CHAMBER [ENTER]"
 
 [node name="RetryButton" type="Button" parent="CenterContainer/Panel/Margin/VBox/ButtonsVBox"]
-custom_minimum_size = Vector2(0, 32)
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.9, 0.8, 0.4, 1)
-theme_override_font_sizes/font_size = 13
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.45, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.7, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "RETRY CHAMBER [R]"
 
 [node name="SelectButton" type="Button" parent="CenterContainer/Panel/Margin/VBox/ButtonsVBox"]
-custom_minimum_size = Vector2(0, 32)
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 1)
-theme_override_font_sizes/font_size = 13
+mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(0.75, 0.85, 0.95, 1)
+theme_override_colors/font_hover_color = Color(0.4, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
 text = "SECTOR MAP [ESC]"

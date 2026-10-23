@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dfy4b10n2w8p1"]
+[gd_scene load_steps=23 format=3 uid="uid://dfy4b10n2w8p1"]
 
 [ext_resource type="Script" path="res://scripts/ui/settings_menu.gd" id="1_settings"]
 [ext_resource type="FontFile" path="res://Setting/PostNoBillsColombo-Light.ttf" id="2_font"]
@@ -84,6 +84,40 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scroll_bg"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+bg_color = Color(0.00392157, 0.0627451, 0.141176, 0.4)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scroll_grabber"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+bg_color = Color(0.2, 0.75, 1, 0.6)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scroll_grabber_hover"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+bg_color = Color(0.4, 0.9, 1, 0.85)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="Theme" id="Theme_scrollbar"]
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_scroll_grabber")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_scroll_grabber_hover")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_scroll_grabber_hover")
+VScrollBar/styles/scroll = SubResource("StyleBoxFlat_scroll_bg")
+VScrollBar/styles/scroll_focus = SubResource("StyleBoxEmpty_clean")
+
 [node name="SettingsMenu" type="Control"]
 process_mode = 3
 layout_mode = 3
@@ -104,21 +138,20 @@ grow_vertical = 2
 texture = SubResource("GradientTexture2D_bg")
 
 [node name="MainPanel" type="VBoxContainer" parent="."]
-custom_minimum_size = Vector2(780, 0)
+custom_minimum_size = Vector2(800, 0)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -390.0
-offset_top = -315.0
-offset_right = 390.0
-offset_bottom = 315.0
+offset_left = -400.0
+offset_top = -290.0
+offset_right = 400.0
+offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 12
-alignment = 1
+theme_override_constants/separation = 16
 
 [node name="HeaderBox" type="HBoxContainer" parent="MainPanel"]
 layout_mode = 2
@@ -202,14 +235,26 @@ texture = ExtResource("9_help_icon")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="MasterGroup" type="VBoxContainer" parent="MainPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MainPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_scrollbar")
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 1
+
+[node name="SettingsContent" type="VBoxContainer" parent="MainPanel/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 22
+
+[node name="MasterGroup" type="VBoxContainer" parent="MainPanel/ScrollContainer/SettingsContent"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Row" type="HBoxContainer" parent="MainPanel/MasterGroup"]
+[node name="Row" type="HBoxContainer" parent="MainPanel/ScrollContainer/SettingsContent/MasterGroup"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MasterGroup/Row"]
+[node name="Label" type="Label" parent="MainPanel/ScrollContainer/SettingsContent/MasterGroup/Row"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -217,15 +262,15 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 24
 text = "Master volume"
 
-[node name="MasterValue" type="Label" parent="MainPanel/MasterGroup/Row"]
+[node name="MasterValue" type="Label" parent="MainPanel/ScrollContainer/SettingsContent/MasterGroup/Row"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 20
 text = "100%"
 
-[node name="MasterSlider" type="HSlider" parent="MainPanel/MasterGroup"]
-custom_minimum_size = Vector2(780, 36)
+[node name="MasterSlider" type="HSlider" parent="MainPanel/ScrollContainer/SettingsContent/MasterGroup"]
+custom_minimum_size = Vector2(760, 36)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_icons/grabber = ExtResource("5_grabber")
@@ -235,14 +280,14 @@ theme_override_styles/grabber_area = SubResource("StyleBoxTexture_slider_fill")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_slider_fill")
 value = 100.0
 
-[node name="SFXGroup" type="VBoxContainer" parent="MainPanel"]
+[node name="SFXGroup" type="VBoxContainer" parent="MainPanel/ScrollContainer/SettingsContent"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Row" type="HBoxContainer" parent="MainPanel/SFXGroup"]
+[node name="Row" type="HBoxContainer" parent="MainPanel/ScrollContainer/SettingsContent/SFXGroup"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/SFXGroup/Row"]
+[node name="Label" type="Label" parent="MainPanel/ScrollContainer/SettingsContent/SFXGroup/Row"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -250,15 +295,15 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 24
 text = "SFX volume"
 
-[node name="SFXValue" type="Label" parent="MainPanel/SFXGroup/Row"]
+[node name="SFXValue" type="Label" parent="MainPanel/ScrollContainer/SettingsContent/SFXGroup/Row"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 20
 text = "100%"
 
-[node name="SFXSlider" type="HSlider" parent="MainPanel/SFXGroup"]
-custom_minimum_size = Vector2(780, 36)
+[node name="SFXSlider" type="HSlider" parent="MainPanel/ScrollContainer/SettingsContent/SFXGroup"]
+custom_minimum_size = Vector2(760, 36)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_icons/grabber = ExtResource("5_grabber")
@@ -268,14 +313,14 @@ theme_override_styles/grabber_area = SubResource("StyleBoxTexture_slider_fill")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_slider_fill")
 value = 100.0
 
-[node name="MusicGroup" type="VBoxContainer" parent="MainPanel"]
+[node name="MusicGroup" type="VBoxContainer" parent="MainPanel/ScrollContainer/SettingsContent"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Row" type="HBoxContainer" parent="MainPanel/MusicGroup"]
+[node name="Row" type="HBoxContainer" parent="MainPanel/ScrollContainer/SettingsContent/MusicGroup"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/MusicGroup/Row"]
+[node name="Label" type="Label" parent="MainPanel/ScrollContainer/SettingsContent/MusicGroup/Row"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -283,15 +328,15 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 24
 text = "Music"
 
-[node name="MusicValue" type="Label" parent="MainPanel/MusicGroup/Row"]
+[node name="MusicValue" type="Label" parent="MainPanel/ScrollContainer/SettingsContent/MusicGroup/Row"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 20
 text = "100%"
 
-[node name="MusicSlider" type="HSlider" parent="MainPanel/MusicGroup"]
-custom_minimum_size = Vector2(780, 36)
+[node name="MusicSlider" type="HSlider" parent="MainPanel/ScrollContainer/SettingsContent/MusicGroup"]
+custom_minimum_size = Vector2(760, 36)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_icons/grabber = ExtResource("5_grabber")
@@ -301,30 +346,30 @@ theme_override_styles/grabber_area = SubResource("StyleBoxTexture_slider_fill")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxTexture_slider_fill")
 value = 100.0
 
-[node name="SensitivityGroup" type="VBoxContainer" parent="MainPanel"]
+[node name="SensitivityGroup" type="VBoxContainer" parent="MainPanel/ScrollContainer/SettingsContent"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 8
 
-[node name="Row" type="HBoxContainer" parent="MainPanel/SensitivityGroup"]
+[node name="Row" type="HBoxContainer" parent="MainPanel/ScrollContainer/SettingsContent/SensitivityGroup"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/SensitivityGroup/Row"]
+[node name="Label" type="Label" parent="MainPanel/ScrollContainer/SettingsContent/SensitivityGroup/Row"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 24
 text = "Player movement sensitivity"
 
-[node name="SensitivityValue" type="Label" parent="MainPanel/SensitivityGroup/Row"]
+[node name="SensitivityValue" type="Label" parent="MainPanel/ScrollContainer/SettingsContent/SensitivityGroup/Row"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 20
 text = "100%"
 
-[node name="SensitivitySlider" type="HSlider" parent="MainPanel/SensitivityGroup"]
-custom_minimum_size = Vector2(780, 32)
+[node name="SensitivitySlider" type="HSlider" parent="MainPanel/ScrollContainer/SettingsContent/SensitivityGroup"]
+custom_minimum_size = Vector2(760, 36)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_icons/grabber = ExtResource("5_grabber")
@@ -337,30 +382,30 @@ max_value = 200.0
 step = 5.0
 value = 100.0
 
-[node name="JoystickRadiusGroup" type="VBoxContainer" parent="MainPanel"]
+[node name="JoystickRadiusGroup" type="VBoxContainer" parent="MainPanel/ScrollContainer/SettingsContent"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 8
 
-[node name="Row" type="HBoxContainer" parent="MainPanel/JoystickRadiusGroup"]
+[node name="Row" type="HBoxContainer" parent="MainPanel/ScrollContainer/SettingsContent/JoystickRadiusGroup"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MainPanel/JoystickRadiusGroup/Row"]
+[node name="Label" type="Label" parent="MainPanel/ScrollContainer/SettingsContent/JoystickRadiusGroup/Row"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 24
 text = "Touch joystick radius / size"
 
-[node name="JoystickRadiusValue" type="Label" parent="MainPanel/JoystickRadiusGroup/Row"]
+[node name="JoystickRadiusValue" type="Label" parent="MainPanel/ScrollContainer/SettingsContent/JoystickRadiusGroup/Row"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.9, 1, 1)
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 20
 text = "100%"
 
-[node name="JoystickRadiusSlider" type="HSlider" parent="MainPanel/JoystickRadiusGroup"]
-custom_minimum_size = Vector2(780, 32)
+[node name="JoystickRadiusSlider" type="HSlider" parent="MainPanel/ScrollContainer/SettingsContent/JoystickRadiusGroup"]
+custom_minimum_size = Vector2(760, 36)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_icons/grabber = ExtResource("5_grabber")
@@ -373,12 +418,12 @@ max_value = 150.0
 step = 5.0
 value = 100.0
 
-[node name="TogglesRow" type="HBoxContainer" parent="MainPanel"]
+[node name="TogglesRow" type="HBoxContainer" parent="MainPanel/ScrollContainer/SettingsContent"]
 layout_mode = 2
 theme_override_constants/separation = 40
 alignment = 0
 
-[node name="ScreenShakeToggle" type="CheckBox" parent="MainPanel/TogglesRow"]
+[node name="ScreenShakeToggle" type="CheckBox" parent="MainPanel/ScrollContainer/SettingsContent/TogglesRow"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -389,7 +434,7 @@ theme_override_icons/unchecked = ExtResource("6_check")
 button_pressed = true
 text = "  Tactile screen shake"
 
-[node name="CRTShaderToggle" type="CheckBox" parent="MainPanel/TogglesRow"]
+[node name="CRTShaderToggle" type="CheckBox" parent="MainPanel/ScrollContainer/SettingsContent/TogglesRow"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -400,7 +445,7 @@ theme_override_icons/unchecked = ExtResource("6_check")
 button_pressed = true
 text = "  Temporal rewind shaders"
 
-[node name="TouchControlsToggle" type="CheckBox" parent="MainPanel/TogglesRow"]
+[node name="TouchControlsToggle" type="CheckBox" parent="MainPanel/ScrollContainer/SettingsContent/TogglesRow"]
 visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -408,11 +453,11 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 22
 text = "  Touch Controls"
 
-[node name="ResetRow" type="HBoxContainer" parent="MainPanel"]
+[node name="ResetRow" type="HBoxContainer" parent="MainPanel/ScrollContainer/SettingsContent"]
 layout_mode = 2
 alignment = 0
 
-[node name="ResetButton" type="Button" parent="MainPanel/ResetRow"]
+[node name="ResetButton" type="Button" parent="MainPanel/ScrollContainer/SettingsContent/ResetRow"]
 custom_minimum_size = Vector2(190, 50)
 layout_mode = 2
 mouse_default_cursor_shape = 2
@@ -425,6 +470,11 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_reset_btn_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_reset_btn_hover")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_clean")
 text = "Reset"
+
+[node name="BottomPadding" type="Control" parent="MainPanel/ScrollContainer/SettingsContent"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+mouse_filter = 2
 
 [node name="ConfirmModal" type="ColorRect" parent="."]
 visible = false
